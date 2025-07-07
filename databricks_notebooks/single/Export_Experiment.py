@@ -29,7 +29,7 @@
 # MAGIC * `6. Run IDs` - comma-seperated list of runs to export. Default is to export all runs.
 # MAGIC * `7. Check nested runs` - If true, will export all the runs of a nested run specified in above run ID list.
 # MAGIC
-# MAGIC See: https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_migration/experiment/export_experiment.py.
+# MAGIC See: https://github.com/mlflow-oidc/mlflow-migration/blob/master/mlflow_migration/experiment/export_experiment.py.
 
 # COMMAND ----------
 

@@ -24,7 +24,7 @@ The rewrite module contains two methods:- model_processor() and experiment_proce
 
 In this example [custom_export_rewriters.py](samples/custom_export_rewriters.py) we simply truncate the versions and runs to 2 elements respectively.
 
-Rewrites [models.json](https://github.com/mlflow/mlflow-export-import/blob/master/samples/databricks/bulk/models/models/Sklearn_WineQuality/model.json#L22).
+Rewrites [models.json](https://github.com/mlflow-oidc/mlflow-migration/blob/master/samples/databricks/bulk/models/models/Sklearn_WineQuality/model.json#L22).
 ```
 def rewrite_model(model_dct, models_dir):
     """ processes model.json """
@@ -35,7 +35,7 @@ def rewrite_model(model_dct, models_dir):
     model_dct["mlflow"]["registered_model"]["versions"] = versions
 ```
 
-Rewrites [experiment.json](https://github.com/mlflow/mlflow-export-import/blob/master/samples/databricks/bulk/experiments/76bcc705806b407fb971843bfb5e5cae/experiment.json#L22).
+Rewrites [experiment.json](https://github.com/mlflow-oidc/mlflow-migration/blob/master/samples/databricks/bulk/experiments/76bcc705806b407fb971843bfb5e5cae/experiment.json#L22).
 
 ```
 def rewrite_experiment(experiment_dct, experiment_dir):

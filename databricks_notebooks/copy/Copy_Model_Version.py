@@ -9,7 +9,7 @@
 # MAGIC * Can be used to migrate non-UC model versions to UC model versions provided the source model version has a signature.
 # MAGIC * Databricks registry URIs should be based on three Databricks secrets with a common prefix per [Specify a remote registry](https://docs.databricks.com/en/machine-learning/manage-model-lifecycle/multiple-workspaces.html#specify-a-remote-registry).
 # MAGIC   * Example: `registry_uri = 'databricks://<scope>:<prefix>'`
-# MAGIC * For more documentation see: https://github.com/mlflow/mlflow-export-import/blob/master/README_copy.md#copy-model-version.
+# MAGIC * For more documentation see: https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_copy.md#copy-model-version.
 # MAGIC
 # MAGIC ##### Usage
 # MAGIC   * Copies WS model version to a WS model version.
@@ -39,7 +39,7 @@
 # MAGIC * [Specify a remote registry](https://docs.databricks.com/en/machine-learning/manage-model-lifecycle/multiple-workspaces.html#specify-a-remote-registry)
 # MAGIC
 # MAGIC ##### Github
-# MAGIC * https://github.com/mlflow/mlflow-export-import/blob/master/databricks_notebooks/copy/Copy_Model_Version.py
+# MAGIC * https://github.com/mlflow-oidc/mlflow-migration/blob/master/databricks_notebooks/copy/Copy_Model_Version.py
 
 # COMMAND ----------
 
@@ -53,13 +53,13 @@
 # MAGIC
 # MAGIC ### Unity Catalog Model Registry
 # MAGIC
-# MAGIC  <img src="https://github.com/mlflow/mlflow-export-import/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_UC.png?raw=true"  width="700" />
+# MAGIC  <img src="https://github.com/mlflow-oidc/mlflow-migration/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_UC.png?raw=true"  width="700" />
 
 # COMMAND ----------
 
 # MAGIC  %md ### Workspace Model Registry
 # MAGIC
-# MAGIC  <img src="https://github.com/mlflow/mlflow-export-import/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_NonUC.png?raw=true"  width="700" />
+# MAGIC  <img src="https://github.com/mlflow-oidc/mlflow-migration/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_NonUC.png?raw=true"  width="700" />
 # MAGIC
 
 # COMMAND ----------

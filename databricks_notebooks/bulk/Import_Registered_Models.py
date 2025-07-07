@@ -10,7 +10,7 @@
 # MAGIC * `6. Import source tags`
 # MAGIC * `7. Use threads` - use multi-threaded import.
 # MAGIC
-# MAGIC See https://github.com/mlflow/mlflow-export-import/blob/master/README_bulk.md#Import-registered-models
+# MAGIC See https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_bulk.md#Import-registered-models
 
 # COMMAND ----------
 

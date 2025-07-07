@@ -35,10 +35,10 @@ tests = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/mlflow/mlflow-export-import"
-"Bug Tracker" = "https://github.com/mlflow/mlflow-export-import/issues"
-"Documentation" = "https://github.com/mlflow/mlflow-export-import/blob/master/README.md"
-"Source Code" = "https://github.com/mlflow/mlflow-export-import/"
+"Homepage" = "https://github.com/mlflow-oidc/mlflow-migration"
+"Bug Tracker" = "https://github.com/mlflow-oidc/mlflow-migration/issues"
+"Documentation" = "https://github.com/mlflow-oidc/mlflow-migration/blob/master/README.md"
+"Source Code" = "https://github.com/mlflow-oidc/mlflow-migration/"
 
 [project.scripts]
 mlflow-migration-export-all = "mlflow_migration.bulk.export_all:main"

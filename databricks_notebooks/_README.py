@@ -16,13 +16,13 @@
 # MAGIC
 # MAGIC #### Details
 # MAGIC
-# MAGIC * [README](https://github.com/mlflow/mlflow-export-import/blob/master/README.md)
-# MAGIC * Source code: https://github.com/mlflow/mlflow-export-import - source of truth with extensive documentation.
-# MAGIC * Databricks notebooks: https://github.com/mlflow/mlflow-export-import/tree/master/databricks_notebooks.
+# MAGIC * [README](https://github.com/mlflow-oidc/mlflow-migration/blob/master/README.md)
+# MAGIC * Source code: https://github.com/mlflow-oidc/mlflow-migration - source of truth with extensive documentation.
+# MAGIC * Databricks notebooks: https://github.com/mlflow-oidc/mlflow-migration/tree/master/databricks_notebooks.
 # MAGIC   
 # MAGIC #### Architecture
 # MAGIC
-# MAGIC <img src="https://github.com/mlflow/mlflow-export-import/blob/issue-138-copy-model-version/diagrams/architecture.png?raw=true"  width="700" />
+# MAGIC <img src="https://github.com/mlflow-oidc/mlflow-migration/blob/issue-138-copy-model-version/diagrams/architecture.png?raw=true"  width="700" />
 # MAGIC
 # MAGIC #### Notebooks 
 # MAGIC
@@ -34,8 +34,8 @@
 # MAGIC
 # MAGIC #### Limitations
 # MAGIC
-# MAGIC * [General limitations](https://github.com/mlflow/mlflow-export-import/blob/master/README_limitations.md#general-limitations)
-# MAGIC * [Databricks limitations](https://github.com/mlflow/mlflow-export-import/blob/master/README_limitations.md#databricks-limitations)
+# MAGIC * [General limitations](https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_limitations.md#general-limitations)
+# MAGIC * [Databricks limitations](https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_limitations.md#databricks-limitations)
 # MAGIC
 # MAGIC #### Experimental
 # MAGIC

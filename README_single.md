@@ -428,7 +428,7 @@ Source: [export_model_version.py](mlflow_migration/model_version/export_model_ve
 export-model-version \
   --model my_catalog.models.Sklearn_Wine \
   --version 1 \
-  --output-dir dbfs:/mnt/mlflow-export-import/Sklearn_Wine
+  --output-dir dbfs:/mnt/mlflow-migration/Sklearn_Wine
 ```
 
 #### Usage
@@ -460,7 +460,7 @@ Source: [import_model_version.py](mlflow_import_import/model_version/import_mode
 #### Example
 ```
 import-model-version \
-  --input-dir dbfs:/mnt/mlflow-export-import/Sklearn_Wine \
+  --input-dir dbfs:/mnt/mlflow-migration/Sklearn_Wine \
   --model my_catalog.models.Sklearn_Wine \
   --create-model True \
   --experiment-name /Users/me@mycompany.com/SklearnWine

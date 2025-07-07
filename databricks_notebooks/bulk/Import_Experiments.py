@@ -8,7 +8,7 @@
 # MAGIC * `4. Import source tags`
 # MAGIC * `5. Use threads` - use multi-threaded import.
 # MAGIC
-# MAGIC See https://github.com/mlflow/mlflow-export-import/blob/master/README_bulk.md#Import-experiments.
+# MAGIC See https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_bulk.md#Import-experiments.
 
 # COMMAND ----------
 

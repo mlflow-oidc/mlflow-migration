@@ -24,7 +24,7 @@ This is due to a number of non-trivial reasons especially when importing into Da
 A solution is possible but with non-trivial effort due to complex semantics.
 
 * Importing from a file-based `--backend-store-uri` implementation is not supported since it does not have the same semantics as a database-based implementation (e.g. primary key constraints are not respected, model registry is not implemented, etc.).
-This is is not a limitation of mlflow-export-import but rather of the MLflow file-based implementation which is not meant for production.
+This is is not a limitation of mlflow-migration but rather of the MLflow file-based implementation which is not meant for production.
 
 * Nested runs are only supported when you import an experiment. For a run, it is still a TODO.
 `

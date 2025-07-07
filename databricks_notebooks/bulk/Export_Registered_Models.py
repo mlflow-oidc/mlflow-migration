@@ -15,7 +15,7 @@
 # MAGIC * `08. Notebook formats`
 # MAGIC * `10. Use threads`
 # MAGIC
-# MAGIC See: https://github.com/mlflow/mlflow-export-import/blob/master/README_bulk.md#registered-models.
+# MAGIC See: https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_bulk.md#registered-models.
 
 # COMMAND ----------
 

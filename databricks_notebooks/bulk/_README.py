@@ -12,6 +12,6 @@
 # MAGIC   * Import All - Use [Import_Models]($Import_Models) to import all objects
 # MAGIC * [Common]($Common) - Helper functions
 # MAGIC
-# MAGIC See: https://github.com/mlflow/mlflow-export-import/blob/master/README_bulk.md.
+# MAGIC See: https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_bulk.md.
 # MAGIC
 # MAGIC Last update: 2023-10-28

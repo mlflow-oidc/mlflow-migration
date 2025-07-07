@@ -38,13 +38,13 @@
 # MAGIC
 # MAGIC ### Unity Catalog Model Registry
 # MAGIC
-# MAGIC  <img src="https://github.com/mlflow/mlflow-export-import/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_UC.png?raw=true"  width="700" />
+# MAGIC  <img src="https://github.com/mlflow-oidc/mlflow-migration/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_UC.png?raw=true"  width="700" />
 
 # COMMAND ----------
 
 # MAGIC  %md ### Workspace Model Registry
 # MAGIC
-# MAGIC  <img src="https://github.com/mlflow/mlflow-export-import/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_NonUC.png?raw=true"  width="700" />
+# MAGIC  <img src="https://github.com/mlflow-oidc/mlflow-migration/blob/issue-138-copy-model-version/diagrams/Copy_Model_Version_NonUC.png?raw=true"  width="700" />
 # MAGIC
 
 # COMMAND ----------

@@ -138,7 +138,7 @@ pip install git+https:///github.com/mlflow/mlflow-export-import@a334f8003a3c9c3b
 
 #### 4. Install from github clone
 ```
-git clone https://github.com/mlflow/mlflow-export-import
+git clone https://github.com/mlflow-oidc/mlflow-migration
 cd mlflow-export-import
 pip install -e .
 ```
@@ -169,7 +169,7 @@ The section above has other pip install alternatives you can use.
 Build the wheel artifact, upload it to DBFS and then [install it on your cluster](https://docs.databricks.com/libraries/cluster-libraries.html).
 
 ```
-git clone https://github.com/mlflow/mlflow-export-import
+git clone https://github.com/mlflow-oidc/mlflow-migration
 cd mlflow-export-import
 python setup.py bdist_wheel
 databricks fs cp dist/mlflow_migration-1.0.0-py3-none-any.whl {MY_DBFS_PATH}
@@ -225,7 +225,7 @@ Several environment variables can be set to customize your logging experience.
 
 Default logging config:
 * mlflow_migration_LOG_OUTPUT_FILE - Specify the output log file. If not set (default), no output log file will be used.
-* mlflow_migration_LOG_FORMAT - Convenience to overwrite the default [logging output format](https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_migration/common/default_logging_config.py#L5).
+* mlflow_migration_LOG_FORMAT - Convenience to overwrite the default [logging output format](https://github.com/mlflow-oidc/mlflow-migration/blob/master/mlflow_migration/common/default_logging_config.py#L5).
 
 Custom logging config file:
 * mlflow_migration_LOG_CONFIG_FILE - Use your own YAML logging config file instead of the default config.

@@ -15,7 +15,7 @@ _logger = utils.getLogger(__name__)
 
 
 # Skip Databricks cleanup calls to avoid 429
-_skip_cleanup  = os.environ.get("mlflow_migration_SKIP_CLEANUP")
+_skip_cleanup  = os.environ.get("MLFLOW_MIGRATION_SKIP_CLEANUP")
 _logger.info(f"_skip_cleanup: {_skip_cleanup}")
 
 

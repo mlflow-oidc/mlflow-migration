@@ -14,7 +14,7 @@ There is no MLflow API endpoint to explicity set the user field for any objects 
 `import-source-tags` - Import source information for registered model and its versions ad tags in destination object.  
 See section below.
 
-## MLflow Export Import Source Tags 
+## MLflow Migration Source Tags 
 
 For ML governance purposes, original source run information is saved under the `mlflow_migration` tag prefix in the destination MLflow object.
 

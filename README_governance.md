@@ -1,4 +1,4 @@
-# MLflow Export Import - Governance and Lineage
+# MLflow Migration - Governance and Lineage
 
 MLflow provides rudimentary capabilities for tracking lineage regarding the original source objects.
 

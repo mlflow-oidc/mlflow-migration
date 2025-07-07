@@ -1,5 +1,5 @@
 """
-Databricks notebook tests for MLflow export import notebooks.
+Databricks notebook tests for MLflow Migration notebooks.
 """
 
 import os

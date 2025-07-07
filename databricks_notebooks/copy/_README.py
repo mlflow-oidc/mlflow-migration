@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md ## MLflow Export Import - Copy Notebooks
+# MAGIC %md ## MLflow Migration - Copy Notebooks
 # MAGIC
 # MAGIC Copy an MLflow object to either the current or to another workspace and/or model registry.
 # MAGIC

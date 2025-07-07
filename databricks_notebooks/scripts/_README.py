@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md ## MLflow Export Import - Console Script Notebooks
+# MAGIC %md ## MLflow Migration - Console Script Notebooks
 # MAGIC 
 # MAGIC Console Script notebooks - command-line scripts that use the shell (%sh)
 # MAGIC 

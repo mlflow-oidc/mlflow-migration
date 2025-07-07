@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md ## MLflow Export Import - Single Notebooks
+# MAGIC %md ## MLflow Migration - Single Notebooks
 # MAGIC
 # MAGIC Export and import one MLflow object.
 # MAGIC

@@ -1,6 +1,8 @@
-# MLflow Export Import
+This is a technical fork of the original [MLflow Export Import](https://github.com/mlflow/mlflow-export-import) released under a new name and intended for publication on PyPI.
+---
 
-The MLflow Export Import package provides tools to copy MLflow objects (runs, experiments or registered models) from one MLflow tracking server (Databricks workspace) to another.
+# MLflow Migration
+The MLflow Migration package provides tools to copy MLflow objects (runs, experiments or registered models) from one MLflow tracking server (Databricks workspace) to another.
 Using the MLflow REST API, the tools export MLflow objects to an intermediate directory and then import them into the target tracking server.
 
 For more details:
@@ -15,7 +17,7 @@ Last updated: _2024-05-10_
 
 ## Overview
 
-### Why use MLflow Export Import?
+### Why use MLflow Migration?
   * Enable an MLOps pipeline by promoting MLflow objects (runs, experiments or registered models) from one MLflow tracking server (Datbricks workspace) to another.
     * Copy a the best run (model) from the development to the test tracking server.
     * After the run passes tests, then promote it to the production tracking server.
@@ -25,7 +27,7 @@ Last updated: _2024-05-10_
   * Disaster recovery. Save your MLflow objects to external storage so they can be replicated to another tracking server.
   * Supports registered models in both the Databricks Workspace Model Registry and Unity Catalog Model Registry.
 
-### MLflow Export Import scenarios
+### MLflow Migration scenarios
 
 |Source tracking server | Destination tracking server | Note |
 |-------|------------|---|
@@ -45,13 +47,13 @@ These are the MLflow objects and their attributes that can be exported.
 | Registered Model | [link](https://mlflow.org/docs/latest/rest-api.html#registeredmodel) | [link](https://mlflow.org/docs/latest/python_api/mlflow.entities.html#mlflow.entities.model_registry.RegisteredModel) | [link](https://github.com/amesar/mlflow-resources/blob/master/database_schemas/schema_mlflow_2.0.1.sql#L152) |
 | Registered Model Version | [link](https://mlflow.org/docs/latest/rest-api.html#modelversion) | [link](https://mlflow.org/docs/latest/python_api/mlflow.entities.html#mlflow.entities.model_registry.ModelVersion) | [link](https://github.com/amesar/mlflow-resources/blob/master/database_schemas/schema_mlflow_2.0.1.sql#L102) |
 
-MLflow Export Import provides rudimentary capabilities for tracking lineage of the imported Mlflow objects
+MLflow Migration provides rudimentary capabilities for tracking lineage of the imported Mlflow objects
 by having the option save the original MLflow object attributes in the imported target environment.
 See [README_governance](README_governance.md).
 
 ## Tools Overview
 
-There are two dimensions to the MLflow Export Import tools:
+There are two dimensions to the MLflow Migration tools:
 * Execution mode: Export of MLflow objects in single or bulk mode.
 * Execution context: Regular Python scripts or Databricks notebooks.
 

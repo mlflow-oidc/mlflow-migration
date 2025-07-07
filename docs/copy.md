@@ -40,11 +40,11 @@ In the diagrams below, the left _shallow copy_ is not so desirable (governance a
 
 ### Unity Catalog Model Registry Diagram
 
-<img src="diagrams/Copy_Model_Version_UC.png" height="440" />
+<img src="images/Copy_Model_Version_UC.png" height="440" />
 
 ### Workspace Model Registry Diagram
 
-<img src="diagrams/Copy_Model_Version_NonUC.png" height="380" />
+<img src="images/Copy_Model_Version_NonUC.png" height="380" />
 
 ### Copy UC model version in the same UC metastore
 ```

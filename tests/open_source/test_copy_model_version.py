@@ -1,7 +1,7 @@
 import os
 
-from mlflow_export_import.common.dump_utils import dump_mlflow_client
-from mlflow_export_import.copy import copy_model_version
+from mlflow_migration.common.dump_utils import dump_mlflow_client
+from mlflow_migration.copy import copy_model_version
 
 from tests.core import MlflowContext
 from tests.compare_utils import compare_versions

@@ -73,7 +73,7 @@ display_registered_model_uri(model_name)
 
 # COMMAND ----------
 
-from mlflow_export_import.model_version.export_model_version import export_model_version
+from mlflow_migration.model_version.export_model_version import export_model_version
 
 export_model_version(
     model_name = model_name, 

@@ -2,9 +2,9 @@ import os
 import mlflow
 
 from mlflow.entities import ViewType
-from mlflow_export_import.bulk import bulk_utils
-from mlflow_export_import.bulk.export_experiments import export_experiments
-from mlflow_export_import.bulk.import_experiments import import_experiments
+from mlflow_migration.bulk import bulk_utils
+from mlflow_migration.bulk.export_experiments import export_experiments
+from mlflow_migration.bulk.import_experiments import import_experiments
 
 from tests import sklearn_utils
 from tests.open_source.init_tests import mlflow_context

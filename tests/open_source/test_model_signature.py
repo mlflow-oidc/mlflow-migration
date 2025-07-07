@@ -2,8 +2,8 @@ import os
 import pandas as pd
 import mlflow
 from mlflow.models.signature import infer_signature
-from mlflow_export_import.model_version.export_model_version import export_model_version
-from mlflow_export_import.tools.signature_utils import get_model_signature
+from mlflow_migration.model_version.export_model_version import export_model_version
+from mlflow_migration.tools.signature_utils import get_model_signature
 
 from . init_tests import mlflow_context
 from . oss_utils_test import mk_test_object_name_default
@@ -50,7 +50,7 @@ def test_set_file_signature_without_file_scheme(mlflow_context):
 
 def test_set_file_signature_with_file_scheme(mlflow_context):
     """
-    Tests set_signature with file scheme: 'file:/opts/mlflow_export_imports/tests/run/artifacts/model'
+    Tests set_signature with file scheme: 'file:/opts/mlflow_migrations/tests/run/artifacts/model'
     """
     _run_set_file_signature(mlflow_context, use_file_scheme=True)
 
@@ -71,7 +71,7 @@ def test_model_signature_get_methods(mlflow_context):
 
 def _run_set_file_signature(mlflow_context, use_file_scheme=False):
     """
-    Tests set_signature with file scheme: 'file:/opts/mlflow_export_imports/tests/run/artifacts/model'
+    Tests set_signature with file scheme: 'file:/opts/mlflow_migrations/tests/run/artifacts/model'
     Tests set_signature without file scheme: 'out/run/artifacts/model'
     """
     _, _, signature, src_vr = _prep(mlflow_context)

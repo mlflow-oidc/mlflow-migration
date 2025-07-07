@@ -2,9 +2,9 @@
 Compare MLflow object utilities.
 """
 
-from mlflow_export_import.common import utils, model_utils
-from mlflow_export_import.common.source_tags import ExportTags
-from mlflow_export_import.common.model_utils import is_unity_catalog_model
+from mlflow_migration.common import utils, model_utils
+from mlflow_migration.common.source_tags import ExportTags
+from mlflow_migration.common.model_utils import is_unity_catalog_model
 from tests import utils_test
 
 
@@ -24,7 +24,7 @@ def _compare_runs_without_source_tags(mlflow_context, run1, run2, output_dir):
 
 def _compare_runs_with_source_tags(run1, run2):
     _compare_runs_common(run1, run2)
-    source_tags2 = _strip_mlflow_export_import_tags(run2.data.tags)
+    source_tags2 = _strip_mlflow_migration_tags(run2.data.tags)
     assert len(source_tags2) > 0, f"Source tags starting with '{ExportTags.PREFIX_ROOT}' are missing"
 
 
@@ -44,7 +44,7 @@ def compare_experiment_tags(tags1, tags2, import_source_tags=False):
     mlflow_tags2 = { k.replace(f"{ExportTags.PREFIX_MLFLOW_TAG}.","mlflow."):v for k,v in source_tags2.items() }
     assert mlflow_tags1 == mlflow_tags2
 
-    tags2_no_source_tags = _strip_mlflow_export_import_tags(tags2)
+    tags2_no_source_tags = _strip_mlflow_migration_tags(tags2)
     assert tags1 == tags2_no_source_tags
 
 
@@ -115,8 +115,8 @@ def compare_versions(mlflow_context, vr_src, vr_dst, compare_names=True, run_ids
     if not utils.calling_databricks():
         assert vr_src.user_id == vr_dst.user_id
 
-    src_tags = _strip_mlflow_export_import_tags(vr_src.tags)
-    dst_tags = _strip_mlflow_export_import_tags(vr_dst.tags)
+    src_tags = _strip_mlflow_migration_tags(vr_src.tags)
+    dst_tags = _strip_mlflow_migration_tags(vr_dst.tags)
     assert src_tags == dst_tags
 
     if run_ids_equal:
@@ -129,5 +129,5 @@ def compare_versions(mlflow_context, vr_src, vr_dst, compare_names=True, run_ids
     compare_runs(mlflow_context, run_src, run_dst)
 
 
-def _strip_mlflow_export_import_tags(tags):
+def _strip_mlflow_migration_tags(tags):
     return { k:v for k,v in tags.items() if not k.startswith(ExportTags.PREFIX_ROOT) }

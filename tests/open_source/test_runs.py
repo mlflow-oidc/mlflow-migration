@@ -1,5 +1,5 @@
-from mlflow_export_import.run.export_run import export_run
-from mlflow_export_import.run.import_run import import_run
+from mlflow_migration.run.export_run import export_run
+from mlflow_migration.run.import_run import import_run
 from tests.open_source.oss_utils_test import create_simple_run, mk_dst_experiment_name
 from tests.utils_test import create_output_dir
 from tests.compare_utils import compare_runs

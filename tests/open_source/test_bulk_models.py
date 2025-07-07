@@ -1,8 +1,8 @@
 import os
 from mlflow.exceptions import RestException
-from mlflow_export_import.bulk.export_models import export_models
-from mlflow_export_import.bulk.import_models import import_models
-from mlflow_export_import.bulk import bulk_utils
+from mlflow_migration.bulk.export_models import export_models
+from mlflow_migration.bulk.import_models import import_models
+from mlflow_migration.bulk import bulk_utils
 
 from tests.open_source.init_tests import mlflow_context
 from tests.compare_utils import compare_runs

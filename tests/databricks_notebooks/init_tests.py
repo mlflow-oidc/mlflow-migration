@@ -2,7 +2,7 @@ from collections import namedtuple
 import pytest
 import tempfile
 
-from mlflow_export_import.client import databricks_utils
+from mlflow_migration.client import databricks_utils
 
 from tests import utils_test
 from tests.databricks.databricks_tester import DatabricksTester

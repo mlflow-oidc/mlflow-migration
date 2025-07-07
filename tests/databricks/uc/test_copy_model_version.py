@@ -1,5 +1,5 @@
-from mlflow_export_import.copy import copy_model_version
-from mlflow_export_import.common import dump_utils
+from mlflow_migration.copy import copy_model_version
+from mlflow_migration.common import dump_utils
 
 from tests.core import to_MlflowContext
 from tests.compare_utils import compare_versions

@@ -1,4 +1,4 @@
-from mlflow_export_import.common.uc_permissions_utils import _mk_update_changes, _mk_unrolled_changes
+from mlflow_migration.common.uc_permissions_utils import _mk_update_changes, _mk_unrolled_changes
 
 
 # == Standard upate

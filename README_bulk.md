@@ -18,12 +18,12 @@ Notes:
 
 | MLflow Object | Documentation | Code | Description |
 |-------|-------|----|---|
-| All  | [export-all](#Export-all-MLflow-objects) | [code](mlflow_export_import/bulk/export_all.py) | Exports all MLflow objects (registered models, experiments and runs) to a directory. |
-| | [import-all](#Import-all-MLflow-objects) | Uses [import-models](mlflow_export_import/bulk/import_models.py) | Imports MLflow objects from a directory. |
-| Model | [export-models](#Export-registered-models) | [code](mlflow_export_import/bulk/export_models.py) | Exports several (or all) registered models and their versions' backing run along with the run's experiment to a directory. |
-| | [import-models](#Import-registered-models) | [code](mlflow_export_import/bulk/import_models.py) | Imports registered models from a directory. |
-| Experiment | [export-experiments](#Export-experiments) | [code](mlflow_export_import/bulk/export_experiments.py) | Export several (or all) experiments to a directory. |
-| | [import-experiments](#Import-experiments) | [code](mlflow_export_import/bulk/import_experiments.py) | Imports experiments from a directory. |
+| All  | [export-all](#Export-all-MLflow-objects) | [code](mlflow_migration/bulk/export_all.py) | Exports all MLflow objects (registered models, experiments and runs) to a directory. |
+| | [import-all](#Import-all-MLflow-objects) | Uses [import-models](mlflow_migration/bulk/import_models.py) | Imports MLflow objects from a directory. |
+| Model | [export-models](#Export-registered-models) | [code](mlflow_migration/bulk/export_models.py) | Exports several (or all) registered models and their versions' backing run along with the run's experiment to a directory. |
+| | [import-models](#Import-registered-models) | [code](mlflow_migration/bulk/import_models.py) | Imports registered models from a directory. |
+| Experiment | [export-experiments](#Export-experiments) | [code](mlflow_migration/bulk/export_experiments.py) | Export several (or all) experiments to a directory. |
+| | [import-experiments](#Import-experiments) | [code](mlflow_migration/bulk/import_experiments.py) | Imports experiments from a directory. |
 
 
 ## All MLflow Objects Tools
@@ -33,7 +33,7 @@ Notes:
 Exports all MLflow objects of the tracking server (Databricks workspace) - all models, experiments and runs.
 If you are exporting from Databricks, the notebook can be exported in several different formats.
 
-Source: [export_all.py](mlflow_export_import/bulk/export_all.py).
+Source: [export_all.py](mlflow_migration/bulk/export_all.py).
 
 #### Usage
 ```
@@ -126,7 +126,7 @@ It controls whether all runs of an experiment are exported or only those associa
 Obviously there are many runs that are not linked to a registered model version.
 This can make a substantial difference in export time.
 
-Source: [export_models.py](mlflow_export_import/bulk/export_models.py).
+Source: [export_models.py](mlflow_migration/bulk/export_models.py).
 
 #### Usage
 ```
@@ -199,7 +199,7 @@ sklearn_wine
 
 ### Import registered models 
 
-Source: [import_models.py](mlflow_export_import/bulk/import_models.py).
+Source: [import_models.py](mlflow_migration/bulk/import_models.py).
 
 #### Usage
 ```

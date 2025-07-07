@@ -1,5 +1,5 @@
-from mlflow_export_import.bulk.export_all import export_all
-from mlflow_export_import.bulk.import_models import import_models
+from mlflow_migration.bulk.export_all import export_all
+from mlflow_migration.bulk.import_models import import_models
 from tests.open_source.test_bulk_experiments import compare_experiments
 from tests.open_source.test_bulk_models import create_model, compare_models_with_versions, get_num_deleted_runs
 

@@ -80,7 +80,7 @@ assert_widget(input_dir, "3. Input directory")
 
 # COMMAND ----------
 
-from mlflow_export_import.model.import_model import import_model
+from mlflow_migration.model.import_model import import_model
 
 import_model(
     model_name =model_name, 

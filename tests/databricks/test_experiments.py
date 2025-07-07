@@ -1,5 +1,5 @@
-from mlflow_export_import.experiment.export_experiment import export_experiment
-from mlflow_export_import.experiment.import_experiment import import_experiment
+from mlflow_migration.experiment.export_experiment import export_experiment
+from mlflow_migration.experiment.import_experiment import import_experiment
 from tests.utils_test import create_nested_runs
 from tests.core import to_MlflowContext
 from tests.compare_utils import compare_runs 

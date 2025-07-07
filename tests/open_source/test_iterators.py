@@ -5,7 +5,7 @@ Test the MLflow object iterators (Run, Experiment, Registered Model and Model Ve
 from mlflow.entities import ViewType
 import mlflow
 
-from mlflow_export_import.common.iterators import (
+from mlflow_migration.common.iterators import (
     SearchExperimentsIterator,
     SearchRegisteredModelsIterator,
     #SearchModelVersionsIterator,

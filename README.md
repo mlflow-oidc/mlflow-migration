@@ -172,7 +172,7 @@ Build the wheel artifact, upload it to DBFS and then [install it on your cluster
 git clone https://github.com/mlflow/mlflow-export-import
 cd mlflow-export-import
 python setup.py bdist_wheel
-databricks fs cp dist/mlflow_export_import-1.0.0-py3-none-any.whl {MY_DBFS_PATH}
+databricks fs cp dist/mlflow_migration-1.0.0-py3-none-any.whl {MY_DBFS_PATH}
 ```
 
 ### Laptop to Databricks usage
@@ -210,13 +210,13 @@ export-experiment --help
 ```
 or:
 ```
-python -u -m mlflow_export_import.experiment.export_experiment --help
+python -u -m mlflow_migration.experiment.export_experiment --help
 ```
 
 ## Logging
 
 Standard Python logging is used.
-A simple [default logging config](mlflow_export_import/common/default_logging_config.py) is provided.
+A simple [default logging config](mlflow_migration/common/default_logging_config.py) is provided.
 By default all output is sent to stdout using the console handler.
 There is an option to use a file handler to send output to a file.
 
@@ -224,25 +224,25 @@ Several environment variables can be set to customize your logging experience.
 
 
 Default logging config:
-* MLFLOW_EXPORT_IMPORT_LOG_OUTPUT_FILE - Specify the output log file. If not set (default), no output log file will be used.
-* MLFLOW_EXPORT_IMPORT_LOG_FORMAT - Convenience to overwrite the default [logging output format](https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_export_import/common/default_logging_config.py#L5).
+* mlflow_migration_LOG_OUTPUT_FILE - Specify the output log file. If not set (default), no output log file will be used.
+* mlflow_migration_LOG_FORMAT - Convenience to overwrite the default [logging output format](https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_migration/common/default_logging_config.py#L5).
 
 Custom logging config file:
-* MLFLOW_EXPORT_IMPORT_LOG_CONFIG_FILE - Use your own YAML logging config file instead of the default config.
+* mlflow_migration_LOG_CONFIG_FILE - Use your own YAML logging config file instead of the default config.
 
 
 Examples:
 ```
-export MLFLOW_EXPORT_IMPORT_LOG_CONFIG_FILE=/dbfs/mlflow_export_import/conf/log_config.yaml
-export MLFLOW_EXPORT_IMPORT_LOG_OUTPUT_FILE=/dbfs/mlflow_export_import/logs/export_models.log
-export MLFLOW_EXPORT_IMPORT_LOG_FORMAT="%(asctime)s-%(levelname)s - %(message)s"
+export mlflow_migration_LOG_CONFIG_FILE=/dbfs/mlflow_migration/conf/log_config.yaml
+export mlflow_migration_LOG_OUTPUT_FILE=/dbfs/mlflow_migration/logs/export_models.log
+export mlflow_migration_LOG_FORMAT="%(asctime)s-%(levelname)s - %(message)s"
 ```
 
 ## Multithreading:
 
 If you use the `use-threads` option on exports, you can use the `threadName` format option:
 ```
-export MLFLOW_EXPORT_IMPORT_LOG_FORMAT="%(threadName)s-%(levelname)s-%(message)s"
+export mlflow_migration_LOG_FORMAT="%(threadName)s-%(levelname)s-%(message)s"
 ```
 
 Note that multithreading is experimental.
@@ -272,5 +272,5 @@ See [tests/README](tests/README.md) for details.
 * [tests/README.md](tests/README.md)
   * [tests/open_source/README.md](tests/open_source/README.md)
   * [tests/databricks/README.md](tests/databricks/README.md)
-* [mlflow_export_import/workflow_api/README.md](mlflow_export_import/workflow_api/README.md)
+* [mlflow_migration/workflow_api/README.md](mlflow_migration/workflow_api/README.md)
 * [databricks_notebooks/README.md](databricks_notebooks/README.md)

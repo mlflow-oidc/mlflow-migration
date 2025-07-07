@@ -50,7 +50,7 @@ assert_widget(input_dir, "2. Input directory")
 
 # COMMAND ----------
 
-from mlflow_export_import.experiment.import_experiment import import_experiment
+from mlflow_migration.experiment.import_experiment import import_experiment
 
 import_experiment(
     experiment_name = experiment_name, 

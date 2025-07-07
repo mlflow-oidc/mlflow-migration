@@ -38,7 +38,7 @@ print("bail:", bail)
 
 # COMMAND ----------
 
-from mlflow_export_import.bulk.check_model_version_runs import mk_pandas_df
+from mlflow_migration.bulk.check_model_version_runs import mk_pandas_df
 
 pdf = mk_pandas_df(
     models, 

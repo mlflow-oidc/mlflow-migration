@@ -93,7 +93,7 @@ activate_unity_catalog(model_name)
 
 # COMMAND ----------
 
-from mlflow_export_import.model_version.import_model_version import import_model_version
+from mlflow_migration.model_version.import_model_version import import_model_version
 
 dst_vr = import_model_version(
     input_dir = input_dir, 

@@ -56,7 +56,7 @@ assert_widget(output_dir, "2. Output directory")
 
 # COMMAND ----------
 
-from mlflow_export_import.bulk.export_experiments import export_experiments
+from mlflow_migration.bulk.export_experiments import export_experiments
 
 export_experiments(
     experiments = experiments, 

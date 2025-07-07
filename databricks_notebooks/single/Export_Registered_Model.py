@@ -90,7 +90,7 @@ display_registered_model_uri(model_name)
 
 # COMMAND ----------
 
-from mlflow_export_import.model.export_model import export_model
+from mlflow_migration.model.export_model import export_model
 
 export_model(
     model_name = model_name, 

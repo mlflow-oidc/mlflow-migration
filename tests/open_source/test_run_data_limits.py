@@ -8,8 +8,8 @@ from mlflow.utils.validation import MAX_PARAMS_TAGS_PER_BATCH, MAX_METRICS_PER_B
 from tests.open_source.oss_utils_test import create_experiment, mk_dst_experiment_name, now
 from tests.compare_utils import compare_runs
 from mlflow.entities import Metric, Param, RunTag
-from mlflow_export_import.run.export_run import export_run
-from mlflow_export_import.run.import_run import import_run
+from mlflow_migration.run.export_run import export_run
+from mlflow_migration.run.import_run import import_run
 from tests.open_source.init_tests import mlflow_context
 
 _num_params = 10

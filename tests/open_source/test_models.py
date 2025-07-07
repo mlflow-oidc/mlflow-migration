@@ -1,10 +1,10 @@
 import os
-from mlflow_export_import.common.source_tags import ExportTags
-from mlflow_export_import.common import MlflowExportImportException
-from mlflow_export_import.common.model_utils import model_names_same_registry
-from mlflow_export_import.model.export_model import export_model
-from mlflow_export_import.model.import_model import import_model
-from mlflow_export_import.model.import_model import _extract_model_path, _path_join
+from mlflow_migration.common.source_tags import ExportTags
+from mlflow_migration.common import MlflowExportImportException
+from mlflow_migration.common.model_utils import model_names_same_registry
+from mlflow_migration.model.export_model import export_model
+from mlflow_migration.model.import_model import import_model
+from mlflow_migration.model.import_model import _extract_model_path, _path_join
 
 from tests.open_source.oss_utils_test import create_simple_run, create_version
 from tests.open_source.oss_utils_test import mk_test_object_name_default, mk_dst_model_name

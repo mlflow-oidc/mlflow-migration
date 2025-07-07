@@ -32,7 +32,7 @@ print("output_file:", output_file)
 
 # COMMAND ----------
 
-from mlflow_export_import.tools.list_model_versions_without_signatures import as_pandas_df
+from mlflow_migration.tools.list_model_versions_without_signatures import as_pandas_df
 
 df = as_pandas_df(filter)
 display(df)

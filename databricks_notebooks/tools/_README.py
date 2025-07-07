@@ -12,6 +12,6 @@
 # MAGIC * [mlflow.models.get_model_info](https://mlflow.org/docs/latest/python_api/mlflow.models.html#mlflow.models.get_model_info)
 # MAGIC
 # MAGIC ##### Github
-# MAGIC * https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_export_import/tools/signature_utils.py
+# MAGIC * https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_migration/tools/signature_utils.py
 # MAGIC
 # MAGIC ##### Last updated: _2024-07-03_

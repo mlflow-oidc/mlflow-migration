@@ -13,16 +13,16 @@ See sample JSON export files [here](README_export_format.md#sample-export-json-f
 
 | MLflow Object | Documentation | Code |
 |-------|-------|---|
-| Registered Model | [export-model](#export-registered-model) | [code](mlflow_export_import/model/export_model.py) |
-|    | [import-model](#import-registered-model) | [code](mlflow_export_import/model/import_model.py) |
-| Model Version | [export-model-version](#export-model-version) | [code](mlflow_export_import/model_version/export_model_version.py) |
-|    | [import-model-version](#import-model-version) | [code](mlflow_export_import/model_version/import_model_version.py) |
-|    | [copy-model-version](README_copy.md#copy-model-version) | [code](mlflow_export_import/copy/copy_model_version.py) |
-| Experiment | [export-experiment](#export-experiment) | [code](mlflow_export_import/experiment/export_experiment.py) |
-|    | [import-experiment](#import-experiment) | [code](mlflow_export_import/experiment/import_experiment.py) |
-| Run | [export-run](#export-run) | [code](mlflow_export_import/run/export_run.py) |
-|  | [import-run](#import-run) | [code](mlflow_export_import/run/import_run.py) |
-|  | [copy-run](README_copy.md#copy-run) | [code](mlflow_export_import/copy/copy_run.py) |
+| Registered Model | [export-model](#export-registered-model) | [code](mlflow_migration/model/export_model.py) |
+|    | [import-model](#import-registered-model) | [code](mlflow_migration/model/import_model.py) |
+| Model Version | [export-model-version](#export-model-version) | [code](mlflow_migration/model_version/export_model_version.py) |
+|    | [import-model-version](#import-model-version) | [code](mlflow_migration/model_version/import_model_version.py) |
+|    | [copy-model-version](README_copy.md#copy-model-version) | [code](mlflow_migration/copy/copy_model_version.py) |
+| Experiment | [export-experiment](#export-experiment) | [code](mlflow_migration/experiment/export_experiment.py) |
+|    | [import-experiment](#import-experiment) | [code](mlflow_migration/experiment/import_experiment.py) |
+| Run | [export-run](#export-run) | [code](mlflow_migration/run/export_run.py) |
+|  | [import-run](#import-run) | [code](mlflow_migration/run/import_run.py) |
+|  | [copy-run](README_copy.md#copy-run) | [code](mlflow_migration/copy/copy_run.py) |
 
 ## Experiment Tools
 
@@ -278,7 +278,7 @@ Export a registered model to a directory.
 The default is to export all versions of a model including all `None` and `Archived` stages.
 You can specify a list of stages to export.
 
-Source: [export_model.py](mlflow_export_import/model/export_model.py).
+Source: [export_model.py](mlflow_migration/model/export_model.py).
 
 #### Usage
 ```
@@ -358,7 +358,7 @@ Sample model.json files:
 
 Import a registered model from a directory.
 
-Source: [import_model.py](mlflow_export_import/model/import_model.py).
+Source: [import_model.py](mlflow_migration/model/import_model.py).
 
 #### Usage
 
@@ -421,7 +421,7 @@ Waited 0.01 seconds
 Exports a registered model version and its run.
 Also exports registered model and experiment metadata (description and tags).
 
-Source: [export_model_version.py](mlflow_export_import/model_version/export_model_version.py).
+Source: [export_model_version.py](mlflow_migration/model_version/export_model_version.py).
 
 #### Example
 ```

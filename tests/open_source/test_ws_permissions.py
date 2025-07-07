@@ -1,4 +1,4 @@
-from mlflow_export_import.common.ws_permissions_utils import _map_acl_element, map_acl
+from mlflow_migration.common.ws_permissions_utils import _map_acl_element, map_acl
 
 
 # == Setup data

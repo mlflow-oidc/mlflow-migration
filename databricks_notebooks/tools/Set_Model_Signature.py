@@ -62,7 +62,7 @@ set_registry_uri(model_uri)
 
 # COMMAND ----------
 
-from mlflow_export_import.tools.signature_utils import get_model_signature
+from mlflow_migration.tools.signature_utils import get_model_signature
 signature = get_model_signature(model_uri)
 signature
 

@@ -42,5 +42,5 @@ The script [run_tests.sh](run_tests.sh) is provided as a convenience.
 
 ## Debug
 
-If the environment variable `MLFLOW_EXPORT_IMPORT_OUTPUT_DIR` is set, 
+If the environment variable `MLFLOW_MIGRATION_OUTPUT_DIR` is set, 
 it will be used as the test directory instead of `tempfile.TemporaryDirectory()`.

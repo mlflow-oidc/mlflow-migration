@@ -1,4 +1,4 @@
-from mlflow_export_import.copy import copy_run
+from mlflow_migration.copy import copy_run
 from . init_tests import test_context
 from . import local_utils
 from . import compare_utils

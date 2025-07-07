@@ -7,8 +7,8 @@
 # MAGIC * `models:/andre_catalog.ml_models2.sklearn_wine_best/15`
 # MAGIC * `models:/Sklearn_Wine_best/1`
 # MAGIC * `runs:/030075d9727945259c7d283e47fee4a9/model`
-# MAGIC * `/Volumes/andre_catalog/volumes/mlflow_export_import/single/sklearn_wine_best/run/artifacts/model`
-# MAGIC * `/dbfs/home/first.last@databricks.com/mlflow_export_import/single/sklearn_wine_best/model`
+# MAGIC * `/Volumes/andre_catalog/volumes/mlflow_migration/single/sklearn_wine_best/run/artifacts/model`
+# MAGIC * `/dbfs/home/first.last@databricks.com/mlflow_migration/single/sklearn_wine_best/model`
 # MAGIC * `s3:/my-bucket/mlflow-models/sklearn_wine_best`
 # MAGIC
 # MAGIC ##### The signature is located in the MLmodel artifact of the MLflow model.
@@ -48,7 +48,7 @@ set_registry_uri(model_uri)
 
 # COMMAND ----------
 
-from mlflow_export_import.tools.signature_utils import get_model_signature
+from mlflow_migration.tools.signature_utils import get_model_signature
 signature = get_model_signature(model_uri)
 signature
 

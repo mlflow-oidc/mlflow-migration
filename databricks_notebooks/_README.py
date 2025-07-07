@@ -10,9 +10,9 @@
 # MAGIC   * Customer MLflow object data is currently locked into a workspace and not portable.
 # MAGIC * In order to copy MLflow objects between workspaces, you need to use a shared cloud storage location:
 # MAGIC   * DBFS: Create a [DBFS mount point](https://docs.databricks.com/en/dbfs/mounts.html) on both workspaces pointing to the shared location.
-# MAGIC     * Example: `dbfs:/mnt/mlflow_export_import/single/experiments`
+# MAGIC     * Example: `dbfs:/mnt/mlflow_migration/single/experiments`
 # MAGIC   * Unity Catalog: use a volume shared by both workspaces using the same Unity Catalog metastore.
-# MAGIC     * Example: `/Volumes/my_catalog/my_schema/mlflow_export_import_volume/single/experiments`
+# MAGIC     * Example: `/Volumes/my_catalog/my_schema/mlflow_migration_volume/single/experiments`
 # MAGIC
 # MAGIC #### Details
 # MAGIC

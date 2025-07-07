@@ -2,8 +2,8 @@ import time
 import mlflow
 from mlflow.utils.mlflow_tags import MLFLOW_RUN_NOTE # NOTE: ""mlflow.note.content" - used for Experiment Description too!
 
-from mlflow_export_import.common import utils, model_utils
-from mlflow_export_import.common.mlflow_utils import MlflowTrackingUriTweak
+from mlflow_migration.common import utils, model_utils
+from mlflow_migration.common.mlflow_utils import MlflowTrackingUriTweak
 
 from tests import utils_test, sklearn_utils
 

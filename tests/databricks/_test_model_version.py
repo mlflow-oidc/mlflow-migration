@@ -1,6 +1,6 @@
-from mlflow_export_import.model_version.export_model_version import export_model_version
-from mlflow_export_import.model_version.import_model_version import import_model_version
-from mlflow_export_import.common.mlflow_utils import get_experiment_description, set_experiment_description
+from mlflow_migration.model_version.export_model_version import export_model_version
+from mlflow_migration.model_version.import_model_version import import_model_version
+from mlflow_migration.common.mlflow_utils import get_experiment_description, set_experiment_description
 
 from tests.core import to_MlflowContext
 from tests.compare_utils import compare_versions

@@ -46,7 +46,7 @@ assert_widget(dst_experiment_name, "2. Destination experiment name")
 
 # COMMAND ----------
 
-from mlflow_export_import.copy.copy_run import copy
+from mlflow_migration.copy.copy_run import copy
 
 dst_run = copy(src_run_id, dst_experiment_name, "databricks", dst_run_workspace)
 

@@ -3,10 +3,10 @@ import json
 import mlflow
 from databricks_cli.sdk import service
 
-from mlflow_export_import.common import mlflow_utils
-from mlflow_export_import.common import MlflowExportImportException
-from mlflow_export_import.workflow_api.workflow_api_client import WorkflowApiClient
-from mlflow_export_import.client import databricks_utils
+from mlflow_migration.common import mlflow_utils
+from mlflow_migration.common import MlflowExportImportException
+from mlflow_migration.workflow_api.workflow_api_client import WorkflowApiClient
+from mlflow_migration.client import databricks_utils
 
 from databricks_cli.workspace.api import WorkspaceApi
 from databricks_cli.dbfs.api import DbfsApi, DbfsPath

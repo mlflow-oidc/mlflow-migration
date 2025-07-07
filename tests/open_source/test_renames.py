@@ -1,7 +1,7 @@
 
 # Test experiment and model rename core logic
 
-from mlflow_export_import.bulk import rename_utils
+from mlflow_migration.bulk import rename_utils
 
 def test_equal():
     renames = { "/User/foo": "/User/bar" }

@@ -3,9 +3,9 @@ Tests for 'archive_existing_versions' in transition_model_version_stage()
 See: https://mlflow.org/docs/latest/python_api/mlflow.client.html#mlflow.client.MlflowClient.transition_model_version_stage
 """
 
-from mlflow_export_import.model.export_model import export_model
-from mlflow_export_import.model.import_model import import_model
-from mlflow_export_import.common.model_utils import list_model_versions
+from mlflow_migration.model.export_model import export_model
+from mlflow_migration.model.import_model import import_model
+from mlflow_migration.common.model_utils import list_model_versions
 
 from tests.compare_utils import compare_models, compare_versions
 from tests.open_source import oss_utils_test 

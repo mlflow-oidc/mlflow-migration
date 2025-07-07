@@ -2,10 +2,10 @@ import os
 import pytest
 import mlflow
 
-from mlflow_export_import.common.iterators import SearchRegisteredModelsIterator
-from mlflow_export_import.common import MlflowExportImportException
-from mlflow_export_import.common import utils, model_utils
-from mlflow_export_import.client.http_client import DatabricksHttpClient
+from mlflow_migration.common.iterators import SearchRegisteredModelsIterator
+from mlflow_migration.common import MlflowExportImportException
+from mlflow_migration.common import utils, model_utils
+from mlflow_migration.client.http_client import DatabricksHttpClient
 from tests import utils_test
 from tests.core import TestContext
 from tests.databricks.unity_catalog_client import UnityCatalogClient
@@ -15,7 +15,7 @@ _logger = utils.getLogger(__name__)
 
 
 # Skip Databricks cleanup calls to avoid 429
-_skip_cleanup  = os.environ.get("MLFLOW_EXPORT_IMPORT_SKIP_CLEANUP")
+_skip_cleanup  = os.environ.get("mlflow_migration_SKIP_CLEANUP")
 _logger.info(f"_skip_cleanup: {_skip_cleanup}")
 
 
@@ -124,7 +124,7 @@ def test_context():
     import tempfile
     with tempfile.TemporaryDirectory() as tmpdir:
         assert mlflow.get_tracking_uri() is not None
-        output_dir = os.environ.get("MLFLOW_EXPORT_IMPORT_OUTPUT_DIR",None) # for debugging
+        output_dir = os.environ.get("mlflow_migration_OUTPUT_DIR",None) # for debugging
         if output_dir:
             utils_test.create_output_dir(output_dir)
         else:

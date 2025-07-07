@@ -11,8 +11,8 @@ test parameter 'experiments' in export_experiments() from bulk/export_experiment
       - String with comma-delimited experiment names or IDs such as 'sklearn_wine,sklearn_iris' or '1,2'
 """
 
-from mlflow_export_import.bulk.export_experiments import export_experiments
-from mlflow_export_import.bulk.import_experiments import import_experiments
+from mlflow_migration.bulk.export_experiments import export_experiments
+from mlflow_migration.bulk.import_experiments import import_experiments
 
 from tests.open_source.init_tests import mlflow_context
 from tests.open_source.oss_utils_test import delete_experiments_and_models

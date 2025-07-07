@@ -1,7 +1,7 @@
-from mlflow_export_import.model.export_model import export_model
-from mlflow_export_import.model.import_model import import_model
-from mlflow_export_import.common import dump_utils
-from mlflow_export_import.common import model_utils
+from mlflow_migration.model.export_model import export_model
+from mlflow_migration.model.import_model import import_model
+from mlflow_migration.common import dump_utils
+from mlflow_migration.common import model_utils
 
 from tests.core import to_MlflowContext
 from tests.compare_utils import compare_models_with_versions

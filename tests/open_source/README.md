@@ -18,7 +18,7 @@ Test environment variables.
 |-----|----------|---------|
 | MLFLOW_TRACKING_URI_SRC | yes | URI of source tracking server |
 | MLFLOW_TRACKING_URI_DST | yes | URI of destination tracking server |
-| MLFLOW_EXPORT_IMPORT_OUTPUT_DIR | no | If set, will use this as the export output directory instead of `tempfile.TemporaryDirectory()` |
+| MLFLOW_MIGRATION_OUTPUT_DIR | no | If set, will use this as the export output directory instead of `tempfile.TemporaryDirectory()` |
 
 
 

@@ -11,8 +11,8 @@ print("mlflow.version:", mlflow.__version__)
 
 # COMMAND ----------
 
-from mlflow_export_import.common.dump_utils import dump_obj 
-from mlflow_export_import.common import model_utils 
+from mlflow_migration.common.dump_utils import dump_obj 
+from mlflow_migration.common import model_utils 
 
 # COMMAND ----------
 

@@ -1,7 +1,7 @@
 import mlflow
 from mlflow.entities import ViewType
-from mlflow_export_import.experiment.export_experiment import export_experiment
-from mlflow_export_import.experiment.import_experiment import import_experiment
+from mlflow_migration.experiment.export_experiment import export_experiment
+from mlflow_migration.experiment.import_experiment import import_experiment
 from tests.open_source.oss_utils_test import (
     create_simple_run, _create_simple_run,
     create_experiment, create_test_experiment,
@@ -150,7 +150,7 @@ def _run_test_run_start_date(mlflow_context, sleep_time):
         assert 2 == len(runs2)
 
 
-from mlflow_export_import.common.timestamp_utils import TS_FORMAT
+from mlflow_migration.common.timestamp_utils import TS_FORMAT
 from datetime import datetime
 import time
 

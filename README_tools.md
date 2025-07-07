@@ -3,7 +3,7 @@
 ## Overview
 
 * Some useful additional tools.
-* See also [experimental tools](mlflow_export_import/tools/experimental/README.md).
+* See also [experimental tools](mlflow_migration/tools/experimental/README.md).
 * Last updated: _2024-06-24_.
 
 ## Model signature tools
@@ -27,7 +27,7 @@ MLflow documentation:
 
 #### Overview
 * Get the model signature of a model URI.
-* Source: [get_model_signature.py](mlflow_export_import/tools/get_model_signature.py).
+* Source: [get_model_signature.py](mlflow_migration/tools/get_model_signature.py).
 
 #### Run examples
 ```
@@ -74,7 +74,7 @@ Options:
 * `models:/` scheme URIs are not accepted by [mlflow.models.set_signature](https://mlflow.org/docs/latest/python_api/mlflow.models.html#mlflow.models.set_signature) per documentation:
 > model artifacts located in the model registry and represented by models:/ URI schemes are not compatible with this API
 * For OSS MLflow, if you add a model signature to a run model, it will automatically update any model version that was created from that run. AFAIK this is not documented.
-* Source: [set_model_signature.py](mlflow_export_import/tools/set_model_signature.py).
+* Source: [set_model_signature.py](mlflow_migration/tools/set_model_signature.py).
 
 
 #### Run examples
@@ -116,7 +116,7 @@ Options:
 
 #### Overview
 * List model versions without a model signature.
-* Source: [list_model_versions_without_signatures.py](mlflow_export_import/tools/list_model_versions_without_signatures.py).
+* Source: [list_model_versions_without_signatures.py](mlflow_migration/tools/list_model_versions_without_signatures.py).
 
 #### Run examples
 
@@ -243,7 +243,7 @@ http-client \
 
 ## Workflow API
 
-* [README.md](mlflow_export_import/workflow_api/README.md)
+* [README.md](mlflow_migration/workflow_api/README.md)
 * The `WorkflowApiClient` is a Python wrapper around the Databricks REST API to execute job runs in a synchronous polling manner.
 * Although a generic tool, in terms of mlflow-export-import, its main use is for testing Databricks notebook jobs.
 

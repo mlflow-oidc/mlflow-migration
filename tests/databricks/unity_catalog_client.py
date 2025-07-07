@@ -24,5 +24,5 @@ class UnityCatalogClient:
 
 
 def mk_uc_dbx_client(client):
-    from mlflow_export_import.client.http_client import HttpClient
+    from mlflow_migration.client.http_client import HttpClient
     return HttpClient("api/2.1", client.host, client.token)

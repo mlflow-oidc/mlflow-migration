@@ -2,7 +2,7 @@ from tests.open_source.oss_utils_test import create_simple_run
 from tests.compare_utils import compare_runs
 from tests.open_source.init_tests import mlflow_context
 
-from mlflow_export_import.copy import copy_run
+from mlflow_migration.copy import copy_run
 from tests.open_source.oss_utils_test import mk_test_object_name_default
 
 

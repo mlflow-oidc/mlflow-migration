@@ -46,7 +46,7 @@ assert_widget(input_dir, "2. Input base directory")
 
 # COMMAND ----------
 
-from mlflow_export_import.run.import_run import import_run
+from mlflow_migration.run.import_run import import_run
 
 run, _ = import_run(
     experiment_name = experiment_name, 

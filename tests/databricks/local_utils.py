@@ -1,8 +1,8 @@
 import mlflow
 from mlflow.models.signature import infer_signature
 
-from mlflow_export_import.common.model_utils import is_unity_catalog_model
-from mlflow_export_import.common.mlflow_utils import MlflowTrackingUriTweak
+from mlflow_migration.common.model_utils import is_unity_catalog_model
+from mlflow_migration.common.mlflow_utils import MlflowTrackingUriTweak
 from tests.utils_test import mk_test_object_name_default
 from tests import sklearn_utils
 from tests.core import TestContext

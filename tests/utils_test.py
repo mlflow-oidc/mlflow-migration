@@ -4,7 +4,7 @@ import yaml
 import shortuuid
 import pandas as pd 
 import mlflow
-from mlflow_export_import.common.mlflow_utils import MlflowTrackingUriTweak
+from mlflow_migration.common.mlflow_utils import MlflowTrackingUriTweak
 from . import sklearn_utils
 
 TEST_OBJECT_PREFIX = "test_exim"

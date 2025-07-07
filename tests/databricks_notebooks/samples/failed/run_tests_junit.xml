@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="7" time="186.722" timestamp="2022-11-11T12:16:50.737674" hostname="QGWG46QG5C"><testcase classname="tests.databricks.test_basic" name="test_train_model" time="21.783" /><testcase classname="tests.databricks.test_basic" name="test_export_run" time="23.007" /><testcase classname="tests.databricks.test_basic" name="test_import_run" time="22.670"><failure message="KeyError: 'mlflow_export_import.run_info.run_name'">test_context = TestContext(tester=&lt;databricks_tester.DatabricksTester object at 0x7fe0a02ed0f0&gt;, dbfs_api=&lt;databricks_cli.dbfs.api.DbfsApi object at 0x7fe0b29e22c0&gt;)
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="7" time="186.722" timestamp="2022-11-11T12:16:50.737674" hostname="QGWG46QG5C"><testcase classname="tests.databricks.test_basic" name="test_train_model" time="21.783" /><testcase classname="tests.databricks.test_basic" name="test_export_run" time="23.007" /><testcase classname="tests.databricks.test_basic" name="test_import_run" time="22.670"><failure message="KeyError: 'mlflow_migration.run_info.run_name'">test_context = TestContext(tester=&lt;databricks_tester.DatabricksTester object at 0x7fe0a02ed0f0&gt;, dbfs_api=&lt;databricks_cli.dbfs.api.DbfsApi object at 0x7fe0b29e22c0&gt;)
 
     def test_import_run(test_context):
         _run_job(test_context, test_context.tester.run_import_run_job, "Import Run")
@@ -22,14 +22,14 @@ output_dir = '/var/folders/_9/sqszps2d6ss40p08b8mm6kpc0000gp/T/tmpw9miyel3'
     def _compare_runs_with_source_tags(client_src, client_dst, run1, run2, output_dir):
         exp = client_src.get_experiment(run1.info.experiment_id)
     
-        source_tags2 = { k:v for k,v in run2.data.tags.items() if k.startswith("mlflow_export_import.") }
+        source_tags2 = { k:v for k,v in run2.data.tags.items() if k.startswith("mlflow_migration.") }
         assert exp.name == source_tags2[f"{utils.TAG_PREFIX_EXPORT_IMPORT_METADATA}.experiment_name"]
     
         for k,v in utils.strip_underscores(run1.info).items():
 &gt;           assert str(v) == source_tags2[f"{utils.TAG_PREFIX_EXPORT_IMPORT_RUN_INFO}.{k}"],f"Assert failed for RunInfo field '{k}'" # NOTE: tag values must be strings
-E           KeyError: 'mlflow_export_import.run_info.run_name'
+E           KeyError: 'mlflow_migration.run_info.run_name'
 
-../compare_utils.py:27: KeyError</failure></testcase><testcase classname="tests.databricks.test_basic" name="test_export_experiment_job" time="24.014" /><testcase classname="tests.databricks.test_basic" name="test_import_experiment_job" time="22.740"><failure message="KeyError: 'mlflow_export_import.run_info.run_name'">test_context = TestContext(tester=&lt;databricks_tester.DatabricksTester object at 0x7fe0a02ed0f0&gt;, dbfs_api=&lt;databricks_cli.dbfs.api.DbfsApi object at 0x7fe0b29e22c0&gt;)
+../compare_utils.py:27: KeyError</failure></testcase><testcase classname="tests.databricks.test_basic" name="test_export_experiment_job" time="24.014" /><testcase classname="tests.databricks.test_basic" name="test_import_experiment_job" time="22.740"><failure message="KeyError: 'mlflow_migration.run_info.run_name'">test_context = TestContext(tester=&lt;databricks_tester.DatabricksTester object at 0x7fe0a02ed0f0&gt;, dbfs_api=&lt;databricks_cli.dbfs.api.DbfsApi object at 0x7fe0b29e22c0&gt;)
 
     def test_import_experiment_job(test_context):
         _run_job(test_context, test_context.tester.run_import_experiment_job, "Import Experiment")
@@ -59,11 +59,11 @@ output_dir = '/var/folders/_9/sqszps2d6ss40p08b8mm6kpc0000gp/T/tmpw9miyel3/artif
     def _compare_runs_with_source_tags(client_src, client_dst, run1, run2, output_dir):
         exp = client_src.get_experiment(run1.info.experiment_id)
     
-        source_tags2 = { k:v for k,v in run2.data.tags.items() if k.startswith("mlflow_export_import.") }
+        source_tags2 = { k:v for k,v in run2.data.tags.items() if k.startswith("mlflow_migration.") }
         assert exp.name == source_tags2[f"{utils.TAG_PREFIX_EXPORT_IMPORT_METADATA}.experiment_name"]
     
         for k,v in utils.strip_underscores(run1.info).items():
 &gt;           assert str(v) == source_tags2[f"{utils.TAG_PREFIX_EXPORT_IMPORT_RUN_INFO}.{k}"],f"Assert failed for RunInfo field '{k}'" # NOTE: tag values must be strings
-E           KeyError: 'mlflow_export_import.run_info.run_name'
+E           KeyError: 'mlflow_migration.run_info.run_name'
 
 ../compare_utils.py:27: KeyError</failure></testcase><testcase classname="tests.databricks.test_basic" name="test_export_model" time="26.208" /><testcase classname="tests.databricks.test_basic" name="test_import_model_job" time="40.035" /></testsuite></testsuites>

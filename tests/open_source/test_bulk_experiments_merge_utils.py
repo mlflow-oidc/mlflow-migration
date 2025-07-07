@@ -1,4 +1,4 @@
-from mlflow_export_import.bulk import experiments_merge_utils
+from mlflow_migration.bulk import experiments_merge_utils
 import pytest
 
 

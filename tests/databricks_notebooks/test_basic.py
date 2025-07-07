@@ -6,7 +6,7 @@ import os
 import mlflow
 from databricks_cli.dbfs.api import DbfsPath
 
-from mlflow_export_import.common import mlflow_utils
+from mlflow_migration.common import mlflow_utils
 
 from tests.compare_utils import compare_runs, compare_models_with_versions
 from tests import utils_test

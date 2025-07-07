@@ -29,7 +29,7 @@
 # MAGIC * `6. Run IDs` - comma-seperated list of runs to export. Default is to export all runs.
 # MAGIC * `7. Check nested runs` - If true, will export all the runs of a nested run specified in above run ID list.
 # MAGIC
-# MAGIC See: https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_export_import/experiment/export_experiment.py.
+# MAGIC See: https://github.com/mlflow/mlflow-export-import/blob/master/mlflow_migration/experiment/export_experiment.py.
 
 # COMMAND ----------
 
@@ -83,7 +83,7 @@ assert_widget(output_dir, "2. Output base directory")
 
 # COMMAND ----------
 
-from mlflow_export_import.common import mlflow_utils 
+from mlflow_migration.common import mlflow_utils 
 
 experiment = mlflow_utils.get_experiment(mlflow_client, experiment_id_or_name)
 output_dir = f"{output_dir}/{experiment.experiment_id}"
@@ -106,7 +106,7 @@ display_experiment_info(experiment.name)
 
 # COMMAND ----------
 
-from mlflow_export_import.experiment.export_experiment import export_experiment
+from mlflow_migration.experiment.export_experiment import export_experiment
 
 export_experiment(
     experiment_id_or_name = experiment.experiment_id,

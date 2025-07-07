@@ -1,6 +1,6 @@
 import json
-from mlflow_export_import.common import MlflowExportImportException
-#from mlflow_export_import.common.mlflow_utils import dump_exception
+from mlflow_migration.common import MlflowExportImportException
+#from mlflow_migration.common.mlflow_utils import dump_exception
 from mlflow.exceptions import MlflowException
 from mlflow.exceptions import RestException
 from mlflow.exceptions import BAD_REQUEST, INTERNAL_ERROR

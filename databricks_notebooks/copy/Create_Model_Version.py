@@ -16,8 +16,8 @@
 # MAGIC Examples:
 # MAGIC   * Registry: `models:/my_catalog.my_schema.my_model/13` 
 # MAGIC   * Run: `runs:/319a3eec9fb444d4a70996091b31a940/model` 
-# MAGIC   * Volume: `/Volumes/andre_catalog/volumes/mlflow_export_import/single/sklearn_wine_best/run/artifacts/model`
-# MAGIC   * DBFS: `/dbfs/home/andre@databricks.com/mlflow_export_import/single/sklearn_wine_best/model`
+# MAGIC   * Volume: `/Volumes/andre_catalog/volumes/mlflow_migration/single/sklearn_wine_best/run/artifacts/model`
+# MAGIC   * DBFS: `/dbfs/home/andre@databricks.com/mlflow_migration/single/sklearn_wine_best/model`
 # MAGIC   * Local (driver disk): `/root/sklearn_wine_best`
 # MAGIC   * Cloud s3: `s3:/my-bucket/mlflow-models/sklearn-wine_best`
 # MAGIC     * You will need to set up your cloud credentials, i.e. IAM role or `AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY` environment variables.

@@ -63,7 +63,7 @@ display_run_uri(run_id)
 
 # COMMAND ----------
 
-from mlflow_export_import.run.export_run import export_run
+from mlflow_migration.run.export_run import export_run
 
 export_run(
     run_id = run_id, 

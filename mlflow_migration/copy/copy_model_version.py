@@ -194,9 +194,9 @@ def _add_lineage_tags(src_version, run, dst_model_name, src_client, dst_client):
     tags[f"{ExportTags.PREFIX_ROOT}.src_version.run_id"] = src_version.run_id
 
     tags[f"{ExportTags.PREFIX_ROOT}.src_client.tracking_uri"] = src_client.tracking_uri
-    tags[f"{ExportTags.PREFIX_ROOT}.mlflow_exim.dst_client.tracking_uri"] = (
-        dst_client.tracking_uri
-    )
+    tags[
+        f"{ExportTags.PREFIX_ROOT}.mlflow_exim.dst_client.tracking_uri"
+    ] = dst_client.tracking_uri
 
     copy_utils.add_tag(run.data.tags, tags, "mlflow.databricks.workspaceURL", prefix)
     copy_utils.add_tag(run.data.tags, tags, "mlflow.databricks.webappURL", prefix)

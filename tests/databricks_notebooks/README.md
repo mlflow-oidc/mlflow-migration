@@ -1,4 +1,4 @@
-# Mlflow Migration - Databricks Notebook Tests 
+# Mlflow Migration - Databricks Notebook Tests
 
 ## Overview
 
@@ -6,7 +6,7 @@
 * For each test launches a Databricks job that invokes a Databricks notebook.
   * For know only single notebooks are tested. Bulk notebooks tests are a TODO.
 * Currently these tests are a subset of the fine-grained OSS tests. Their main purpose is to ensure that the notebooks run without errors.
-* Unlike the OSS tests which use two source and destination tracking servers, the Databricks tests use one tracking server (workspace). 
+* Unlike the OSS tests which use two source and destination tracking servers, the Databricks tests use one tracking server (workspace).
 Imported object have `_imported_` added to the end of their name. Using a source and destination workspaces is a WIP.
 
 ## Setup
@@ -27,7 +27,7 @@ You can easily run the tests by passing the profile as an argument to run_tests.
 run_test.sh my-profile
 ```
 
-### config.yaml 
+### config.yaml
 
 The tests use `config.yaml` for environment configuration.
 Copy [config.yaml.template](config.yaml.template) to `config.yaml` and adjust the properties for your workspace.
@@ -52,7 +52,7 @@ Therefore, the test session uses one cluster for the entire session. It can be a
 
 The `cluster` attribute is a polymorphic attribute that has two possible values:
 
-* **New cluster**. Launch a new all-purpose (interactive) cluster at test startup time and reuse this cluster for all tests. 
+* **New cluster**. Launch a new all-purpose (interactive) cluster at test startup time and reuse this cluster for all tests.
 At the end of the test suite, the cluster will be deleted.
 In the `cluster` attribute specify a new cluster spec per the standard Databricks JSON format for [new_cluster](https://docs.databricks.com/dev-tools/api/latest/clusters.html#create) attribute.
 * **Existing cluster**. Use an existing cluster. In the `cluster` attribute specify an existing cluster ID.
@@ -68,7 +68,7 @@ dst_base_dir: dbfs:/tmp/me.lastname@mycomany.com/test-mlflow-exim
 model_name: test-mlflow-exim
 run_name_prefix: test-mlflow-exim
 use_source_tags: False
-cluster: { 
+cluster: {
   cluster_name: test-mlflow-exim,
   spark_version: 11.0.x-cpu-ml-scala2.12,
   node_type_id: i3.xlarge,
@@ -91,7 +91,7 @@ Use the [run_tests.sh](run_tests.sh) script to run the tests. Output can be foun
 
 **Example**
 ```
-run_tests.sh 
+run_tests.sh
 ```
 ```
 ================== 7 passed, 6 warnings in 114.62s (0:01:54) ===================

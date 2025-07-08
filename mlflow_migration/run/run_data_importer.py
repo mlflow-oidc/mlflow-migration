@@ -39,7 +39,6 @@ def _log_params(client, run_dct, run_id, batch_size):
 
 
 def _log_metrics(client, run_dct, run_id, batch_size):
-
     def get_data(run_dct, args=None):
         metrics = []
         for metric, steps in run_dct["metrics"].items():
@@ -65,7 +64,6 @@ def _log_tags(
     src_user_id,
     use_src_user_id,
 ):
-
     def get_data(run_dct, args):
         tags = run_dct["tags"]
         if import_source_tags:

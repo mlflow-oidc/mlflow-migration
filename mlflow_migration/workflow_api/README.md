@@ -10,7 +10,7 @@ a convenience tool.
 
 * Intended for Databricks job workflows.
 * Supports [jobs/runs/submit](https://docs.databricks.com/api/latest/jobs.html#runs-submit).
-* Launches a run and waits until it is finished (TERMINATED state) by 
+* Launches a run and waits until it is finished (TERMINATED state) by
   polling the [jobs/runs/get](https://docs.databricks.com/api/latest/jobs.html#runs-get) REST endpoint.
 * [WorkflowApiClient](workflow_api_client.py) - main Python code.
 * Although a generic tool, in terms of mlflow-export-import it used for testing Databricks notebook jobs.

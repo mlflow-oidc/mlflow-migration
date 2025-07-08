@@ -27,7 +27,7 @@ run_name_prefix: andre-test-mlflow-exim
 
 # - - toggle option 2 - new cluster
 
-cluster: { 
+cluster: {
   cluster_name: test-mlflow-export-import,
   spark_version: 12.0.x-cpu-ml-scala2.12,
   node_type_id: i3.xlarge,

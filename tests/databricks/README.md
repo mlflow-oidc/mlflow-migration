@@ -11,7 +11,7 @@ For Unity Catalog tests do the following:
 pip install -U mlflow[databricks]
 ```
 
-Configuration is straightforward. 
+Configuration is straightforward.
 Copy [config.yaml.template](config.yaml.template) to `config.yaml` and adjust.
 
 For both source and destination workspaces, set the following attributes:
@@ -42,5 +42,5 @@ The script [run_tests.sh](run_tests.sh) is provided as a convenience.
 
 ## Debug
 
-If the environment variable `MLFLOW_MIGRATION_OUTPUT_DIR` is set, 
+If the environment variable `MLFLOW_MIGRATION_OUTPUT_DIR` is set,
 it will be used as the test directory instead of `tempfile.TemporaryDirectory()`.

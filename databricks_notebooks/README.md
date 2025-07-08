@@ -1,4 +1,4 @@
-# mlflow-export-import - Databricks Notebooks 
+# mlflow-export-import - Databricks Notebooks
 
 
 ## Overview
@@ -31,8 +31,8 @@ Export and import one MLflow object.
 Copy an MLflow object.
 | MLflow object |
 |------|
-| [Copy_Model_Version](copy/Copy_Model_Version.py) | 
-| [Copy_Run](copy/Copy_Run.py) | 
+| [Copy_Model_Version](copy/Copy_Model_Version.py) |
+| [Copy_Run](copy/Copy_Run.py) |
 
 
 #### Bulk notebooks
@@ -98,4 +98,3 @@ curl \
       }
     }'
 ```
-

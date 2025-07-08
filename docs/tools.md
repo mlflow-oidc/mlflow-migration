@@ -246,5 +246,3 @@ http-client \
 * [README.md](mlflow_migration/workflow_api/README.md)
 * The `WorkflowApiClient` is a Python wrapper around the Databricks REST API to execute job runs in a synchronous polling manner.
 * Although a generic tool, in terms of mlflow-migration, its main use is for testing Databricks notebook jobs.
-
-

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Open source MLflow Migration tests use two MLflow tracking servers: 
+Open source MLflow Migration tests use two MLflow tracking servers:
   * Source tracking for exporting MLflow objects.
   * Destination tracking server for importing the exported MLflow objects.
 
@@ -43,4 +43,3 @@ LOG_FILE    : run_tests.log
 JUNIT REPORT: run_tests_junit.xml
 HTML REPORT : run_tests_report.html
 ```
-

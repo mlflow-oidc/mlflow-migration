@@ -144,9 +144,9 @@ def export_experiments(
         root = io_utils.read_file(path)
         mlflow_attr = merge_mlflow(io_utils.get_mlflow(root), mlflow_attr)
         info_attr = merge_info(io_utils.get_info(root), info_attr)
-        info_attr["note"] = (
-            "Merged by export_all from export_models and export_experiments"
-        )
+        info_attr[
+            "note"
+        ] = "Merged by export_all from export_models and export_experiments"
 
     io_utils.write_export_file(
         output_dir, "experiments.json", __file__, mlflow_attr, info_attr

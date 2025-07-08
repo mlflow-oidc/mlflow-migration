@@ -157,7 +157,6 @@ def _create_run(client):
 
 
 def _compare_models_with_versions(mlflow_context, model_src, model_dst):
-
     def _sort_versions(versions):
         return sorted(versions, key=lambda vr: vr.version)
 

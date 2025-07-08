@@ -15,7 +15,7 @@
 # MAGIC * `08. Notebook formats`
 # MAGIC * `10. Use threads`
 # MAGIC
-# MAGIC See: https://github.com/mlflow/mlflow-export-import/blob/master/README_bulk.md#registered-models.
+# MAGIC See: https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_bulk.md#registered-models.
 
 # COMMAND ----------
 
@@ -23,40 +23,43 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("01. Models", "") 
+dbutils.widgets.text("01. Models", "")
 models = dbutils.widgets.get("01. Models")
 
-dbutils.widgets.text("02. Output directory", "dbfs:/mnt/andre-work/exim/experiments") 
+dbutils.widgets.text("02. Output directory", "dbfs:/mnt/andre-work/exim/experiments")
 output_dir = dbutils.widgets.get("02. Output directory")
-output_dir = output_dir.replace("dbfs:","/dbfs")
+output_dir = output_dir.replace("dbfs:", "/dbfs")
 
-dbutils.widgets.multiselect("03. Stages", "Production", ["Production","Staging","Archived","None"])
+dbutils.widgets.multiselect(
+    "03. Stages", "Production", ["Production", "Staging", "Archived", "None"]
+)
 stages = dbutils.widgets.get("03. Stages")
 
-dbutils.widgets.dropdown("04. Export latest versions","no",["yes","no"])
+dbutils.widgets.dropdown("04. Export latest versions", "no", ["yes", "no"])
 export_latest_versions = dbutils.widgets.get("04. Export latest versions") == "yes"
 
-dbutils.widgets.dropdown("05. Export all runs","no",["yes","no"])
+dbutils.widgets.dropdown("05. Export all runs", "no", ["yes", "no"])
 export_all_runs = dbutils.widgets.get("05. Export all runs") == "yes"
 
-dbutils.widgets.dropdown("06. Export permissions","no",["yes","no"])
+dbutils.widgets.dropdown("06. Export permissions", "no", ["yes", "no"])
 export_permissions = dbutils.widgets.get("06. Export permissions") == "yes"
 
-dbutils.widgets.dropdown("07. Export deleted runs","no",["yes","no"])
+dbutils.widgets.dropdown("07. Export deleted runs", "no", ["yes", "no"])
 export_deleted_runs = dbutils.widgets.get("07. Export deleted runs") == "yes"
 
-dbutils.widgets.dropdown("08. Export version MLflow model","no",["yes","no"]) # TODO
+dbutils.widgets.dropdown("08. Export version MLflow model", "no", ["yes", "no"])  # TODO
 export_version_model = dbutils.widgets.get("08. Export version MLflow model") == "yes"
 
 notebook_formats = get_notebook_formats("09")
 
-dbutils.widgets.dropdown("10. Use threads","no",["yes","no"])
+dbutils.widgets.dropdown("10. Use threads", "no", ["yes", "no"])
 use_threads = dbutils.widgets.get("10. Use threads") == "yes"
 
 export_notebook_revision = False
 export_all_runs = False
 
 import os
+
 os.environ["OUTPUT_DIR"] = output_dir
 
 print("models:", models)
@@ -81,19 +84,19 @@ assert_widget(output_dir, "2. Output directory")
 
 # COMMAND ----------
 
-from mlflow_export_import.bulk.export_models import export_models
+from mlflow_migration.bulk.export_models import export_models
 
 export_models(
-    model_names = models, 
-    output_dir = output_dir,
-    stages = stages, 
-    export_latest_versions = export_latest_versions,
-    export_all_runs = export_all_runs,
-    export_version_model = export_version_model,
-    export_permissions = export_permissions,
-    export_deleted_runs = export_deleted_runs, 
-    notebook_formats = notebook_formats,
-    use_threads = use_threads
+    model_names=models,
+    output_dir=output_dir,
+    stages=stages,
+    export_latest_versions=export_latest_versions,
+    export_all_runs=export_all_runs,
+    export_version_model=export_version_model,
+    export_permissions=export_permissions,
+    export_deleted_runs=export_deleted_runs,
+    notebook_formats=notebook_formats,
+    use_threads=use_threads,
 )
 
 # COMMAND ----------
@@ -102,7 +105,7 @@ export_models(
 
 # COMMAND ----------
 
-# MAGIC %sh 
+# MAGIC %sh
 # MAGIC echo $OUTPUT_DIR
 # MAGIC ls -l $OUTPUT_DIR
 

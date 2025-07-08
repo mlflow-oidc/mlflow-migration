@@ -19,15 +19,16 @@
 # COMMAND ----------
 
 import mlflow
+
 print("mlflow.version:", mlflow.__version__)
 print("mlflow.get_registry_uri:", mlflow.get_registry_uri())
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Source Model URI", "") 
+dbutils.widgets.text("1. Source Model URI", "")
 src_model_uri = dbutils.widgets.get("1. Source Model URI")
 
-dbutils.widgets.text("2. Destination Model", "") 
+dbutils.widgets.text("2. Destination Model", "")
 dst_model_name = dbutils.widgets.get("2. Destination Model")
 
 print("src_model_uri:   ", src_model_uri)

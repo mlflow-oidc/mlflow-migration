@@ -29,25 +29,25 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Input directory", "") 
+dbutils.widgets.text("1. Input directory", "")
 input_dir = dbutils.widgets.get("1. Input directory")
 
-dbutils.widgets.text("2. Model name", "") 
+dbutils.widgets.text("2. Model name", "")
 model_name = dbutils.widgets.get("2. Model name")
 
-dbutils.widgets.text("3. Destination experiment name", "") 
+dbutils.widgets.text("3. Destination experiment name", "")
 experiment_name = dbutils.widgets.get("3. Destination experiment name")
 
-dbutils.widgets.dropdown("4. Create destination model","no",["yes","no"])
+dbutils.widgets.dropdown("4. Create destination model", "no", ["yes", "no"])
 create_model = dbutils.widgets.get("4. Create destination model") == "yes"
 
-dbutils.widgets.dropdown("5. Import stages and aliases","no",["yes","no"])
+dbutils.widgets.dropdown("5. Import stages and aliases", "no", ["yes", "no"])
 import_stages_and_aliases = dbutils.widgets.get("5. Import stages and aliases") == "yes"
 
-dbutils.widgets.dropdown("6. Import metadata","no",["yes","no"])
+dbutils.widgets.dropdown("6. Import metadata", "no", ["yes", "no"])
 import_metadata = dbutils.widgets.get("6. Import metadata") == "yes"
 
-dbutils.widgets.dropdown("7. Import source tags","no",["yes","no"])
+dbutils.widgets.dropdown("7. Import source tags", "no", ["yes", "no"])
 import_source_tags = dbutils.widgets.get("7. Import source tags") == "yes"
 
 print("model_name:", model_name)
@@ -59,6 +59,7 @@ print("import_metadata:", import_metadata)
 print("import_source_tags:", import_source_tags)
 
 import os
+
 os.environ["INPUT_DIR"] = mk_local_path(input_dir)
 
 # COMMAND ----------
@@ -93,16 +94,16 @@ activate_unity_catalog(model_name)
 
 # COMMAND ----------
 
-from mlflow_export_import.model_version.import_model_version import import_model_version
+from mlflow_migration.model_version.import_model_version import import_model_version
 
 dst_vr = import_model_version(
-    input_dir = input_dir, 
-    model_name =model_name, 
-    experiment_name = experiment_name, 
-    create_model = create_model,
-    import_stages_and_aliases = import_stages_and_aliases,
-    import_metadata = import_metadata,
-    import_source_tags = import_source_tags
+    input_dir=input_dir,
+    model_name=model_name,
+    experiment_name=experiment_name,
+    create_model=create_model,
+    import_stages_and_aliases=import_stages_and_aliases,
+    import_metadata=import_metadata,
+    import_source_tags=import_source_tags,
 )
 
 # COMMAND ----------

@@ -1,7 +1,7 @@
 # Databricks notebook source
 # MAGIC %md ## Check Model Versions Runs
 # MAGIC
-# MAGIC Check if versions runs are deleted. 
+# MAGIC Check if versions runs are deleted.
 # MAGIC * Soft delete - run is marked as `deleted`(tombstoned)  but still exists in database for 30 days
 # MAGIC * Hard delete - run has been physically deleted
 # MAGIC
@@ -18,15 +18,15 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Models", "") 
+dbutils.widgets.text("1. Models", "")
 models = dbutils.widgets.get("1. Models")
 
-dbutils.widgets.dropdown("2. Export latest versions","yes",["yes","no"])
+dbutils.widgets.dropdown("2. Export latest versions", "yes", ["yes", "no"])
 export_latest_versions = dbutils.widgets.get("2. Export latest versions") == "yes"
 
-dbutils.widgets.text("3. Bail", "") 
+dbutils.widgets.text("3. Bail", "")
 bail = dbutils.widgets.get("3. Bail")
-bail = None if bail=="" else int(bail) 
+bail = None if bail == "" else int(bail)
 
 print("models:", models)
 print("export_latest_versions:", export_latest_versions)
@@ -34,17 +34,13 @@ print("bail:", bail)
 
 # COMMAND ----------
 
- assert_widget(models, "1. Models")
+assert_widget(models, "1. Models")
 
 # COMMAND ----------
 
-from mlflow_export_import.bulk.check_model_version_runs import mk_pandas_df
+from mlflow_migration.bulk.check_model_version_runs import mk_pandas_df
 
-pdf = mk_pandas_df(
-    models, 
-    export_latest_versions=export_latest_versions, 
-    bail=bail
-)
+pdf = mk_pandas_df(models, export_latest_versions=export_latest_versions, bail=bail)
 df = spark.createDataFrame(pdf)
 display(df)
 
@@ -53,5 +49,3 @@ display(df)
 df.count()
 
 # COMMAND ----------
-
-

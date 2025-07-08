@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlflow_migration"
+dynamic = ["version"]
+authors = [
+    {name = "Andre Mesarovic"},
+]
+description = "Copy MLflow objects (experiments, runs or registered models) to another tracking server"
+readme = "README.md"
+license = "Apache-2.0"
+keywords = ["mlflow", "ml", "ai"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "mlflow-skinny[databricks]",
+    "databricks-cli==0.18.0",
+    "pandas>=1.5.2",
+    "tabulate==0.9.0",
+    "wheel",
+]
+
+[project.optional-dependencies]
+tests = [
+    "mlflow[databricks]>=2.9.2",
+    "pytest",
+    "pytest-html>=3.2.0",
+    "shortuuid>=1.0.11",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mlflow-oidc/mlflow-migration"
+"Bug Tracker" = "https://github.com/mlflow-oidc/mlflow-migration/issues"
+"Documentation" = "https://github.com/mlflow-oidc/mlflow-migration/blob/master/README.md"
+"Source Code" = "https://github.com/mlflow-oidc/mlflow-migration/"
+
+[project.scripts]
+mlflow-migration-export-all = "mlflow_migration.bulk.export_all:main"
+mlflow-migration-import-all = "mlflow_migration.bulk.import_models:main"
+mlflow-migration-export-models = "mlflow_migration.bulk.export_models:main"
+mlflow-migration-import-models = "mlflow_migration.bulk.import_models:main"
+mlflow-migration-export-run = "mlflow_migration.run.export_run:main"
+mlflow-migration-import-run = "mlflow_migration.run.import_run:main"
+mlflow-migration-export-experiment = "mlflow_migration.experiment.export_experiment:main"
+mlflow-migration-import-experiment = "mlflow_migration.experiment.import_experiment:main"
+mlflow-migration-export-experiments = "mlflow_migration.bulk.export_experiments:main"
+mlflow-migration-import-experiments = "mlflow_migration.bulk.import_experiments:main"
+mlflow-migration-export-model = "mlflow_migration.model.export_model:main"
+mlflow-migration-import-model = "mlflow_migration.model.import_model:main"
+mlflow-migration-export-model-version = "mlflow_migration.model_version.export_model_version:main"
+mlflow-migration-import-model-version = "mlflow_migration.model_version.import_model_version:main"
+mlflow-migration-download-notebook = "mlflow_migration.notebook.download_notebook:main"
+mlflow-migration-copy-model-version = "mlflow_migration.copy.copy_model_version:main"
+mlflow-migration-copy-run = "mlflow_migration.copy.copy_run:main"
+mlflow-migration-get-model-signature = "mlflow_migration.tools.get_model_signature:main"
+mlflow-migration-set-model-signature = "mlflow_migration.tools.set_model_signature:main"
+mlflow-migration-list-model-versions-without-signatures = "mlflow_migration.tools.list_model_versions_without_signatures:main"
+mlflow-migration-http-client = "mlflow_migration.client.http_client:main"
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mlflow_migration", "mlflow_migration.*"]
+exclude = ["tests", "tests.*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "mlflow_migration.version.__version__"}

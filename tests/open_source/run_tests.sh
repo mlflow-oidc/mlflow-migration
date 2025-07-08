@@ -31,13 +31,13 @@ HTML_FILE=run_tests_report.html
 LOG_FILE=run_tests.log
 
 message() {
-  echo 
+  echo
   echo "******************************************************"
   echo "*"
   echo "* $*"
   echo "*"
   echo "******************************************************"
-  echo 
+  echo
 }
 
 run_tests() {

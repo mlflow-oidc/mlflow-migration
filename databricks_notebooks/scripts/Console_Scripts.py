@@ -2,7 +2,7 @@
 # MAGIC %md ## Console Scripts - Single
 # MAGIC
 # MAGIC * Use this notebook as a starting point template for executing console scripts.
-# MAGIC * See [github.com/mlflow/mlflow-export-import/blob/master/README_single.md](https://github.com/mlflow/mlflow-export-import/blob/master/README_single.md).
+# MAGIC * See [github.com/mlflow/mlflow-export-import/blob/master/README_single.md](https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_single.md).
 # MAGIC * You'll first need to specify a [Databricks secret](https://docs.databricks.com/security/secrets/secrets.html) to your [PAT](https://docs.databricks.com/administration-guide/access-control/tokens.html) (personal access token) to execute CLI commands.
 
 # COMMAND ----------
@@ -23,7 +23,7 @@ secrets_scope, secrets_token_key
 
 # COMMAND ----------
 
-# MAGIC %sh 
+# MAGIC %sh
 # MAGIC echo "DATABRICKS_CONFIG_FILE: $DATABRICKS_CONFIG_FILE"
 # MAGIC cat $DATABRICKS_CONFIG_FILE
 

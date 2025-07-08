@@ -2,10 +2,10 @@ import os
 import pytest
 import mlflow
 
-from mlflow_export_import.common.iterators import SearchRegisteredModelsIterator
-from mlflow_export_import.common import MlflowExportImportException
-from mlflow_export_import.common import utils, model_utils
-from mlflow_export_import.client.http_client import DatabricksHttpClient
+from mlflow_migration.common.iterators import SearchRegisteredModelsIterator
+from mlflow_migration.common import MlflowExportImportException
+from mlflow_migration.common import utils, model_utils
+from mlflow_migration.client.http_client import DatabricksHttpClient
 from tests import utils_test
 from tests.core import TestContext
 from tests.databricks.unity_catalog_client import UnityCatalogClient
@@ -15,7 +15,7 @@ _logger = utils.getLogger(__name__)
 
 
 # Skip Databricks cleanup calls to avoid 429
-_skip_cleanup  = os.environ.get("MLFLOW_EXPORT_IMPORT_SKIP_CLEANUP")
+_skip_cleanup = os.environ.get("MLFLOW_MIGRATION_SKIP_CLEANUP")
 _logger.info(f"_skip_cleanup: {_skip_cleanup}")
 
 
@@ -23,11 +23,13 @@ _cfg = utils_test.read_config_file()
 cfg = Dict2Class(_cfg)
 
 
-class Workspace():
+class Workspace:
     def __init__(self, cfg_ws):
         self.cfg = cfg_ws
         self.base_dir = self.cfg.base_dir
-        tracking_profile = self.cfg.profile.replace("databricks-uc","databricks") # no "-uc" for tracking
+        tracking_profile = self.cfg.profile.replace(
+            "databricks-uc", "databricks"
+        )  # no "-uc" for tracking
         self.mlflow_client = mlflow.MlflowClient(tracking_profile, self.cfg.profile)
         self.dbx_client = DatabricksHttpClient(self.mlflow_client.tracking_uri)
         self.uc_dbx_client = UnityCatalogClient(self.dbx_client)
@@ -45,10 +47,11 @@ class Workspace():
             _logger.info(f"  uc_full_schema_name: {self.uc_full_schema_name}")
 
     def __repr__(self):
-        return str({ k:v for k,v in self.__dict__.items() })
+        return str({k: v for k, v in self.__dict__.items()})
 
-workspace_src =  Workspace(cfg.workspace_src)
-workspace_dst =  Workspace(cfg.workspace_dst)
+
+workspace_src = Workspace(cfg.workspace_src)
+workspace_dst = Workspace(cfg.workspace_dst)
 
 utils.calling_databricks(workspace_src.dbx_client)
 
@@ -56,6 +59,7 @@ utils.calling_databricks(workspace_src.dbx_client)
 def init_tests():
     _init_workspace(workspace_src)
     _init_workspace(workspace_dst)
+
 
 def _init_workspace(ws):
     _create_base_directory(ws)
@@ -67,14 +71,14 @@ def _init_workspace(ws):
 
 
 def _create_base_directory(ws):
-    """ Create test base workspace directory for experiments """
-    params = { "path": ws.base_dir }
+    """Create test base workspace directory for experiments"""
+    params = {"path": ws.base_dir}
     _logger.info(f"{ws.dbx_client}: Creating {ws.base_dir}")
     ws.dbx_client.post("workspace/mkdirs", params)
 
 
 def _cleanup():
-    """ Delete all test models and experiments """
+    """Delete all test models and experiments"""
     if not _skip_cleanup:
         _logger.info("Databricks cleanup")
         _cleanup_ws(workspace_src)
@@ -102,7 +106,9 @@ def _delete_models_non_uc(ws):
 
 
 def _delete_models_uc(ws):
-    model_names = ws.uc_dbx_client.list_model_names(ws.uc_catalog_name, ws.uc_schema_name)
+    model_names = ws.uc_dbx_client.list_model_names(
+        ws.uc_catalog_name, ws.uc_schema_name
+    )
     _logger.info(f"{ws.dbx_client}: Deleting {len(model_names)} UC model")
     for name in model_names:
         _logger.info(f"{ws.dbx_client}: Deleting model '{name}'")
@@ -110,8 +116,8 @@ def _delete_models_uc(ws):
 
 
 def _delete_directory(ws):
-    """ Deletes notebooks in test based directory """
-    params = { "path": ws.base_dir, "recursive": True }
+    """Deletes notebooks in test based directory"""
+    params = {"path": ws.base_dir, "recursive": True}
     _logger.info(f"{ws.dbx_client}: Deleting {ws.base_dir}")
     try:
         ws.dbx_client.post("workspace/delete", params)
@@ -122,9 +128,12 @@ def _delete_directory(ws):
 @pytest.fixture(scope="session")
 def test_context():
     import tempfile
+
     with tempfile.TemporaryDirectory() as tmpdir:
         assert mlflow.get_tracking_uri() is not None
-        output_dir = os.environ.get("MLFLOW_EXPORT_IMPORT_OUTPUT_DIR",None) # for debugging
+        output_dir = os.environ.get(
+            "MLFLOW_MIGRATION_OUTPUT_DIR", None
+        )  # for debugging
         if output_dir:
             utils_test.create_output_dir(output_dir)
         else:
@@ -136,7 +145,7 @@ def test_context():
             workspace_src.dbx_client,
             workspace_dst.dbx_client,
             output_dir,
-            os.path.join(output_dir,"run")
+            os.path.join(output_dir, "run"),
         )
     _cleanup()
 

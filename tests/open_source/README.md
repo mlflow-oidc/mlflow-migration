@@ -2,7 +2,7 @@
 
 ## Overview
 
-Open source MLflow Export Import tests use two MLflow tracking servers: 
+Open source MLflow Migration tests use two MLflow tracking servers:
   * Source tracking for exporting MLflow objects.
   * Destination tracking server for importing the exported MLflow objects.
 
@@ -18,7 +18,7 @@ Test environment variables.
 |-----|----------|---------|
 | MLFLOW_TRACKING_URI_SRC | yes | URI of source tracking server |
 | MLFLOW_TRACKING_URI_DST | yes | URI of destination tracking server |
-| MLFLOW_EXPORT_IMPORT_OUTPUT_DIR | no | If set, will use this as the export output directory instead of `tempfile.TemporaryDirectory()` |
+| MLFLOW_MIGRATION_OUTPUT_DIR | no | If set, will use this as the export output directory instead of `tempfile.TemporaryDirectory()` |
 
 
 
@@ -43,4 +43,3 @@ LOG_FILE    : run_tests.log
 JUNIT REPORT: run_tests_junit.xml
 HTML REPORT : run_tests_report.html
 ```
-

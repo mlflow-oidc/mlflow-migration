@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %md ## MLflow Export Import - Single Notebooks
+# MAGIC %md ## MLflow Migration - Single Notebooks
 # MAGIC
 # MAGIC Export and import one MLflow object.
 # MAGIC
@@ -21,7 +21,7 @@
 # MAGIC **More information**
 # MAGIC
 # MAGIC * [Console_Scripts_Single]($../console_scripts/Console_Scripts_Single) to execute scripts from shell (%sh).
-# MAGIC * [github.com/mlflow/mlflow-export-import/blob/master/README_single.md](https://github.com/mlflow/mlflow-export-import/blob/master/README_single.md).
+# MAGIC * [github.com/mlflow/mlflow-export-import/blob/master/README_single.md](https://github.com/mlflow-oidc/mlflow-migration/blob/master/README_single.md).
 
 # COMMAND ----------
 

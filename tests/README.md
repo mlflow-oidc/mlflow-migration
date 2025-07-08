@@ -1,21 +1,21 @@
-# Mlflow Export Import - Tests
+# Mlflow Migration - Tests
 
 ## Overview
 
 Following sets of tests:
-* [Open source MLflow tests](open_source/README.md). 
+* [Open source MLflow tests](open_source/README.md).
   * Launches a source and destination tracking server and then runs tests to ensure that the exported MLflow objects (runs, experiments and registered models) are correctly imported.
   * Numerous tests - 100+.
-* [Databricks tests](databricks/README.md). 
-  * Remote tests using the Databricks MLflow REST API. 
+* [Databricks tests](databricks/README.md).
+  * Remote tests using the Databricks MLflow REST API.
   * WIP.
-* [Databricks MLflow notebook tests](databricks_notebooks/README.md). 
+* [Databricks MLflow notebook tests](databricks_notebooks/README.md).
   * Simple smoke tests for Databricks notebooks. Launches Databricks jobs to ensure that [Databricks export-import notebooks](../databricks_notebooks/README.md) execute properly.
 
 ## Setup
 
 ```
-pip install -e ..[tests] --upgrade 
+pip install -e ..[tests] --upgrade
 ```
 
 ## Reports and logs
@@ -38,5 +38,3 @@ Databricks Tests:
 Failed Databricks Tests:
 * [run_tests_junit.xml](databricks/samples/failed/run_tests_junit.xml)
 * [run_tests_report.html](databricks/samples/failed/run_tests_report.html)
-
-

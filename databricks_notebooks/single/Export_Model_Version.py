@@ -25,19 +25,19 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Model name", "") 
+dbutils.widgets.text("1. Model name", "")
 model_name = dbutils.widgets.get("1. Model name")
 
-dbutils.widgets.text("2. Model version", "") 
+dbutils.widgets.text("2. Model version", "")
 version = dbutils.widgets.get("2. Model version")
 
-dbutils.widgets.text("3. Output directory", "") 
+dbutils.widgets.text("3. Output directory", "")
 output_dir = dbutils.widgets.get("3. Output directory")
 
-dbutils.widgets.dropdown("4. Export version MLflow model","no",["yes","no"])
+dbutils.widgets.dropdown("4. Export version MLflow model", "no", ["yes", "no"])
 export_version_model = dbutils.widgets.get("4. Export version MLflow model") == "yes"
 
-notebook_formats = get_notebook_formats(5) # widget "7. Notebook formats"
+notebook_formats = get_notebook_formats(5)  # widget "7. Notebook formats"
 
 print("model_name:", model_name)
 print("version:", version)
@@ -73,14 +73,14 @@ display_registered_model_uri(model_name)
 
 # COMMAND ----------
 
-from mlflow_export_import.model_version.export_model_version import export_model_version
+from mlflow_migration.model_version.export_model_version import export_model_version
 
 export_model_version(
-    model_name = model_name, 
-    version = version, 
-    output_dir = output_dir,
-    export_version_model = export_version_model,
-    notebook_formats = notebook_formats
+    model_name=model_name,
+    version=version,
+    output_dir=output_dir,
+    export_version_model=export_version_model,
+    notebook_formats=notebook_formats,
 )
 
 # COMMAND ----------
@@ -90,8 +90,9 @@ export_model_version(
 # COMMAND ----------
 
 import os
+
 output_dir = mk_local_path(output_dir)
-os.environ['OUTPUT_DIR'] = output_dir
+os.environ["OUTPUT_DIR"] = output_dir
 
 # COMMAND ----------
 
@@ -103,5 +104,5 @@ os.environ['OUTPUT_DIR'] = output_dir
 
 # COMMAND ----------
 
-# MAGIC %sh 
+# MAGIC %sh
 # MAGIC cat $OUTPUT_DIR/model_version.json

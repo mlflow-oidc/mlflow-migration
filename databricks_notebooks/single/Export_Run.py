@@ -1,11 +1,11 @@
 # Databricks notebook source
 # MAGIC %md ### Export Run
-# MAGIC 
+# MAGIC
 # MAGIC ##### Overview
 # MAGIC * Exports a run and its artifacts to a folder.
 # MAGIC * Output file `run.json` contains run metadata to be able to rehydrate the run.
 # MAGIC * Notebooks are also exported in several formats.
-# MAGIC 
+# MAGIC
 # MAGIC #### Output folder
 # MAGIC ```
 # MAGIC +-artifacts/
@@ -15,11 +15,11 @@
 # MAGIC | |
 # MAGIC +-run.json
 # MAGIC ```
-# MAGIC 
+# MAGIC
 # MAGIC ##### Widgets
-# MAGIC * `1. Run ID` 
+# MAGIC * `1. Run ID`
 # MAGIC * `2. Output base directory` - Base output directory of the exported run.
-# MAGIC * `3. Notebook formats` - Standard Databricks notebook formats such as SOURCE, HTML, JUPYTER, DBC. 
+# MAGIC * `3. Notebook formats` - Standard Databricks notebook formats such as SOURCE, HTML, JUPYTER, DBC.
 
 # COMMAND ----------
 
@@ -31,10 +31,10 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Run ID", "") 
+dbutils.widgets.text("1. Run ID", "")
 run_id = dbutils.widgets.get("1. Run ID")
 
-dbutils.widgets.text("2. Output base directory", "") 
+dbutils.widgets.text("2. Output base directory", "")
 output_dir = dbutils.widgets.get("2. Output base directory")
 output_dir += f"/{run_id}"
 
@@ -63,13 +63,9 @@ display_run_uri(run_id)
 
 # COMMAND ----------
 
-from mlflow_export_import.run.export_run import export_run
+from mlflow_migration.run.export_run import export_run
 
-export_run(
-    run_id = run_id, 
-    output_dir = output_dir,
-    notebook_formats = notebook_formats
-)
+export_run(run_id=run_id, output_dir=output_dir, notebook_formats=notebook_formats)
 
 # COMMAND ----------
 
@@ -78,8 +74,9 @@ export_run(
 # COMMAND ----------
 
 import os
-output_dir = output_dir.replace("dbfs:","/dbfs")
-os.environ['OUTPUT_DIR'] = output_dir
+
+output_dir = output_dir.replace("dbfs:", "/dbfs")
+os.environ["OUTPUT_DIR"] = output_dir
 
 # COMMAND ----------
 

@@ -132,7 +132,7 @@ def test_context():
     with tempfile.TemporaryDirectory() as tmpdir:
         assert mlflow.get_tracking_uri() is not None
         output_dir = os.environ.get(
-            "mlflow_migration_OUTPUT_DIR", None
+            "MLFLOW_MIGRATION_OUTPUT_DIR", None
         )  # for debugging
         if output_dir:
             utils_test.create_output_dir(output_dir)

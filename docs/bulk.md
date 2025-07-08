@@ -12,7 +12,7 @@ Three types of bulk tools:
 
 Notes:
 * Original source model and experiment names are preserved.
-* Leverages the [Single tools](README_single.md) as basic building blocks.
+* Leverages the [Single tools](single.md) as basic building blocks.
 
 ### Tools
 
@@ -81,7 +81,7 @@ import-all --input-dir out
 
 Copy registered models and transitively all the objects that the model versions depend on: runs and their experiments.
 
-See also [Single tools Registered Model Tools](README_single.md#registered-model-tools).
+See also [Single tools Registered Model Tools](single.md#registered-model-tools).
 
 When exporting a registered models the following model's associated objects are also transitively exported:
 * Versions of a model.

@@ -19,4 +19,4 @@ See section below.
 For ML governance purposes, original source run information is saved under the `mlflow_migration` tag prefix in the destination MLflow object.
 
 
-For details see [README_governance.md](README_governance.md).
+For details see [governance.md](governance.md).

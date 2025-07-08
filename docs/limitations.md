@@ -58,7 +58,7 @@ Every run has MLflow system tags (starting with `mlflow.notebook*`) that point t
 * The API does however allow you to export a notebook revision (undocumented), but it is simply a notebook with one revision. 
 * When you import a run, the link to its source `notebookRevisionID` tag will be a dead link and you cannot access the notebook from the MLflow UI.
 * The notebook is exported as a run artifact for convenience.
-* As a convenience, the import tools allows you to import the exported notebook into a Databricks workspace directory with the ` --dst-notebook-dir` option. See [import-run]((README_single.md#Import-run) or [import-experiment]((README_single.md#Import-experiment).
+* As a convenience, the import tools allows you to import the exported notebook into a Databricks workspace directory with the ` --dst-notebook-dir` option. See [import-run]((single.md#Import-run) or [import-experiment]((single.md#Import-experiment).
 However there is no API endpoint to link that notebook to its run.
 * You must export a notebook in the SOURCE format for the notebook to be imported.
 

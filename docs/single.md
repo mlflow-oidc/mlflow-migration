@@ -7,7 +7,7 @@ These tools allow you to specify a different destination object name.
 
 For example, if you want to clone the experiment `/Mary/Experiment/Iris` under a new name, you can specify the target experiment name as `/John/Experiment/Iris`.
 
-See sample JSON export files [here](README_export_format.md#sample-export-json-files).
+See sample JSON export files [here](export_format.md#sample-export-json-files).
 
 ### Tools
 
@@ -17,12 +17,12 @@ See sample JSON export files [here](README_export_format.md#sample-export-json-f
 |    | [import-model](#import-registered-model) | [code](mlflow_migration/model/import_model.py) |
 | Model Version | [export-model-version](#export-model-version) | [code](mlflow_migration/model_version/export_model_version.py) |
 |    | [import-model-version](#import-model-version) | [code](mlflow_migration/model_version/import_model_version.py) |
-|    | [copy-model-version](README_copy.md#copy-model-version) | [code](mlflow_migration/copy/copy_model_version.py) |
+|    | [copy-model-version](copy.md#copy-model-version) | [code](mlflow_migration/copy/copy_model_version.py) |
 | Experiment | [export-experiment](#export-experiment) | [code](mlflow_migration/experiment/export_experiment.py) |
 |    | [import-experiment](#import-experiment) | [code](mlflow_migration/experiment/import_experiment.py) |
 | Run | [export-run](#export-run) | [code](mlflow_migration/run/export_run.py) |
 |  | [import-run](#import-run) | [code](mlflow_migration/run/import_run.py) |
-|  | [copy-run](README_copy.md#copy-run) | [code](mlflow_migration/copy/copy_run.py) |
+|  | [copy-run](copy.md#copy-run) | [code](mlflow_migration/copy/copy_run.py) |
 
 ## Experiment Tools
 

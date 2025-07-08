@@ -1,6 +1,7 @@
 import json
 from mlflow_migration.common import MlflowExportImportException
-#from mlflow_migration.common.mlflow_utils import dump_exception
+
+# from mlflow_migration.common.mlflow_utils import dump_exception
 from mlflow.exceptions import MlflowException
 from mlflow.exceptions import RestException
 from mlflow.exceptions import BAD_REQUEST, INTERNAL_ERROR
@@ -12,6 +13,7 @@ _msg_child = "bar"
 
 # == Test just Exception
 
+
 def test_plain_exception():
     ex = Exception(_msg_base)
     assert _msg_base == str(ex)
@@ -19,25 +21,27 @@ def test_plain_exception():
 
 # == Test MlflowException
 
+
 def test_MLflowException():
     ex = MlflowException(_msg_base, error_code=BAD_REQUEST)
     assert _msg_base == ex.message
     assert _msg_base == str(ex)
-    assert _msg_base == _to_dct(ex.serialize_as_json()).get("message",None)
+    assert _msg_base == _to_dct(ex.serialize_as_json()).get("message", None)
     assert ex.error_code == ErrorCode.Name(BAD_REQUEST)
 
 
 def test_RestException():
     str_error_code = ErrorCode.Name(BAD_REQUEST)
-    ex = RestException({"message": _msg_base, "error_code": str_error_code })
-    expected_msg = f"{str_error_code}: {_msg_base}" # NOTE: Bizarre, completely different format then MlflowException
+    ex = RestException({"message": _msg_base, "error_code": str_error_code})
+    expected_msg = f"{str_error_code}: {_msg_base}"  # NOTE: Bizarre, completely different format then MlflowException
     assert expected_msg == ex.message
     assert expected_msg == str(ex)
-    assert expected_msg == _to_dct(ex.serialize_as_json()).get("message",None)
+    assert expected_msg == _to_dct(ex.serialize_as_json()).get("message", None)
     assert ex.error_code == str_error_code
 
 
 # == Test MlflowExportImportException with MLflowException
+
 
 # Test with string CTOR argument
 def test_ctor_string():
@@ -47,7 +51,7 @@ def test_ctor_string():
     assert ex.http_status_code == MlflowExportImportException.DEFAULT_HTTP_STATUS_CODE
 
 
-# Test with MlflowException CTOR argument 
+# Test with MlflowException CTOR argument
 def test_ctor_exception():
     ex1 = MlflowException(_msg_base)
     ex2 = MlflowExportImportException(ex1)
@@ -63,7 +67,8 @@ def test_ctor_exception_message():
 
 # == Test MlflowExportImportException with Exception CTOR
 
-# Test with plain Exception CTOR argument 
+
+# Test with plain Exception CTOR argument
 def test_ctor_exception_2():
     ex1 = Exception(_msg_base)
     ex2 = MlflowExportImportException(ex1)
@@ -83,7 +88,9 @@ def test_kwargs():
     _assert_message(ex, "reason", "Ouch")
     _assert_message(ex, "year", 2023)
 
+
 # == Test misc
+
 
 def test_default_http_status_code():
     ex = MlflowExportImportException(_msg_base, reason="Ouch")
@@ -93,9 +100,10 @@ def test_default_http_status_code():
 
 # == Helper
 
+
 def _assert_ex(ex1, ex2, msg, src_msg, mlflow_error_code=INTERNAL_ERROR):
-    #dump_exception(ex1,"assert_ex Ex1")
-    #dump_exception(ex2,"assert_ex Ex2")
+    # dump_exception(ex1,"assert_ex Ex1")
+    # dump_exception(ex2,"assert_ex Ex2")
     _assert_messages(ex2, msg, src_msg)
     assert ex2.src_exception == ex1
     if issubclass(ex1.__class__, MlflowException):

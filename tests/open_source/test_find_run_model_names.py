@@ -13,13 +13,13 @@ client = mlflow.MlflowClient()
 def test_no_model():
     create_experiment(client)
     with mlflow.start_run() as run:
-        mlflow.set_tag("name","foo")
+        mlflow.set_tag("name", "foo")
     model_paths = find_run_model_names(client, run.info.run_id)
     assert len(model_paths) == 0
 
 
 def test_one_model_at_artifact_root():
-    """ Test when model artifact root is '' """
+    """Test when model artifact root is ''"""
     create_experiment(client)
     model = create_sklearn_model()
     with mlflow.start_run() as run:

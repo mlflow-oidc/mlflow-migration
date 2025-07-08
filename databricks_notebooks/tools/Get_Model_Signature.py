@@ -1,7 +1,7 @@
 # Databricks notebook source
-# MAGIC %md ### Get Model Signature 
+# MAGIC %md ### Get Model Signature
 # MAGIC
-# MAGIC Get the signature of an MLflow model. 
+# MAGIC Get the signature of an MLflow model.
 # MAGIC
 # MAGIC ##### MLflow models can live in a variety of places. Sample MLflow model URIs:
 # MAGIC * `models:/andre_catalog.ml_models2.sklearn_wine_best/15`
@@ -49,6 +49,7 @@ set_registry_uri(model_uri)
 # COMMAND ----------
 
 from mlflow_migration.tools.signature_utils import get_model_signature
+
 signature = get_model_signature(model_uri)
 signature
 

@@ -11,13 +11,16 @@ _logger = utils.getLogger(__name__)
 
 
 def get_experiment(mlflow_client, exp_id_or_name):
-    """ Gets an experiment either by ID or name.  """
+    """Gets an experiment either by ID or name."""
     exp = mlflow_client.get_experiment_by_name(exp_id_or_name)
     if exp is None:
         try:
             exp = mlflow_client.get_experiment(exp_id_or_name)
         except Exception as ex:
-            raise MlflowExportImportException(ex, f"Cannot find experiment ID or name '{exp_id_or_name}'. Client: {mlflow_client}'")
+            raise MlflowExportImportException(
+                ex,
+                f"Cannot find experiment ID or name '{exp_id_or_name}'. Client: {mlflow_client}'",
+            )
     return exp
 
 
@@ -29,19 +32,28 @@ def set_experiment(mlflow_client, dbx_client, exp_name, tags=None):
     """
     if utils.calling_databricks():
         if not exp_name.startswith("/"):
-            raise MlflowExportImportException(f"Cannot create experiment '{exp_name}'. Databricks experiment must start with '/'.")
+            raise MlflowExportImportException(
+                f"Cannot create experiment '{exp_name}'. Databricks experiment must start with '/'."
+            )
         create_workspace_dir(dbx_client, os.path.dirname(exp_name))
     try:
-        if not tags: tags = {}
+        if not tags:
+            tags = {}
         tags = utils.create_mlflow_tags_for_databricks_import(tags)
         exp_id = mlflow_client.create_experiment(exp_name, tags=tags)
         exp = mlflow_client.get_experiment(exp_id)
-        _logger.info(f"Created experiment '{exp.name}' with location '{exp.artifact_location}'")
+        _logger.info(
+            f"Created experiment '{exp.name}' with location '{exp.artifact_location}'"
+        )
     except RestException as ex:
         if ex.error_code != "RESOURCE_ALREADY_EXISTS":
-            raise MlflowExportImportException(ex, f"Cannot create experiment '{exp_name}'")
+            raise MlflowExportImportException(
+                ex, f"Cannot create experiment '{exp_name}'"
+            )
         exp = mlflow_client.get_experiment_by_name(exp_name)
-        _logger.info(f"Using existing experiment '{exp.name}' with location '{exp.artifact_location}'")
+        _logger.info(
+            f"Using existing experiment '{exp.name}' with location '{exp.artifact_location}'"
+        )
     return exp
 
 
@@ -53,7 +65,9 @@ def get_first_run(mlflow_client, exp_id_or_name):
 
 def delete_experiment(mlflow_client, exp_id_or_name):
     exp = get_experiment(mlflow_client, exp_id_or_name)
-    _logger.info(f"Deleting experiment: name={exp.name} experiment_id={exp.experiment_id}")
+    _logger.info(
+        f"Deleting experiment: name={exp.name} experiment_id={exp.experiment_id}"
+    )
     mlflow_client.delete_experiment(exp.experiment_id)
 
 
@@ -68,7 +82,9 @@ def delete_model(mlflow_client, model_name):
 
 def get_last_run(mlflow_client, exp_id_or_name):
     exp = get_experiment(mlflow_client, exp_id_or_name)
-    runs = mlflow_client.search_runs(exp.experiment_id, order_by=["attributes.start_time desc"], max_results=1)
+    runs = mlflow_client.search_runs(
+        exp.experiment_id, order_by=["attributes.start_time desc"], max_results=1
+    )
     return runs[0]
 
 
@@ -86,11 +102,14 @@ def create_workspace_dir(dbx_client, workspace_dir):
     """
     _logger.info(f"Creating Databricks workspace directory '{workspace_dir}'")
     if not workspace_dir.startswith("/"):
-        raise MlflowExportImportException(f"Cannot create workspace directory '{workspace_dir}'. Databricks directory must start with '/'.")
-    dbx_client.post("workspace/mkdirs", { "path": workspace_dir })
+        raise MlflowExportImportException(
+            f"Cannot create workspace directory '{workspace_dir}'. Databricks directory must start with '/'."
+        )
+    dbx_client.post("workspace/mkdirs", {"path": workspace_dir})
 
 
 # == Context Manager
+
 
 class MlflowTrackingUriTweak:
     """
@@ -102,6 +121,7 @@ class MlflowTrackingUriTweak:
       2. mlflow.artifacts.download_artifacts
         See download_artifacts() below.
     """
+
     def __init__(self, client):
         self.client = client
         self.original_tracking_uri = mlflow.get_tracking_uri()
@@ -116,6 +136,7 @@ class MlflowTrackingUriTweak:
 
 # == Download artifact issue
 
+
 def download_artifacts(client, download_uri, dst_path=None, fix=True):
     """
     Apparently the tracking_uri argument is not honored for mlflow.artifacts.download_artifacts().
@@ -127,27 +148,31 @@ def download_artifacts(client, download_uri, dst_path=None, fix=True):
     if fix:
         with MlflowTrackingUriTweak(client):
             local_path = mlflow.artifacts.download_artifacts(
-                artifact_uri = download_uri,
-                dst_path = dst_path,
+                artifact_uri=download_uri,
+                dst_path=dst_path,
             )
     else:
         local_path = mlflow.artifacts.download_artifacts(
-            artifact_uri = download_uri,
-            dst_path = dst_path,
-            tracking_uri = client.tracking_uri
+            artifact_uri=download_uri,
+            dst_path=dst_path,
+            tracking_uri=client.tracking_uri,
         )
     return local_path
 
 
 # == Dump exception functions
 
+
 def mk_msg_RestException(e):
-    return { "RestException": { **e.json,  **{ "http_status_code": e.get_http_status_code()} } }
+    return {
+        "RestException": {**e.json, **{"http_status_code": e.get_http_status_code()}}
+    }
 
 
 def dump_exception(ex, msg=""):
     from mlflow.exceptions import MlflowException
-    if issubclass(ex.__class__,MlflowException):
+
+    if issubclass(ex.__class__, MlflowException):
         _dump_MlflowException(ex, msg)
     else:
         _dump_exception(ex, msg)
@@ -158,10 +183,10 @@ def _dump_exception(ex, msg=""):
     _logger.info(f"  type: {type(ex)}")
     _logger.info(f"  ex:   '{ex}'")
     _logger.info("  attrs:")
-    for k,v in ex.__dict__.items():
-        if isinstance(v,dict):
+    for k, v in ex.__dict__.items():
+        if isinstance(v, dict):
             _logger.info(f"    {k}:")
-            for k2,v2 in v.items():
+            for k2, v2 in v.items():
                 _logger.info(f"      {k2}: {v2}")
         else:
             if k == "src_exception" and v:

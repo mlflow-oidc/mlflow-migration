@@ -7,17 +7,12 @@ from mlflow_migration.run.import_run import import_run
 from mlflow_migration.common import utils
 from mlflow_migration.common.click_options import opt_run_id, opt_experiment_name
 from . import copy_utils
-from . click_options import opt_src_mlflow_uri, opt_dst_mlflow_uri
+from .click_options import opt_src_mlflow_uri, opt_dst_mlflow_uri
 
 _logger = utils.getLogger(__name__)
 
 
-def copy(
-        src_run_id, 
-        dst_experiment_name, 
-        src_mlflow_uri = None, 
-        dst_mlflow_uri = None
-    ):
+def copy(src_run_id, dst_experiment_name, src_mlflow_uri=None, dst_mlflow_uri=None):
     """
     Copies a run to another tracking server (workspace).
 
@@ -29,9 +24,11 @@ def copy(
     :return: Destination Run object.
     """
 
-    return _copy(src_run_id, dst_experiment_name, 
-        copy_utils.mk_client(src_mlflow_uri), 
-        copy_utils.mk_client(dst_mlflow_uri)
+    return _copy(
+        src_run_id,
+        dst_experiment_name,
+        copy_utils.mk_client(src_mlflow_uri),
+        copy_utils.mk_client(dst_mlflow_uri),
     )
 
 
@@ -42,13 +39,11 @@ def _copy(src_run_id, dst_experiment_name, src_client=None, dst_client=None):
         export_run(
             src_run_id,
             download_dir,
-            notebook_formats = [ "SOURCE" ],
-            mlflow_client = src_client
+            notebook_formats=["SOURCE"],
+            mlflow_client=src_client,
         )
         dst_run, _ = import_run(
-            download_dir,
-            dst_experiment_name,
-            mlflow_client = dst_client
+            download_dir, dst_experiment_name, mlflow_client=dst_client
         )
         return dst_run
 
@@ -60,7 +55,7 @@ def _copy(src_run_id, dst_experiment_name, src_client=None, dst_client=None):
 @opt_dst_mlflow_uri
 def main(run_id, experiment_name, src_mlflow_uri, dst_mlflow_uri):
     print("Options:")
-    for k,v in locals().items():
+    for k, v in locals().items():
         print(f"  {k}: {v}")
     copy(run_id, experiment_name, src_mlflow_uri, dst_mlflow_uri)
 

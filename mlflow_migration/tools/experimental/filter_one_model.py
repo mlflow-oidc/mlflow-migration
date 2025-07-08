@@ -15,31 +15,39 @@ from mlflow_migration.common.timestamp_utils import ts_now_fmt_local
 
 def do_main(input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name):
     dst_model_name = dst_model_name or src_model_name
-    do_manifest(input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name)
-    src_experiment_name = do_models(input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name)
+    do_manifest(
+        input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name
+    )
+    src_experiment_name = do_models(
+        input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name
+    )
     do_experiments(src_experiment_name, dst_experiment_name, input_dir, output_dir)
 
 
-def do_manifest(input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name):
+def do_manifest(
+    input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name
+):
     root = io_utils.read_file(mk_path(input_dir, "manifest.json"))
     info = root["info"]
-    info["model_names"] = [ dst_model_name ]
-    info["models"]["model_names"] = [ dst_model_name ]
+    info["model_names"] = [dst_model_name]
+    info["models"]["model_names"] = [dst_model_name]
     filter_dct = {
-        "description":  "Filtered select model from all_model export directory. WIP.",
-        "timestamp":  ts_now_fmt_local,
+        "description": "Filtered select model from all_model export directory. WIP.",
+        "timestamp": ts_now_fmt_local,
         "src_model_name": src_model_name,
         "dst_model_name": dst_model_name,
         "dst_experiment_name": dst_experiment_name,
-        "input_dir": input_dir
+        "input_dir": input_dir,
     }
-    root["info"] = { **{ "filter_info": filter_dct }, **info }
+    root["info"] = {**{"filter_info": filter_dct}, **info}
     io_utils.write_file(mk_path(output_dir, "manifest.json"), root)
 
 
-def do_models(input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name):
+def do_models(
+    input_dir, output_dir, src_model_name, dst_model_name, dst_experiment_name
+):
     src_models_dir = os.path.join(input_dir, "models")
-    src_root = io_utils.read_file(mk_path(src_models_dir,"models.json"))
+    src_root = io_utils.read_file(mk_path(src_models_dir, "models.json"))
 
     src_models = src_root["mlflow"]["models"]
     if not src_model_name in src_models:
@@ -47,7 +55,7 @@ def do_models(input_dir, output_dir, src_model_name, dst_model_name, dst_experim
         return
 
     dst_root = src_root.copy()
-    dst_root["mlflow"]["models"] = [ dst_model_name ]
+    dst_root["mlflow"]["models"] = [dst_model_name]
 
     # update the dst models.json
     dst_models_dir = mk_path(output_dir, "models")
@@ -70,7 +78,9 @@ def do_model(dst_model_name, dst_experiment_name, src_dir, dst_dir):
     dst_model = dst_root["mlflow"]["registered_model"]
     dst_model["name"] = dst_model_name
 
-    src_exp_name = do_versions(dst_model_name, dst_experiment_name, dst_model["versions"])
+    src_exp_name = do_versions(
+        dst_model_name, dst_experiment_name, dst_model["versions"]
+    )
 
     dst_path = mk_path(dst_dir, "model.json")
     io_utils.write_file(dst_path, dst_root)
@@ -102,7 +112,7 @@ def do_experiments(src_experiment_name, dst_experiment_name, input_dir, output_d
                 _exp["name"] = dst_experiment_name
             exp = _exp
             break
-    dst_exps = [ exp ]
+    dst_exps = [exp]
     dst_root["mlflow"]["experiments"] = dst_exps
 
     # Update experiments.json in dst root experiment dir
@@ -131,24 +141,22 @@ def mk_path(base_dir, path):
 @click.command()
 @opt_input_dir
 @opt_output_dir
-@click.option("--src-model",
-    help="Source registered model.",
-    type=str,
-    required=True
-)
-@click.option("--dst-model",
+@click.option("--src-model", help="Source registered model.", type=str, required=True)
+@click.option(
+    "--dst-model",
     help="Destination registered model. If not specified use the source model.",
     type=str,
-    required=False
+    required=False,
 )
-@click.option("--dst-experiment",
+@click.option(
+    "--dst-experiment",
     help="Destination experiment to update. We assum that all version runs belong to one experiment.",
     type=str,
-    required=False
+    required=False,
 )
 def main(input_dir, output_dir, src_model, dst_model, dst_experiment):
     print("Options:")
-    for k,v in locals().items():
+    for k, v in locals().items():
         print(f"  {k}: {v}")
     do_main(input_dir, output_dir, src_model, dst_model, dst_experiment)
 

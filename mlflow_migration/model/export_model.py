@@ -17,7 +17,7 @@ from mlflow_migration.common.click_options import (
     opt_export_latest_versions,
     opt_export_deleted_runs,
     opt_export_permissions,
-    opt_export_version_model
+    opt_export_version_model,
 )
 from mlflow_migration.common import utils, io_utils, model_utils
 from mlflow_migration.common.timestamp_utils import adjust_timestamps
@@ -25,6 +25,7 @@ from mlflow_migration.common import MlflowExportImportException
 from mlflow_migration.run.export_run import export_run
 
 _logger = utils.getLogger(__name__)
+
 
 @dataclass()
 class Options:
@@ -38,17 +39,17 @@ class Options:
 
 
 def export_model(
-        model_name,
-        output_dir,
-        stages = None,
-        versions = None,
-        export_latest_versions = False,
-        export_version_model = False,
-        export_permissions = False,
-        export_deleted_runs = False,
-        notebook_formats = None,
-        mlflow_client = None
-    ):
+    model_name,
+    output_dir,
+    stages=None,
+    versions=None,
+    export_latest_versions=False,
+    export_version_model=False,
+    export_permissions=False,
+    export_deleted_runs=False,
+    notebook_formats=None,
+    mlflow_client=None,
+):
     """
     :param model_name: Registered model name.
     :param output_dir: Export directory.
@@ -69,36 +70,56 @@ def export_model(
     versions = versions if versions else []
     if len(stages) > 0 and len(versions) > 0:
         raise MlflowExportImportException(
-            f"Both stages {stages} and versions {versions} cannot be set", http_status_code=400)
+            f"Both stages {stages} and versions {versions} cannot be set",
+            http_status_code=400,
+        )
 
-    opts = Options(stages, versions, export_latest_versions, export_deleted_runs, export_version_model, export_permissions, notebook_formats)
+    opts = Options(
+        stages,
+        versions,
+        export_latest_versions,
+        export_deleted_runs,
+        export_version_model,
+        export_permissions,
+        notebook_formats,
+    )
 
     try:
         _export_model(mlflow_client, model_name, output_dir, opts)
         return True, model_name
     except RestException as e:
-        err_msg = { "model": model_name, "RestException": e.json  }
+        err_msg = {"model": model_name, "RestException": e.json}
         if e.json.get("error_code") == "RESOURCE_DOES_NOT_EXIST":
-            _logger.error({ **{"message": "Model does not exist"}, **err_msg})
+            _logger.error({**{"message": "Model does not exist"}, **err_msg})
         else:
             _logger.error({**{"message": "Model cannot be exported"}, **err_msg})
             import traceback
+
             traceback.print_exc()
         return False, model_name
     except Exception as e:
-        _logger.error({ "model": model_name, "Exception": e })
+        _logger.error({"model": model_name, "Exception": e})
         import traceback
+
         traceback.print_exc()
         return False, model_name
 
 
 def _export_model(mlflow_client, model_name, output_dir, opts):
-    ori_versions = model_utils.list_model_versions(mlflow_client, model_name, opts.export_latest_versions)
+    ori_versions = model_utils.list_model_versions(
+        mlflow_client, model_name, opts.export_latest_versions
+    )
     msg = "latest" if opts.export_latest_versions else "all"
-    _logger.info(f"Exporting model '{model_name}': found {len(ori_versions)} '{msg}' versions")
+    _logger.info(
+        f"Exporting model '{model_name}': found {len(ori_versions)} '{msg}' versions"
+    )
 
-    model = model_utils.get_registered_model(mlflow_client, model_name, opts.export_permissions)
-    versions, failed_versions = _export_versions(mlflow_client, model, ori_versions, output_dir, opts)
+    model = model_utils.get_registered_model(
+        mlflow_client, model_name, opts.export_permissions
+    )
+    versions, failed_versions = _export_versions(
+        mlflow_client, model, ori_versions, output_dir, opts
+    )
     _adjust_model(model, versions)
 
     info_attr = {
@@ -108,67 +129,111 @@ def _export_model(mlflow_client, model_name, output_dir, opts):
         "num_dst_versions": len(versions),
         "failed_versions": failed_versions,
         "export_latest_versions": opts.export_latest_versions,
-        "export_permissions": opts.export_permissions
+        "export_permissions": opts.export_permissions,
     }
-    _model = { "registered_model": model }
+    _model = {"registered_model": model}
     io_utils.write_export_file(output_dir, "model.json", __file__, _model, info_attr)
-    _logger.info(f"Exported {len(versions)}/{len(ori_versions)} '{msg}' versions for model '{model_name}'")
+    _logger.info(
+        f"Exported {len(versions)}/{len(ori_versions)} '{msg}' versions for model '{model_name}'"
+    )
 
 
 def _export_versions(mlflow_client, model_dct, versions, output_dir, opts):
     aliases = model_dct.get("aliases", [])
     version_aliases = {}
-    [ version_aliases.setdefault(x["version"], []).append(x["alias"]) for x in aliases ] # map of version => its aliases
+    [
+        version_aliases.setdefault(x["version"], []).append(x["alias"]) for x in aliases
+    ]  # map of version => its aliases
 
     output_versions, failed_versions = ([], [])
-    for j,vr in enumerate(versions):
-        if not model_utils.is_unity_catalog_model(model_dct["name"]) and vr.current_stage and (len(opts.stages) > 0 and not vr.current_stage.lower() in opts.stages):
+    for j, vr in enumerate(versions):
+        if (
+            not model_utils.is_unity_catalog_model(model_dct["name"])
+            and vr.current_stage
+            and (len(opts.stages) > 0 and not vr.current_stage.lower() in opts.stages)
+        ):
             continue
         if len(opts.versions) > 0 and not vr.version in opts.versions:
             continue
-        _export_version(mlflow_client, vr, output_dir, version_aliases.get(vr.version,[]), output_versions, failed_versions, j, len(versions), opts)
+        _export_version(
+            mlflow_client,
+            vr,
+            output_dir,
+            version_aliases.get(vr.version, []),
+            output_versions,
+            failed_versions,
+            j,
+            len(versions),
+            opts,
+        )
     output_versions.sort(key=lambda x: x["version"], reverse=False)
     return output_versions, failed_versions
 
 
-def _export_version(mlflow_client, vr, output_dir, aliases, output_versions, failed_versions, j, num_versions, opts):
+def _export_version(
+    mlflow_client,
+    vr,
+    output_dir,
+    aliases,
+    output_versions,
+    failed_versions,
+    j,
+    num_versions,
+    opts,
+):
     _output_dir = os.path.join(output_dir, vr.run_id)
-    msg = { "name": vr.name, "version": vr.version, "stage": vr.current_stage, "aliases": aliases }
-    _logger.info(f"Exporting model verson {j+1}/{num_versions}: {msg} to '{_output_dir}'")
+    msg = {
+        "name": vr.name,
+        "version": vr.version,
+        "stage": vr.current_stage,
+        "aliases": aliases,
+    }
+    _logger.info(
+        f"Exporting model verson {j+1}/{num_versions}: {msg} to '{_output_dir}'"
+    )
 
     vr_dct = model_utils.model_version_to_dict(vr)
     vr_dct["aliases"] = aliases
     try:
         if opts.export_version_model:
             _output_dir = os.path.join(output_dir, "version_models", vr.version)
-            vr_dct["_download_uri"] = model_utils.export_version_model(mlflow_client, vr, _output_dir)
+            vr_dct["_download_uri"] = model_utils.export_version_model(
+                mlflow_client, vr, _output_dir
+            )
 
-        run = export_run(vr.run_id,
-            output_dir = os.path.join(output_dir, vr.run_id),
-            export_deleted_runs = opts.export_deleted_runs,
-            notebook_formats = opts.notebook_formats,
-            mlflow_client = mlflow_client,
-            raise_exception = True
+        run = export_run(
+            vr.run_id,
+            output_dir=os.path.join(output_dir, vr.run_id),
+            export_deleted_runs=opts.export_deleted_runs,
+            notebook_formats=opts.notebook_formats,
+            mlflow_client=mlflow_client,
+            raise_exception=True,
         )
         if not run and not opts.export_deleted_runs:
-            failed_msg = { "message": "deleted run",  "version": vr_dct }
+            failed_msg = {"message": "deleted run", "version": vr_dct}
             failed_versions.append(failed_msg)
         else:
             _add_metadata_to_version(mlflow_client, vr_dct, run)
             output_versions.append(vr_dct)
 
     except RestException as e:
-        err_msg = { "model": vr.name, "version": vr.version, "run_id": vr.run_id, "RestException": e.json  }
+        err_msg = {
+            "model": vr.name,
+            "version": vr.version,
+            "run_id": vr.run_id,
+            "RestException": e.json,
+        }
         if e.json.get("error_code") == "RESOURCE_DOES_NOT_EXIST":
-            err_msg = { **{"message": "Version run probably does not exist"}, **err_msg}
+            err_msg = {**{"message": "Version run probably does not exist"}, **err_msg}
             _logger.error(f"Version export failed (1): {err_msg}")
         else:
-            err_msg = { **{"message": "Version cannot be exported"}, **err_msg}
+            err_msg = {**{"message": "Version cannot be exported"}, **err_msg}
             _logger.error(f"Version export failed (2): {err_msg}")
             _logger.error(err_msg)
             import traceback
+
             traceback.print_exc()
-        failed_msg = { "version": vr_dct, "RestException": e.json  }
+        failed_msg = {"version": vr_dct, "RestException": e.json}
         failed_versions.append(failed_msg)
 
 
@@ -217,6 +282,7 @@ def _normalize_stages(stages):
     :return: Returns list of stages as strings.
     """
     from mlflow.entities.model_registry import model_version_stages
+
     if stages is None:
         return []
     if isinstance(stages, str):
@@ -226,7 +292,9 @@ def _normalize_stages(stages):
     stages = [stage.lower() for stage in stages]
     for stage in stages:
         if stage not in model_version_stages._CANONICAL_MAPPING:
-            _logger.warning(f"stage '{stage}' must be one of: {model_version_stages.ALL_STAGES}")
+            _logger.warning(
+                f"stage '{stage}' must be one of: {model_version_stages.ALL_STAGES}"
+            )
     return stages
 
 
@@ -240,28 +308,31 @@ def _normalize_stages(stages):
 @opt_export_deleted_runs
 @opt_export_permissions
 @opt_notebook_formats
-
-def main(model, output_dir,
-        stages, versions, export_latest_versions,
-        export_deleted_runs,
-        export_version_model,
-        export_permissions,
-        notebook_formats
-    ):
+def main(
+    model,
+    output_dir,
+    stages,
+    versions,
+    export_latest_versions,
+    export_deleted_runs,
+    export_version_model,
+    export_permissions,
+    notebook_formats,
+):
     _logger.info("Options:")
-    for k,v in locals().items():
+    for k, v in locals().items():
         _logger.info(f"  {k}: {v}")
     versions = versions.split(",") if versions else []
     export_model(
-        model_name = model,
-        output_dir = output_dir,
-        stages = stages,
-        versions = versions,
-        export_latest_versions = export_latest_versions,
-        export_deleted_runs = export_deleted_runs,
-        export_version_model = export_version_model,
-        export_permissions = export_permissions,
-        notebook_formats = notebook_formats
+        model_name=model,
+        output_dir=output_dir,
+        stages=stages,
+        versions=versions,
+        export_latest_versions=export_latest_versions,
+        export_deleted_runs=export_deleted_runs,
+        export_version_model=export_version_model,
+        export_permissions=export_permissions,
+        notebook_formats=notebook_formats,
     )
 
 

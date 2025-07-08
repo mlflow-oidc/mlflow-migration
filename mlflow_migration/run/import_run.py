@@ -15,26 +15,31 @@ from mlflow_migration.common.click_options import (
     opt_import_source_tags,
     opt_experiment_name,
     opt_use_src_user_id,
-    opt_dst_notebook_dir
+    opt_dst_notebook_dir,
 )
 from mlflow_migration.common import utils, mlflow_utils, io_utils
 from mlflow_migration.common import filesystem as _fs
 from mlflow_migration.common import MlflowExportImportException
-from mlflow_migration.client.client_utils import create_mlflow_client, create_dbx_client, create_http_client
+from mlflow_migration.client.client_utils import (
+    create_mlflow_client,
+    create_dbx_client,
+    create_http_client,
+)
 from . import run_data_importer
 from . import run_utils
 
 _logger = utils.getLogger(__name__)
 
+
 def import_run(
-        input_dir,
-        experiment_name,
-        import_source_tags = False,
-        dst_notebook_dir = None,
-        use_src_user_id = False,
-        mlmodel_fix = True,
-        mlflow_client = None
-    ):
+    input_dir,
+    experiment_name,
+    import_source_tags=False,
+    dst_notebook_dir=None,
+    use_src_user_id=False,
+    mlmodel_fix=True,
+    mlflow_client=None,
+):
     """
     Imports a run into the specified experiment.
     :param experiment_name: Experiment name to add the run to.
@@ -52,11 +57,12 @@ def import_run(
     """
 
     def _mk_ex(src_run_dct, dst_run_id, exp_name):
-        return { "message": "Cannot import run",
-            "src_run_dct": src_run_dct["info"].get("run_id",None),
+        return {
+            "message": "Cannot import run",
+            "src_run_dct": src_run_dct["info"].get("run_id", None),
             "dst_run_dct": dst_run_id,
-            "experiment": exp_name
-    }
+            "experiment": exp_name,
+        }
 
     mlflow_client = mlflow_client or create_mlflow_client()
     http_client = create_http_client(mlflow_client)
@@ -79,7 +85,7 @@ def import_run(
             import_source_tags,
             src_run_dct["info"]["user_id"],
             use_src_user_id,
-            in_databricks
+            in_databricks,
         )
         _import_inputs(http_client, src_run_dct, run_id)
 
@@ -96,30 +102,41 @@ def import_run(
     except Exception as e:
         mlflow_client.set_terminated(run_id, RunStatus.to_string(RunStatus.FAILED))
         import traceback
+
         traceback.print_exc()
-        raise MlflowExportImportException(e, f"Importing run {run_id} of experiment '{exp.name}' failed")
+        raise MlflowExportImportException(
+            e, f"Importing run {run_id} of experiment '{exp.name}' failed"
+        )
 
     if utils.calling_databricks() and dst_notebook_dir:
-        _upload_databricks_notebook(dbx_client, input_dir, src_run_dct, dst_notebook_dir)
+        _upload_databricks_notebook(
+            dbx_client, input_dir, src_run_dct, dst_notebook_dir
+        )
 
     res = (run, src_run_dct["tags"].get(MLFLOW_PARENT_RUN_ID, None))
-    _logger.info(f"Imported run '{run.info.run_id}' into experiment '{experiment_name}'")
+    _logger.info(
+        f"Imported run '{run.info.run_id}' into experiment '{experiment_name}'"
+    )
     return res
 
 
 def _upload_databricks_notebook(dbx_client, input_dir, src_run_dct, dst_notebook_dir):
     run_id = src_run_dct["info"]["run_id"]
     tag_key = "mlflow.databricks.notebookPath"
-    src_notebook_path = src_run_dct["tags"].get(tag_key,None)
+    src_notebook_path = src_run_dct["tags"].get(tag_key, None)
     if not src_notebook_path:
         _logger.warning(f"No tag '{tag_key}' for run_id '{run_id}'")
         return
     notebook_name = os.path.basename(src_notebook_path)
 
     format = "source"
-    notebook_path = _fs.make_local_path(os.path.join(input_dir,"artifacts","notebooks",f"{notebook_name}.{format}"))
+    notebook_path = _fs.make_local_path(
+        os.path.join(input_dir, "artifacts", "notebooks", f"{notebook_name}.{format}")
+    )
     if not _fs.exists(notebook_path):
-        _logger.warning(f"Source '{notebook_path}' does not exist for run_id '{run_id}'")
+        _logger.warning(
+            f"Source '{notebook_path}' does not exist for run_id '{run_id}'"
+        )
         return
 
     with open(notebook_path, "r", encoding="utf-8") as f:
@@ -131,8 +148,8 @@ def _upload_databricks_notebook(dbx_client, input_dir, src_run_dct, dst_notebook
         "language": "PYTHON",
         "format": format,
         "overwrite": True,
-        "content": content
-        }
+        "content": content,
+    }
     mlflow_utils.create_workspace_dir(dbx_client, dst_notebook_dir)
     try:
         _logger.info(f"Importing notebook '{dst_notebook_path}' for run {run_id}")
@@ -143,7 +160,7 @@ def _upload_databricks_notebook(dbx_client, input_dir, src_run_dct, dst_notebook
 
 def _import_inputs(http_client, src_run_dct, run_id):
     inputs = src_run_dct.get("inputs")
-    dct = { "run_id": run_id, "datasets": inputs }
+    dct = {"run_id": run_id, "datasets": inputs}
     http_client.post("runs/log-inputs", dct)
 
 
@@ -153,30 +170,31 @@ def _import_inputs(http_client, src_run_dct, run_id):
 @opt_import_source_tags
 @opt_use_src_user_id
 @opt_dst_notebook_dir
-@click.option("--mlmodel-fix",
+@click.option(
+    "--mlmodel-fix",
     help="Add correct run ID in destination MLmodel artifact. Can be expensive for deeply nested artifacts.",
     type=bool,
     default=True,
-    show_default=True
+    show_default=True,
 )
-
-def main(input_dir,
-        experiment_name,
-        import_source_tags,
-        mlmodel_fix,
-        use_src_user_id,
-        dst_notebook_dir
-    ):
+def main(
+    input_dir,
+    experiment_name,
+    import_source_tags,
+    mlmodel_fix,
+    use_src_user_id,
+    dst_notebook_dir,
+):
     _logger.info("Options:")
-    for k,v in locals().items():
+    for k, v in locals().items():
         _logger.info(f"  {k}: {v}")
     import_run(
-        input_dir = input_dir,
-        experiment_name = experiment_name,
-        import_source_tags = import_source_tags,
-        dst_notebook_dir = dst_notebook_dir,
-        use_src_user_id = use_src_user_id,
-        mlmodel_fix = mlmodel_fix
+        input_dir=input_dir,
+        experiment_name=experiment_name,
+        import_source_tags=import_source_tags,
+        dst_notebook_dir=dst_notebook_dir,
+        use_src_user_id=use_src_user_id,
+        mlmodel_fix=mlmodel_fix,
     )
 
 

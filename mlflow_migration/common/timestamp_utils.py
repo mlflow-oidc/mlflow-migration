@@ -11,14 +11,14 @@ _default_as_utc = True
 
 
 def fmt_ts_millis(millis, as_utc=_default_as_utc):
-    """ Convert epoch milliseconds to string format """
+    """Convert epoch milliseconds to string format"""
     if not millis:
         return None
-    return fmt_ts_seconds(round(millis/1000), as_utc)
+    return fmt_ts_seconds(round(millis / 1000), as_utc)
 
 
 def fmt_ts_seconds(seconds, as_utc=_default_as_utc):
-    """ Convert epoch seconds to string format """
+    """Convert epoch seconds to string format"""
     if not seconds:
         return None
     if as_utc:
@@ -29,12 +29,12 @@ def fmt_ts_seconds(seconds, as_utc=_default_as_utc):
 
 
 def utc_str_to_millis(sdt):
-    """ Convert UTC string to epoch milliseconds. """
+    """Convert UTC string to epoch milliseconds."""
     return utc_str_to_seconds(sdt) * 1000
 
 
 def utc_str_to_seconds(sdt):
-    """ Convert UTC string to epoch seconds. """
+    """Convert UTC string to epoch seconds."""
     dt = datetime.fromisoformat(sdt)
     seconds = (dt - datetime(1970, 1, 1)).total_seconds()
     return seconds
@@ -60,6 +60,6 @@ def format_seconds(seconds):
         seconds = round(seconds)
         return f"{minutes}m {seconds}s"
     else:
-        prec = 2 if seconds < .1 else 1
-        seconds = round(seconds,prec)
+        prec = 2 if seconds < 0.1 else 1
+        seconds = round(seconds, prec)
         return f"{seconds}s"

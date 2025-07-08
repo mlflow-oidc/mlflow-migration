@@ -11,14 +11,14 @@ def get_model_name(artifact_path):
     return artifact_path[idx:]
 
 
-def create_registered_model(client,  model_name):
+def create_registered_model(client, model_name):
     """
     Return True if model already exists, False otherwise.
     """
     try:
         client.create_registered_model(model_name)
         return False
-    except MlflowException as e: # NOTE: for non-UC is RestException
+    except MlflowException as e:  # NOTE: for non-UC is RestException
         if e.error_code != "RESOURCE_ALREADY_EXISTS":
             raise
         return True
@@ -50,9 +50,9 @@ def obj_to_dict(obj):
 
 def adjust_model_version(vr):
     dct = {}
-    for k,v in vr.items():
-        if k == "_aliases": # type - google._upb._message.RepeatedScalarContainer
-            dct[k] = [ str(x) for x in v ]
+    for k, v in vr.items():
+        if k == "_aliases":  # type - google._upb._message.RepeatedScalarContainer
+            dct[k] = [str(x) for x in v]
         else:
             dct[k] = v
     return dct

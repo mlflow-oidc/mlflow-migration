@@ -28,25 +28,26 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Model name", "") 
+dbutils.widgets.text("1. Model name", "")
 model_name = dbutils.widgets.get("1. Model name")
 
-dbutils.widgets.text("2. Destination experiment name", "") 
+dbutils.widgets.text("2. Destination experiment name", "")
 experiment_name = dbutils.widgets.get("2. Destination experiment name")
 
-dbutils.widgets.text("3. Input directory", "") 
+dbutils.widgets.text("3. Input directory", "")
 input_dir = dbutils.widgets.get("3. Input directory")
 
-dbutils.widgets.dropdown("4. Delete model","no",["yes","no"])
+dbutils.widgets.dropdown("4. Delete model", "no", ["yes", "no"])
 delete_model = dbutils.widgets.get("4. Delete model") == "yes"
 
-dbutils.widgets.dropdown("5. Import permissions","no",["yes","no"])
+dbutils.widgets.dropdown("5. Import permissions", "no", ["yes", "no"])
 import_permissions = dbutils.widgets.get("5. Import permissions") == "yes"
 
-dbutils.widgets.dropdown("6. Import source tags","no",["yes","no"])
+dbutils.widgets.dropdown("6. Import source tags", "no", ["yes", "no"])
 import_source_tags = dbutils.widgets.get("6. Import source tags") == "yes"
 
 import os
+
 os.environ["INPUT_DIR"] = mk_local_path(input_dir)
 
 print("model_name:", model_name)
@@ -83,12 +84,12 @@ assert_widget(input_dir, "3. Input directory")
 from mlflow_migration.model.import_model import import_model
 
 import_model(
-    model_name =model_name, 
-    experiment_name = experiment_name, 
-    input_dir = input_dir, 
-    delete_model = delete_model,
-    import_permissions = import_permissions,
-    import_source_tags = import_source_tags
+    model_name=model_name,
+    experiment_name=experiment_name,
+    input_dir=input_dir,
+    delete_model=delete_model,
+    import_permissions=import_permissions,
+    import_source_tags=import_source_tags,
 )
 
 # COMMAND ----------

@@ -8,4 +8,4 @@ def load_json_file(path):
 
 def dump_as_json(msg, dct):
     print(f"{msg}:")
-    print(json.dumps(dct,indent=2)+"\n")
+    print(json.dumps(dct, indent=2) + "\n")

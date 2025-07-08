@@ -10,15 +10,16 @@ def get_host_token_for_profile(profile=None):
     if profile:
         cfg = provider.get_config_for_profile(profile)
         if not cfg.host and is_in_databricks_runtime():
-            cfg = provider.get_config() 
+            cfg = provider.get_config()
     else:
-        cfg = provider.get_config() 
+        cfg = provider.get_config()
     return (cfg.host, cfg.token)
 
 
 if __name__ == "__main__":
     import sys
+
     profile = sys.argv[1] if len(sys.argv) > 1 else None
-    print("profile:",profile)
+    print("profile:", profile)
     tuple = get_host_token_for_profile(profile)
     print("host and token:", tuple)

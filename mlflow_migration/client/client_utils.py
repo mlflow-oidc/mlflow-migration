@@ -1,5 +1,5 @@
 import mlflow
-from . http_client import HttpClient, MlflowHttpClient, DatabricksHttpClient
+from .http_client import HttpClient, MlflowHttpClient, DatabricksHttpClient
 
 
 def create_http_client(mlflow_client, model_name=None):
@@ -8,6 +8,7 @@ def create_http_client(mlflow_client, model_name=None):
     If model_name is a Unity Catalog (UC) model, the returned client is UC-enabled.
     """
     from mlflow_migration.common import model_utils
+
     creds = mlflow_client._tracking_client.store.get_host_creds()
     if model_name and model_utils.is_unity_catalog_model(model_name):
         return HttpClient("api/2.0/mlflow/unity-catalog", creds.host, creds.token)
@@ -30,7 +31,9 @@ def create_mlflow_client():
     registry_uri = mlflow.get_registry_uri()
     if registry_uri:
         tracking_uri = mlflow.get_tracking_uri()
-        nonuc_tracking_uri = tracking_uri.replace("databricks-uc","databricks") # NOTE: legacy
+        nonuc_tracking_uri = tracking_uri.replace(
+            "databricks-uc", "databricks"
+        )  # NOTE: legacy
         return mlflow.MlflowClient(nonuc_tracking_uri, registry_uri)
     else:
         return mlflow.MlflowClient()

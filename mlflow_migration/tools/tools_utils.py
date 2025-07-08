@@ -1,5 +1,9 @@
 from mlflow_migration.common import utils
-from mlflow_migration.common.iterators import SearchRegisteredModelsIterator, SearchModelVersionsIterator
+from mlflow_migration.common.iterators import (
+    SearchRegisteredModelsIterator,
+    SearchModelVersionsIterator,
+)
+
 
 def search_model_versions(client, filter):
     if utils.calling_databricks():
@@ -7,7 +11,9 @@ def search_model_versions(client, filter):
         versions = []
         for model in models:
             try:
-                _versions = list(SearchModelVersionsIterator(client, filter=f"name='{model.name}'"))
+                _versions = list(
+                    SearchModelVersionsIterator(client, filter=f"name='{model.name}'")
+                )
                 versions += _versions
             except Exception as e:
                 print(f"ERROR: registered model '{model.name}': {e}")

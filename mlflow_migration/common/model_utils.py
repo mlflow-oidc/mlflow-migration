@@ -21,9 +21,12 @@ def is_unity_catalog_model(name):
 
 
 def model_names_same_registry(name1, name2):
-    return \
-        is_unity_catalog_model(name1) and is_unity_catalog_model(name2) or \
-        not is_unity_catalog_model(name1) and not is_unity_catalog_model(name2)
+    return (
+        is_unity_catalog_model(name1)
+        and is_unity_catalog_model(name2)
+        or not is_unity_catalog_model(name1)
+        and not is_unity_catalog_model(name2)
+    )
 
 
 def create_model(client, model_name, model_dct, import_metadata):
@@ -33,7 +36,9 @@ def create_model(client, model_name, model_dct, import_metadata):
     try:
         if import_metadata:
             tags = utils.mk_tags_dict(model_dct.get("tags"))
-            client.create_registered_model(model_name, tags, model_dct.get("description"))
+            client.create_registered_model(
+                model_name, tags, model_dct.get("description")
+            )
         else:
             client.create_registered_model(model_name)
         _logger.info(f"Created new registered model '{model_name}'")
@@ -53,11 +58,18 @@ def delete_model(client, model_name, sleep_time=5):
         versions = SearchModelVersionsIterator(client, filter=f"name='{model_name}'")
         _logger.info(f"Deleting model '{model_name}' and its versions")
         for vr in versions:
-            msg = utils.get_obj_key_values(vr, [ "name", "version", "current_stage", "status", "run_id"  ])
+            msg = utils.get_obj_key_values(
+                vr, ["name", "version", "current_stage", "status", "run_id"]
+            )
             _logger.info(f"  Deleting model version: {msg}")
-            if not is_unity_catalog_model(model_name) and vr.current_stage != "Archived":
-                client.transition_model_version_stage (model_name, vr.version, "Archived")
-                time.sleep(sleep_time) # Wait until stage transition takes hold
+            if (
+                not is_unity_catalog_model(model_name)
+                and vr.current_stage != "Archived"
+            ):
+                client.transition_model_version_stage(
+                    model_name, vr.version, "Archived"
+                )
+                time.sleep(sleep_time)  # Wait until stage transition takes hold
             client.delete_model_version(model_name, vr.version)
         client.delete_registered_model(model_name)
     except RestException:
@@ -71,12 +83,14 @@ def list_model_versions(client, model_name, get_latest_versions=False):
     if is_unity_catalog_model(model_name):
         versions = SearchModelVersionsIterator(client, filter=f"name='{model_name}'")
         # JIRA: ES-834105 - UC-ML MLflow search_registered_models and search_model_versions do not return tags and aliases - 2023-08-21
-        return [ client.get_model_version(vr.name, vr.version) for vr in versions ]
+        return [client.get_model_version(vr.name, vr.version) for vr in versions]
     else:
         if get_latest_versions:
             return client.get_latest_versions(model_name)
         else:
-            return list(SearchModelVersionsIterator(client, filter=f"name='{model_name}'"))
+            return list(
+                SearchModelVersionsIterator(client, filter=f"name='{model_name}'")
+            )
 
 
 def search_model_versions(client, filter):
@@ -87,7 +101,7 @@ def search_model_versions(client, filter):
      - Missing tags - ES-834105 - UC-ML MLflow search_registered_models and search_model_versions do not return tags and aliases
     """
     versions = client.search_model_versions(filter)
-    return [ client.get_model_version(vr.name, vr.version) for vr in versions ]
+    return [client.get_model_version(vr.name, vr.version) for vr in versions]
 
 
 def export_version_model(client, version, output_dir):
@@ -101,8 +115,7 @@ def export_version_model(client, version, output_dir):
     download_uri = f"models:/{version.name}/{version.version}"
     _logger.info(f"Exporting model version 'cached model' to: '{output_dir}'")
     local_dir = mlflow.artifacts.download_artifacts(
-        artifact_uri = download_uri,
-        dst_path = _filesystem.mk_local_path(output_dir)
+        artifact_uri=download_uri, dst_path=_filesystem.mk_local_path(output_dir)
     )
     return download_uri
 
@@ -110,27 +123,34 @@ def export_version_model(client, version, output_dir):
 def show_versions(model_name, versions, msg):
     """
     Display as table registered model versions.
-     """
+    """
     import pandas as pd
     from tabulate import tabulate
-    versions = [ [
-           int(vr.version),
-           vr.current_stage,
-           vr.status,
-           vr.run_id,
-           fmt_ts_millis(vr.creation_timestamp),
-           fmt_ts_millis(vr.last_updated_timestamp),
-           vr.description
-       ] for vr in versions ]
-    df = pd.DataFrame(versions, columns = [
-        "version",
-        "current_stage",
-        "status",
-        "run_id",
-        "creation_timestamp",
-        "last_updated_timestamp",
-        "description"
-    ])
+
+    versions = [
+        [
+            int(vr.version),
+            vr.current_stage,
+            vr.status,
+            vr.run_id,
+            fmt_ts_millis(vr.creation_timestamp),
+            fmt_ts_millis(vr.last_updated_timestamp),
+            vr.description,
+        ]
+        for vr in versions
+    ]
+    df = pd.DataFrame(
+        versions,
+        columns=[
+            "version",
+            "current_stage",
+            "status",
+            "run_id",
+            "creation_timestamp",
+            "last_updated_timestamp",
+            "description",
+        ],
+    )
     df.sort_values(by=["version"], ascending=False, inplace=True)
     print(f"\n'{msg}' {len(versions)} versions for model '{model_name}'")
     print(tabulate(df, headers="keys", tablefmt="psql", showindex=False))
@@ -146,17 +166,17 @@ def model_version_to_dict(version):
     3. Handle deployment_job_state which contains non-serializable ModelVersionDeploymentJobState objects
     """
     dct = {}
-    for k,v in utils.strip_underscores(version).items():
-        if k == "aliases": # type is google._upb._message.RepeatedScalarContainer
-            dct[k] = [ str(x) for x in v ]
+    for k, v in utils.strip_underscores(version).items():
+        if k == "aliases":  # type is google._upb._message.RepeatedScalarContainer
+            dct[k] = [str(x) for x in v]
         elif k == "deployment_job_state":
             # Handle ModelVersionDeploymentJobState object
             if v is not None:
                 # Convert to a simple dict with basic string/int values
                 try:
                     dct[k] = {
-                        "state": str(v.state) if hasattr(v, 'state') else None,
-                        "message": str(v.message) if hasattr(v, 'message') else None
+                        "state": str(v.state) if hasattr(v, "state") else None,
+                        "message": str(v.message) if hasattr(v, "message") else None,
                     }
                 except Exception:
                     # If conversion fails, skip this field to avoid serialization errors
@@ -172,6 +192,7 @@ def model_version_to_dict(version):
 
 def dump_model_version(version, title=None):
     from mlflow_migration.common import dump_utils
+
     dct = model_version_to_dict(version)
     dct = model_version_to_dict(version)
     adjust_timestamps(dct, ["creation_timestamp", "last_updated_timestamp"])
@@ -198,12 +219,18 @@ def get_registered_model(mlflow_client, model_name, get_permissions=False):
         if is_unity_catalog_model(model_name):
             _model = http_client.get("registered-models/get", {"name": model_name})
             model = _model["registered_model"]
-            permissions = uc_permissions_utils.get_permissions(mlflow_client, model_name)
+            permissions = uc_permissions_utils.get_permissions(
+                mlflow_client, model_name
+            )
         else:
             dbx_client = create_dbx_client(mlflow_client)
-            _model = http_client.get("databricks/registered-models/get", { "name": model_name })
+            _model = http_client.get(
+                "databricks/registered-models/get", {"name": model_name}
+            )
             model = _model.pop("registered_model_databricks", None)
-            permissions = ws_permissions_utils.get_model_permissions_by_id(dbx_client, model["id"])
+            permissions = ws_permissions_utils.get_model_permissions_by_id(
+                dbx_client, model["id"]
+            )
             _model["registered_model"] = model
     else:
         _model = http_client.get("registered-models/get", {"name": model_name})
@@ -222,9 +249,13 @@ def update_model_permissions(mlflow_client, dbx_client, model_name, perms):
         if is_unity_catalog_model(model_name):
             uc_permissions_utils.update_permissions(mlflow_client, model_name, perms)
         else:
-            _model = dbx_client.get("mlflow/databricks/registered-models/get", { "name": model_name })
+            _model = dbx_client.get(
+                "mlflow/databricks/registered-models/get", {"name": model_name}
+            )
             _model = _model["registered_model_databricks"]
             model_id = _model["id"]
-            ws_permissions_utils.update_permissions(dbx_client, perms, "registered-model", model_name, model_id)
+            ws_permissions_utils.update_permissions(
+                dbx_client, perms, "registered-model", model_name, model_id
+            )
     else:
         _logger.info(f"No permissions to update for registered model '{model_name}'")

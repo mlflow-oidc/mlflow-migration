@@ -18,6 +18,7 @@ def _mk_system_attr(script):
     """
     import mlflow
     import platform
+
     dct = {
         "package_version": get_version(),
         "script": os.path.basename(script),
@@ -29,7 +30,7 @@ def _mk_system_attr(script):
         "platform": {
             "python_version": platform.python_version(),
             "system": platform.system(),
-            "processor": platform.processor()
+            "processor": platform.processor(),
         },
         "user": getpass.getuser(),
     }
@@ -37,11 +38,11 @@ def _mk_system_attr(script):
     if dbr:
         dct2 = {
             "databricks": {
-                 "DATABRICKS_RUNTIME_VERSION": dbr,
+                "DATABRICKS_RUNTIME_VERSION": dbr,
             }
         }
-        dct = { **dct, **dct2 }
-    return { ExportFields.SYSTEM: dct }
+        dct = {**dct, **dct2}
+    return {ExportFields.SYSTEM: dct}
 
 
 def write_export_file(dir, file, script, mlflow_attr, info_attr=None):
@@ -50,15 +51,18 @@ def write_export_file(dir, file, script, mlflow_attr, info_attr=None):
     """
     dir = _fs.mk_local_path(dir)
     path = os.path.join(dir, file)
-    info_attr = { ExportFields.INFO: info_attr} if info_attr else {}
-    mlflow_attr = { ExportFields.MLFLOW: mlflow_attr}
-    mlflow_attr = { **_mk_system_attr(script), **info_attr, **mlflow_attr }
+    info_attr = {ExportFields.INFO: info_attr} if info_attr else {}
+    mlflow_attr = {ExportFields.MLFLOW: mlflow_attr}
+    mlflow_attr = {**_mk_system_attr(script), **info_attr, **mlflow_attr}
     os.makedirs(dir, exist_ok=True)
     write_file(path, mlflow_attr)
 
 
 def _is_yaml(path, file_type=None):
-    return any(path.endswith(x) for x in [".yaml",".yml"]) or file_type in ["yaml","yml"]
+    return any(path.endswith(x) for x in [".yaml", ".yml"]) or file_type in [
+        "yaml",
+        "yml",
+    ]
 
 
 def write_file(path, content, file_type=None):
@@ -68,12 +72,12 @@ def write_file(path, content, file_type=None):
     path = _fs.mk_local_path(path)
     if path.endswith(".json"):
         with open(path, "w", encoding="utf-8") as f:
-            f.write(json.dumps(content, indent=2)+"\n")
+            f.write(json.dumps(content, indent=2) + "\n")
     elif _is_yaml(path, file_type):
         with open(path, "w", encoding="utf-8") as f:
             yaml.dump(content, f)
     else:
-        with open(path, "wb" ) as f:
+        with open(path, "wb") as f:
             f.write(content)
 
 

@@ -1,8 +1,8 @@
-
 import os
 import tempfile
 from mlflow_migration.common import mlflow_utils, io_utils
 from mlflow_migration.common.find_artifacts import find_run_model_names
+
 
 def get_model_name(artifact_path):
     idx = artifact_path.find("artifacts")

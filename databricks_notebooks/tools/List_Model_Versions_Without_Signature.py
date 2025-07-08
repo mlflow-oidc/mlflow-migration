@@ -14,17 +14,18 @@
 # COMMAND ----------
 
 import mlflow
+
 mlflow_client = mlflow.MlflowClient()
 mlflow.set_registry_uri("databricks")
 print("mlflow.version:", mlflow.__version__)
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Filter","name like 'Sklearn_Wine%'")
+dbutils.widgets.text("1. Filter", "name like 'Sklearn_Wine%'")
 filter = dbutils.widgets.get("1. Filter")
 filter = filter or None
 
-dbutils.widgets.text("2. Output file","")
+dbutils.widgets.text("2. Output file", "")
 output_file = dbutils.widgets.get("2. Output file")
 
 print("filter:", filter)

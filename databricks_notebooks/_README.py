@@ -19,12 +19,12 @@
 # MAGIC * [README](https://github.com/mlflow-oidc/mlflow-migration/blob/master/README.md)
 # MAGIC * Source code: https://github.com/mlflow-oidc/mlflow-migration - source of truth with extensive documentation.
 # MAGIC * Databricks notebooks: https://github.com/mlflow-oidc/mlflow-migration/tree/master/databricks_notebooks.
-# MAGIC   
+# MAGIC
 # MAGIC #### Architecture
 # MAGIC
 # MAGIC <img src="https://github.com/mlflow-oidc/mlflow-migration/blob/issue-138-copy-model-version/diagrams/architecture.png?raw=true"  width="700" />
 # MAGIC
-# MAGIC #### Notebooks 
+# MAGIC #### Notebooks
 # MAGIC
 # MAGIC ##### Notebooks
 # MAGIC * [Single notebooks]($single/_README) - Copy one MLflow object from one tracking server (workspace) to another.
@@ -41,7 +41,7 @@
 # MAGIC
 # MAGIC ##### [Console Script]($scripts/_README) notebooks
 # MAGIC * Command-line scripts using the Linux shell (%sh).
-# MAGIC * [Console_Scripts]($scripts/Console_Scripts) 
+# MAGIC * [Console_Scripts]($scripts/Console_Scripts)
 # MAGIC
 # MAGIC #### Databricks internal
 # MAGIC * [MLflow Migration](https://databricks.atlassian.net/wiki/spaces/UN/pages/800754006/MLflow+Export+Import) - Wiki page.

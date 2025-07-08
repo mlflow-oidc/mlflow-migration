@@ -3,6 +3,7 @@ import json
 
 def dump_mlflow_client(client, msg=""):
     import mlflow
+
     print(f"MlflowClient {msg}:")
     print("  client.tracking_uri: ", client.tracking_uri)
     print("  client._registry_uri:", client._registry_uri)
@@ -15,13 +16,13 @@ def dump_mlflow_client(client, msg=""):
 
 def dump_obj(obj, title=None, indent=""):
     if isinstance(obj, dict) or isinstance(obj, list):
-        #dump_dict(obj, title)
+        # dump_dict(obj, title)
         dump_as_json(obj, title)
         return
     if obj:
         title = title if title else type(obj).__name__
         print(f"{indent}{title}")
-        for k,v in obj.__dict__.items():
+        for k, v in obj.__dict__.items():
             print(f"{indent}  {k}: {v}")
     else:
         title = title if title else "Object"
@@ -32,7 +33,7 @@ def dump_obj(obj, title=None, indent=""):
 def dump_dict(dct, title=None):
     if title:
         print(f"{title}:")
-    for k,v in dct.items():
+    for k, v in dct.items():
         print(f"  {k}: {v}")
 
 

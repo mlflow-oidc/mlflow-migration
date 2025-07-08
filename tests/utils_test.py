@@ -2,15 +2,17 @@ import os
 import shutil
 import yaml
 import shortuuid
-import pandas as pd 
+import pandas as pd
 import mlflow
 from mlflow_migration.common.mlflow_utils import MlflowTrackingUriTweak
 from . import sklearn_utils
 
 TEST_OBJECT_PREFIX = "test_exim"
 
+
 def mk_test_object_name_default():
     return f"{TEST_OBJECT_PREFIX}_{mk_uuid()}"
+
 
 def mk_uuid():
     return shortuuid.uuid()
@@ -24,16 +26,24 @@ def create_output_dir(output_dir):
 
 def compare_dirs(d1, d2):
     from filecmp import dircmp
+
     def _compare_dirs(dcmp):
-        if len(dcmp.diff_files) > 0 or len(dcmp.left_only) > 0 or len(dcmp.right_only) > 0:
+        if (
+            len(dcmp.diff_files) > 0
+            or len(dcmp.left_only) > 0
+            or len(dcmp.right_only) > 0
+        ):
             if len(dcmp.diff_files) == 1:
-                if dcmp.diff_files[0] == "MLmodel": # run_id differs because we changed it to the imported run_id
+                if (
+                    dcmp.diff_files[0] == "MLmodel"
+                ):  # run_id differs because we changed it to the imported run_id
                     return True
             return False
         for sub_dcmp in dcmp.subdirs.values():
             if not _compare_dirs(sub_dcmp):
                 return False
         return True
+
     return _compare_dirs(dircmp(d1, d2))
 
 
@@ -56,28 +66,39 @@ def create_iris_dataset():
 
 
 def read_config_file(path="config.yaml"):
-    with open(path,  encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         dct = yaml.safe_load(f)
         print(f"Config for '{path}':")
-        for k,v in dct.items():
+        for k, v in dct.items():
             print(f"  {k}: {v}")
     return dct
 
 
-def create_nested_runs(client, experiment_id, max_depth=1, max_width=1, level=0, indent=""):
+def create_nested_runs(
+    client, experiment_id, max_depth=1, max_width=1, level=0, indent=""
+):
     run_name = "run"
     if level >= max_depth:
         return
     run_name = f"{run_name}_{level}"
     nested = level > 0
     with MlflowTrackingUriTweak(client) as run:
-        with mlflow.start_run(experiment_id=experiment_id, run_name=run_name, nested=nested) as run:
+        with mlflow.start_run(
+            experiment_id=experiment_id, run_name=run_name, nested=nested
+        ) as run:
             mlflow.log_param("alpha", "0.123")
-            mlflow.log_metric("m",0.123)
+            mlflow.log_metric("m", 0.123)
             mlflow.set_tag("run_name", run_name)
             mlflow.set_tag("ori_run_id", run.info.run_id)
             model = sklearn_utils.create_sklearn_model()
             mlflow.sklearn.log_model(model, "model")
             for _ in range(max_width):
-                create_nested_runs(client, experiment_id, max_depth, max_width, level+1, indent+"  ")
+                create_nested_runs(
+                    client,
+                    experiment_id,
+                    max_depth,
+                    max_width,
+                    level + 1,
+                    indent + "  ",
+                )
     return client.get_run(run.info.run_id)

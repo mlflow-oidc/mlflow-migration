@@ -17,9 +17,9 @@ def read_rename_file(path):
 def rename(name, replacements, object_name="object"):
     if not replacements:
         return name
-    for k,v in replacements.items():
+    for k, v in replacements.items():
         if k != "" and name.startswith(k):
-            new_name = name.replace(k,v)
+            new_name = name.replace(k, v)
             _logger.info(f"Renaming {object_name} '{name}' to '{new_name}'")
             return new_name
     return name
@@ -28,9 +28,12 @@ def rename(name, replacements, object_name="object"):
 def get_renames(filename_or_dict):
     if filename_or_dict is None:
         return None
-    if isinstance(filename_or_dict,str):
+    if isinstance(filename_or_dict, str):
         return read_rename_file(filename_or_dict)
     elif isinstance(filename_or_dict, dict):
         return filename_or_dict
     else:
-        raise MlflowExportImportException(f"Unknown name replacement type '{type(filename_or_dict)}'", http_status_code=400)
+        raise MlflowExportImportException(
+            f"Unknown name replacement type '{type(filename_or_dict)}'",
+            http_status_code=400,
+        )

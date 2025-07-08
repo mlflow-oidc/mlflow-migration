@@ -25,7 +25,9 @@ def _compare_runs_without_source_tags(mlflow_context, run1, run2, output_dir):
 def _compare_runs_with_source_tags(run1, run2):
     _compare_runs_common(run1, run2)
     source_tags2 = _strip_mlflow_migration_tags(run2.data.tags)
-    assert len(source_tags2) > 0, f"Source tags starting with '{ExportTags.PREFIX_ROOT}' are missing"
+    assert (
+        len(source_tags2) > 0
+    ), f"Source tags starting with '{ExportTags.PREFIX_ROOT}' are missing"
 
 
 def _compare_runs_common(run1, run2):
@@ -39,9 +41,14 @@ def compare_experiment_tags(tags1, tags2, import_source_tags=False):
         assert tags1 == tags2
         return
 
-    source_tags2 = { k:v for k,v in tags2.items() if k.startswith(ExportTags.PREFIX_MLFLOW_TAG) }
-    mlflow_tags1 = { k:v for k,v in tags1.items() if k.startswith("mlflow.") }
-    mlflow_tags2 = { k.replace(f"{ExportTags.PREFIX_MLFLOW_TAG}.","mlflow."):v for k,v in source_tags2.items() }
+    source_tags2 = {
+        k: v for k, v in tags2.items() if k.startswith(ExportTags.PREFIX_MLFLOW_TAG)
+    }
+    mlflow_tags1 = {k: v for k, v in tags1.items() if k.startswith("mlflow.")}
+    mlflow_tags2 = {
+        k.replace(f"{ExportTags.PREFIX_MLFLOW_TAG}.", "mlflow."): v
+        for k, v in source_tags2.items()
+    }
     assert mlflow_tags1 == mlflow_tags2
 
     tags2_no_source_tags = _strip_mlflow_migration_tags(tags2)
@@ -49,13 +56,15 @@ def compare_experiment_tags(tags1, tags2, import_source_tags=False):
 
 
 def _compare_common_tags(run1, run2):
-    tags1 = { k:v for k,v in run1.data.tags.items() if not k.startswith("mlflow") }
-    tags2 = { k:v for k,v in run2.data.tags.items() if not k.startswith("mlflow") }
+    tags1 = {k: v for k, v in run1.data.tags.items() if not k.startswith("mlflow")}
+    tags2 = {k: v for k, v in run2.data.tags.items() if not k.startswith("mlflow")}
     assert tags1 == tags2
 
 
 def _compare_runs_without_tags(mlflow_context, run1, run2, output_dir):
-    run_artifact_dir1, run_artifact_dir2 = utils_test.create_run_artifact_dirs(output_dir)
+    run_artifact_dir1, run_artifact_dir2 = utils_test.create_run_artifact_dirs(
+        output_dir
+    )
     _compare_run_info(run1, run2)
     _compare_data(run1, run2)
     _compare_artifacts(mlflow_context, run1, run2, run_artifact_dir1, run_artifact_dir2)
@@ -72,9 +81,15 @@ def _compare_data(run1, run2):
     _compare_common_tags(run1, run2)
 
 
-def _compare_artifacts(mlflow_context, run1, run2, run_artifact_dir1, run_artifact_dir2):
-    path1 = mlflow_context.client_src.download_artifacts(run1.info.run_id, ".", dst_path=run_artifact_dir1)
-    path2 = mlflow_context.client_dst.download_artifacts(run2.info.run_id, ".", dst_path=run_artifact_dir2)
+def _compare_artifacts(
+    mlflow_context, run1, run2, run_artifact_dir1, run_artifact_dir2
+):
+    path1 = mlflow_context.client_src.download_artifacts(
+        run1.info.run_id, ".", dst_path=run_artifact_dir1
+    )
+    path2 = mlflow_context.client_dst.download_artifacts(
+        run2.info.run_id, ".", dst_path=run_artifact_dir2
+    )
     assert utils_test.compare_dirs(path1, path2)
 
 
@@ -82,28 +97,45 @@ def compare_models(model_src, model_dst, compare_names):
     if compare_names:
         assert model_src.name == model_dst.name
     else:
-        assert model_src.name != model_dst.name # When testing against Databricks, for now we use one tracking server and thus the model names are different
+        assert (
+            model_src.name != model_dst.name
+        )  # When testing against Databricks, for now we use one tracking server and thus the model names are different
     assert model_src.description == model_dst.description
     assert model_src.tags.items() <= model_dst.tags.items()
 
 
-def compare_models_with_versions(mlflow_context, model_src, model_dst, compare_names=None):
+def compare_models_with_versions(
+    mlflow_context, model_src, model_dst, compare_names=None
+):
     if compare_names is None:
         compare_names = mlflow_context.client_src != mlflow_context.client_dst
     compare_models(model_src, model_dst, compare_names)
-    if not is_unity_catalog_model(model_src.name) and not is_unity_catalog_model(model_dst.name):
-        for (vr_src, vr_dst) in zip(model_src.latest_versions, model_dst.latest_versions):
+    if not is_unity_catalog_model(model_src.name) and not is_unity_catalog_model(
+        model_dst.name
+    ):
+        for vr_src, vr_dst in zip(model_src.latest_versions, model_dst.latest_versions):
             compare_versions(mlflow_context, vr_src, vr_dst, compare_names)
-    vrs_src = model_utils.search_model_versions(mlflow_context.client_src, f"name='{model_src.name}'")
-    vrs_dst = model_utils.search_model_versions(mlflow_context.client_dst, f"name='{model_dst.name}'")
-    vrs_src = { vr.tags["uuid"]:vr for vr in vrs_src }
+    vrs_src = model_utils.search_model_versions(
+        mlflow_context.client_src, f"name='{model_src.name}'"
+    )
+    vrs_dst = model_utils.search_model_versions(
+        mlflow_context.client_dst, f"name='{model_dst.name}'"
+    )
+    vrs_src = {vr.tags["uuid"]: vr for vr in vrs_src}
     for vr_dst in vrs_dst:
         vr_src = vrs_src.get(vr_dst.tags["uuid"])
         assert vr_src
         compare_versions(mlflow_context, vr_src, vr_dst, compare_names)
 
 
-def compare_versions(mlflow_context, vr_src, vr_dst, compare_names=True, run_ids_equal=False, compare_stages=True):
+def compare_versions(
+    mlflow_context,
+    vr_src,
+    vr_dst,
+    compare_names=True,
+    run_ids_equal=False,
+    compare_stages=True,
+):
     if compare_stages:
         assert vr_src.current_stage == vr_dst.current_stage
         assert vr_src.aliases == vr_dst.aliases
@@ -130,4 +162,4 @@ def compare_versions(mlflow_context, vr_src, vr_dst, compare_names=True, run_ids
 
 
 def _strip_mlflow_migration_tags(tags):
-    return { k:v for k,v in tags.items() if not k.startswith(ExportTags.PREFIX_ROOT) }
+    return {k: v for k, v in tags.items() if not k.startswith(ExportTags.PREFIX_ROOT)}

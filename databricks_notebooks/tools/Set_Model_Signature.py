@@ -1,10 +1,10 @@
 # Databricks notebook source
-# MAGIC %md ### Set Model Signature 
+# MAGIC %md ### Set Model Signature
 # MAGIC
 # MAGIC ##### Overview
 # MAGIC
 # MAGIC * Set the signature of a run's MLflow model.
-# MAGIC * If this run model is backing a model version, you need to re-register model. 
+# MAGIC * If this run model is backing a model version, you need to re-register model.
 # MAGIC
 # MAGIC ##### Notes:
 # MAGIC * Only models with a `runs:/` scheme are supported.
@@ -63,6 +63,7 @@ set_registry_uri(model_uri)
 # COMMAND ----------
 
 from mlflow_migration.tools.signature_utils import get_model_signature
+
 signature = get_model_signature(model_uri)
 signature
 
@@ -92,6 +93,7 @@ display(df_output.take(5))
 # COMMAND ----------
 
 from mlflow.models.signature import infer_signature
+
 signature = infer_signature(df_input, df_output)
 signature
 

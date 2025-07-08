@@ -23,7 +23,7 @@ secrets_scope, secrets_token_key
 
 # COMMAND ----------
 
-# MAGIC %sh 
+# MAGIC %sh
 # MAGIC echo "DATABRICKS_CONFIG_FILE: $DATABRICKS_CONFIG_FILE"
 # MAGIC cat $DATABRICKS_CONFIG_FILE
 

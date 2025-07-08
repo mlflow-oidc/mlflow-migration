@@ -20,34 +20,37 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Output directory", "") 
+dbutils.widgets.text("1. Output directory", "")
 output_dir = dbutils.widgets.get("1. Output directory")
-output_dir = output_dir.replace("dbfs:","/dbfs")
+output_dir = output_dir.replace("dbfs:", "/dbfs")
 
-dbutils.widgets.multiselect("2. Stages", "Production", ["Production","Staging","Archived","None"])
+dbutils.widgets.multiselect(
+    "2. Stages", "Production", ["Production", "Staging", "Archived", "None"]
+)
 stages = dbutils.widgets.get("2. Stages")
 
-dbutils.widgets.dropdown("3. Export latest versions","no",["yes","no"])
+dbutils.widgets.dropdown("3. Export latest versions", "no", ["yes", "no"])
 export_latest_versions = dbutils.widgets.get("3. Export latest versions") == "yes"
 
-dbutils.widgets.text("4. Run start date", "") 
+dbutils.widgets.text("4. Run start date", "")
 run_start_date = dbutils.widgets.get("4. Run start date")
 
-dbutils.widgets.dropdown("5. Export permissions","no",["yes","no"])
+dbutils.widgets.dropdown("5. Export permissions", "no", ["yes", "no"])
 export_permissions = dbutils.widgets.get("5. Export permissions") == "yes"
 
-dbutils.widgets.dropdown("6. Export deleted runs","no",["yes","no"])
+dbutils.widgets.dropdown("6. Export deleted runs", "no", ["yes", "no"])
 export_deleted_runs = dbutils.widgets.get("6. Export deleted runs") == "yes"
 
-dbutils.widgets.dropdown("7. Export version MLflow model","no",["yes","no"]) # TODO
+dbutils.widgets.dropdown("7. Export version MLflow model", "no", ["yes", "no"])  # TODO
 export_version_model = dbutils.widgets.get("7. Export version MLflow model") == "yes"
 
 notebook_formats = get_notebook_formats(8)
 
-dbutils.widgets.dropdown("9. Use threads","no",["yes","no"])
+dbutils.widgets.dropdown("9. Use threads", "no", ["yes", "no"])
 use_threads = dbutils.widgets.get("9. Use threads") == "yes"
- 
-if run_start_date=="": run_start_date = None
+
+if run_start_date == "":
+    run_start_date = None
 
 print("output_dir:", output_dir)
 print("stages:", stages)
@@ -68,13 +71,13 @@ assert_widget(output_dir, "1. Output directory")
 from mlflow_migration.bulk.export_all import export_all
 
 export_all(
-    output_dir = output_dir, 
-    stages = stages,
-    export_latest_versions = export_latest_versions,
-    run_start_time = run_start_date,
-    export_permissions = export_permissions,
-    export_deleted_runs = export_deleted_runs,
-    export_version_model = export_version_model,
-    notebook_formats = notebook_formats, 
-    use_threads = use_threads
+    output_dir=output_dir,
+    stages=stages,
+    export_latest_versions=export_latest_versions,
+    run_start_time=run_start_date,
+    export_permissions=export_permissions,
+    export_deleted_runs=export_deleted_runs,
+    export_version_model=export_version_model,
+    notebook_formats=notebook_formats,
+    use_threads=use_threads,
 )

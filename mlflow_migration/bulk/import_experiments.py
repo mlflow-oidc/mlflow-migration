@@ -1,4 +1,4 @@
-""" 
+"""
 Import a list of experiment from a directory.
 """
 
@@ -9,12 +9,12 @@ import click
 
 import mlflow
 from mlflow_migration.common.click_options import (
-    opt_input_dir, 
+    opt_input_dir,
     opt_import_permissions,
     opt_import_source_tags,
-    opt_use_src_user_id, 
+    opt_use_src_user_id,
     opt_experiment_rename_file,
-    opt_use_threads
+    opt_use_threads,
 )
 from mlflow_migration.common import utils, io_utils
 from mlflow_migration.experiment.import_experiment import import_experiment
@@ -24,14 +24,14 @@ _logger = utils.getLogger(__name__)
 
 
 def import_experiments(
-        input_dir, 
-        import_permissions = False,
-        import_source_tags = False,
-        use_src_user_id = False, 
-        experiment_renames = None,
-        use_threads = False,
-        mlflow_client = None
-    ): 
+    input_dir,
+    import_permissions=False,
+    import_source_tags=False,
+    use_src_user_id=False,
+    experiment_renames=None,
+    use_threads=False,
+    mlflow_client=None,
+):
     """
     :param input_dir: Source experiment directory.
     :param import_permissions: Import Databricks permissions.
@@ -58,48 +58,51 @@ def import_experiments(
     futures = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         for exp in exps:
-            exp_input_dir = os.path.join(input_dir,exp["id"])
+            exp_input_dir = os.path.join(input_dir, exp["id"])
             exp_name = exp["name"]
-            run_info_map = executor.submit(_import_experiment, 
-                mlflow_client, 
-                exp_name, 
-                exp_input_dir, 
-                import_permissions, 
-                import_source_tags, 
-                use_src_user_id, 
-                experiment_renames
+            run_info_map = executor.submit(
+                _import_experiment,
+                mlflow_client,
+                exp_name,
+                exp_input_dir,
+                import_permissions,
+                import_source_tags,
+                use_src_user_id,
+                experiment_renames,
             )
             futures.append([exp["id"], run_info_map])
-    return [ (f[0], f[1].result()) for f in futures ] # materialize the future
+    return [(f[0], f[1].result()) for f in futures]  # materialize the future
 
 
-def _import_experiment(mlflow_client, 
-        exp_name, 
-        input_dir, 
-        import_permissions, 
-        import_source_tags, 
-        use_src_user_id, 
-        experiment_renames
-    ):
+def _import_experiment(
+    mlflow_client,
+    exp_name,
+    input_dir,
+    import_permissions,
+    import_source_tags,
+    use_src_user_id,
+    experiment_renames,
+):
     """
-    :return: 
+    :return:
        - Dictionary of source run_id (key) to destination run.info object (value).
        - None if error happened
     """
     try:
-        exp_name =  rename_utils.rename(exp_name, experiment_renames, "experiment")
+        exp_name = rename_utils.rename(exp_name, experiment_renames, "experiment")
         run_info_map = import_experiment(
-            mlflow_client = mlflow_client,
-            experiment_name = exp_name,
-            input_dir = input_dir,
-            import_permissions = import_permissions,
-            import_source_tags = import_source_tags,
-            use_src_user_id = use_src_user_id
+            mlflow_client=mlflow_client,
+            experiment_name=exp_name,
+            input_dir=input_dir,
+            import_permissions=import_permissions,
+            import_source_tags=import_source_tags,
+            use_src_user_id=use_src_user_id,
         )
         return run_info_map
     except Exception as e:
-        msg = { "experiment": exp_name, "Exception": str(e) }
+        msg = {"experiment": exp_name, "Exception": str(e)}
         import traceback
+
         traceback.print_exc()
         _logger.error(f"Failed to import experiment: {msg}")
         return None
@@ -110,6 +113,7 @@ class ImportResult:
     run_info_map: dict
     exception: None
 
+
 @click.command()
 @opt_input_dir
 @opt_import_permissions
@@ -117,19 +121,25 @@ class ImportResult:
 @opt_use_src_user_id
 @opt_experiment_rename_file
 @opt_use_threads
-
-def main(input_dir, import_permissions, import_source_tags, use_src_user_id, experiment_rename_file, use_threads): 
+def main(
+    input_dir,
+    import_permissions,
+    import_source_tags,
+    use_src_user_id,
+    experiment_rename_file,
+    use_threads,
+):
     _logger.info("Options:")
-    for k,v in locals().items():
+    for k, v in locals().items():
         _logger.info(f"  {k}: {v}")
 
     import_experiments(
-        input_dir = input_dir, 
-        import_permissions = import_permissions,
-        import_source_tags = import_source_tags,
-        use_src_user_id = use_src_user_id,
-        experiment_renames = experiment_rename_file,
-        use_threads = use_threads
+        input_dir=input_dir,
+        import_permissions=import_permissions,
+        import_source_tags=import_source_tags,
+        use_src_user_id=use_src_user_id,
+        experiment_renames=experiment_rename_file,
+        use_threads=use_threads,
     )
 
 

@@ -31,22 +31,26 @@ def _load_func(func_name, module_dct, module_path):
         raise TypeError(f"Cannot find function '{func_name}()' in '{module_path}'")
     return func
 
+
 def _load_module(module_path):
     import runpy
+
     module_dct = runpy.run_path(module_path)
     rewrite_model = _load_func("rewrite_model", module_dct, module_path)
     rewrite_experiment = _load_func("rewrite_experiment", module_dct, module_path)
-    return rewrite_model,  rewrite_experiment
+    return rewrite_model, rewrite_experiment
 
 
 def _rewrite_object(object_dir, object_id, object_type, rewrite_object_func):
-    """ Process either a model or experiment """
+    """Process either a model or experiment"""
     object_dir = os.path.join(object_dir, object_id)
     path = os.path.join(object_dir, f"{object_type}.json")
-    #path = os.path.join(object_dir, object_id, f"{object_type}.json")
+    # path = os.path.join(object_dir, object_id, f"{object_type}.json")
     path_backup = f"{path}.backup"
     if os.path.exists(path_backup):
-        print(f"WARNING: Not processing {object_type} '{object_id}' since '{path_backup}' already exists")
+        print(
+            f"WARNING: Not processing {object_type} '{object_id}' since '{path_backup}' already exists"
+        )
     else:
         print(f"Processing {object_type} '{object_id}'")
         shutil.copyfile(path, path_backup)
@@ -56,7 +60,7 @@ def _rewrite_object(object_dir, object_id, object_type, rewrite_object_func):
 
 
 def rewrite_models(input_dir, rewrite_model):
-    """ Rewrite the models """
+    """Rewrite the models"""
     input_dir = os.path.join(input_dir, "models")
     models_dct = io_utils.read_file(os.path.join(input_dir, "models.json"))
     model_names = models_dct["mlflow"]["models"]
@@ -67,11 +71,11 @@ def rewrite_models(input_dir, rewrite_model):
 
 
 def rewrite_experiments(input_dir, rewrite_experiment):
-    """ Rewrite the experiments """
+    """Rewrite the experiments"""
     input_dir = os.path.join(input_dir, "experiments")
     experiments_dct = io_utils.read_file(os.path.join(input_dir, "experiments.json"))
     experiments = experiments_dct["mlflow"]["experiments"]
-    experiment_ids = [ exp["id"] for exp in experiments ]
+    experiment_ids = [exp["id"] for exp in experiments]
 
     print(f"Processing {len(experiment_ids)} experiments")
     for experiment_id in experiment_ids:
@@ -79,30 +83,31 @@ def rewrite_experiments(input_dir, rewrite_experiment):
 
 
 def rewrite_all(input_dir, custom_rewriters_module):
-    """ Rewrite all """
+    """Rewrite all"""
     rewrite_model, rewrite_experiment = _load_module(custom_rewriters_module)
     rewrite_models(input_dir, rewrite_model)
     rewrite_experiments(input_dir, rewrite_experiment)
 
 
 @click.command()
-@click.option("--input-dir",
+@click.option(
+    "--input-dir",
     help="Export directory of export-models or export-all.",
     type=str,
-    required=True
+    required=True,
 )
-@click.option("--custom-rewriters-module",
-    help=
-"""
+@click.option(
+    "--custom-rewriters-module",
+    help="""
 Python file containing user-provided custom model and experiment rewrite logic.
 Module expects 2 methods: rewrite_models(dct) and rewrite_experiments(dct).
 """,
     type=str,
-    required=True
+    required=True,
 )
 def main(input_dir, custom_rewriters_module):
     print("Options:")
-    for k,v in locals().items():
+    for k, v in locals().items():
         print(f"  {k}: {v}")
     rewrite_all(input_dir, custom_rewriters_module)
 

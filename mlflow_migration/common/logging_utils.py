@@ -4,6 +4,7 @@ import logging.config
 
 _have_loaded_logging_config = False
 
+
 def get_logger(name):
     global _have_loaded_logging_config
     if _have_loaded_logging_config:
@@ -12,9 +13,9 @@ def get_logger(name):
     config_path = os.environ.get("MLFLOW_MIGRATION_LOG_CONFIG_FILE", None)
     output_path = os.environ.get("MLFLOW_MIGRATION_LOG_OUTPUT_FILE", None)
     log_format = os.environ.get("MLFLOW_MIGRATION_LOG_FORMAT", None)
-    #print(f"logging_utils.get_logger: config_path: {config_path}")
-    #print(f"logging_utils.get_logger: output_path: {output_path}")
-    #print(f"logging_utils.get_logger: log_format: {log_format}")
+    # print(f"logging_utils.get_logger: config_path: {config_path}")
+    # print(f"logging_utils.get_logger: output_path: {output_path}")
+    # print(f"logging_utils.get_logger: log_format: {log_format}")
 
     if config_path:
         if not config_path.endswith(".yaml"):
@@ -38,12 +39,17 @@ def get_logger(name):
 def _load_default_log_config(output_path=None, log_format=None):
     cfg = _create_default_log_config(output_path, log_format)
     logging.config.dictConfig(cfg)
-    msg = f"with output log file '{output_path}'" if output_path else "without output log file"
+    msg = (
+        f"with output log file '{output_path}'"
+        if output_path
+        else "without output log file"
+    )
     logging.info(f"Using default logging config {msg}")
 
 
 def _create_default_log_config(output_path=None, log_format=None):
     from mlflow_migration.common.default_logging_config import config
+
     cfg = config.copy()
     if log_format:
         cfg["formatters"]["simple"]["format"] = log_format

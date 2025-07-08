@@ -30,35 +30,36 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("1. Model", "") 
+dbutils.widgets.text("1. Model", "")
 model_name = dbutils.widgets.get("1. Model")
 
-dbutils.widgets.text("2. Output base directory", "") 
+dbutils.widgets.text("2. Output base directory", "")
 output_dir = dbutils.widgets.get("2. Output base directory")
 
-all_stages = [ "All", "Production", "Staging", "Archived", "None" ]
+all_stages = ["All", "Production", "Staging", "Archived", "None"]
 dbutils.widgets.multiselect("3. Stages", all_stages[0], all_stages)
 stages = dbutils.widgets.get("3. Stages")
-if stages == "All": 
+if stages == "All":
     stages = None
 else:
     stages = stages.split(",")
-    if "" in stages: stages.remove("")
+    if "" in stages:
+        stages.remove("")
 
-dbutils.widgets.dropdown("4. Export latest versions","no",["yes","no"])
+dbutils.widgets.dropdown("4. Export latest versions", "no", ["yes", "no"])
 export_latest_versions = dbutils.widgets.get("4. Export latest versions") == "yes"
 
-dbutils.widgets.text("5. Versions", "") 
+dbutils.widgets.text("5. Versions", "")
 versions = dbutils.widgets.get("5. Versions")
 versions = versions.split(",") if versions else []
 
-dbutils.widgets.dropdown("6. Export permissions","no",["yes","no"])
+dbutils.widgets.dropdown("6. Export permissions", "no", ["yes", "no"])
 export_permissions = dbutils.widgets.get("6. Export permissions") == "yes"
 
-dbutils.widgets.dropdown("7. Export version MLflow model","no",["yes","no"])
+dbutils.widgets.dropdown("7. Export version MLflow model", "no", ["yes", "no"])
 export_version_model = dbutils.widgets.get("7. Export version MLflow model") == "yes"
 
-notebook_formats = get_notebook_formats(8) # widget "7. Notebook formats"
+notebook_formats = get_notebook_formats(8)  # widget "7. Notebook formats"
 
 print("model_name:", model_name)
 print("output_dir:", output_dir)
@@ -93,14 +94,14 @@ display_registered_model_uri(model_name)
 from mlflow_migration.model.export_model import export_model
 
 export_model(
-    model_name = model_name, 
-    output_dir = output_dir,
-    stages = stages,
-    versions = versions,
-    export_latest_versions = export_latest_versions,
-    export_version_model = export_version_model,
-    export_permissions = export_permissions,
-    notebook_formats = notebook_formats
+    model_name=model_name,
+    output_dir=output_dir,
+    stages=stages,
+    versions=versions,
+    export_latest_versions=export_latest_versions,
+    export_version_model=export_version_model,
+    export_permissions=export_permissions,
+    notebook_formats=notebook_formats,
 )
 
 # COMMAND ----------
@@ -110,8 +111,9 @@ export_model(
 # COMMAND ----------
 
 import os
+
 output_dir = mk_local_path(output_dir)
-os.environ['OUTPUT_DIR'] = output_dir
+os.environ["OUTPUT_DIR"] = output_dir
 
 # COMMAND ----------
 
@@ -123,6 +125,6 @@ os.environ['OUTPUT_DIR'] = output_dir
 
 # COMMAND ----------
 
-# MAGIC %sh 
+# MAGIC %sh
 # MAGIC echo $OUTPUT_DIR
 # MAGIC cat $OUTPUT_DIR/model.json

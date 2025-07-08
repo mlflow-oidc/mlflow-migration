@@ -50,9 +50,9 @@ Options:
                                   Mututally exclusive with option --versions.
   --run-start-time TEXT           Only export runs started after this UTC time
                                   (inclusive). Format: YYYY-MM-DD.
-  --export-deleted-runs BOOLEAN   Export deleted runs.  [default: False] 
+  --export-deleted-runs BOOLEAN   Export deleted runs.  [default: False]
   --export-version-model BOOLEAN  Export registered model version's 'cached'
-                                  MLflow model.  [default: False] 
+                                  MLflow model.  [default: False]
   --export-permissions BOOLEAN    Export Databricks permissions.  [default:
                                   False]
   --notebook-formats TEXT         Databricks notebook formats. Values are
@@ -86,7 +86,7 @@ See also [Single tools Registered Model Tools](single.md#registered-model-tools)
 When exporting a registered models the following model's associated objects are also transitively exported:
 * Versions of a model.
 * The run associated with each version.
-* The experiment that the run belongs to. 
+* The experiment that the run belongs to.
 
 **Scripts**
 * `export-models` - exports registered models.
@@ -95,7 +95,7 @@ When exporting a registered models the following model's associated objects are 
 
 ### Export directory
 
-Export directory samples: 
+Export directory samples:
 [open source](samples/oss_mlflow/bulk/models)
 \- [Databricks](samples/databricks/bulk/models).
 
@@ -117,11 +117,11 @@ Export directory samples:
 ```
 
 
-### Export registered models 
+### Export registered models
 
 Exports registered models and their versions' backing run along with the run's experiment.
 
-The `export-all-runs` option is of particular significance. 
+The `export-all-runs` option is of particular significance.
 It controls whether all runs of an experiment are exported or only those associated with a registered model version.
 Obviously there are many runs that are not linked to a registered model version.
 This can make a substantial difference in export time.
@@ -197,7 +197,7 @@ sklearn_wine
 ```
 
 
-### Import registered models 
+### Import registered models
 
 Source: [import_models.py](mlflow_migration/bulk/import_models.py).
 
@@ -237,13 +237,13 @@ Options:
 import-models  --input-dir out
 ```
 
-## Experiments 
+## Experiments
 
 Export/import experiments to a directory.
 
-### Export Directory 
+### Export Directory
 
-Export directory samples: 
+Export directory samples:
 [open source](samples/oss_mlflow/bulk/experiments)
 \- [Databricks](samples/databricks/bulk/experiments).
 
@@ -303,7 +303,7 @@ export-experiments \
   --output-dir out
 ```
 
-##### Export experiments from filename 
+##### Export experiments from filename
 ```
 export-experiments \
   --output-dir out \
@@ -335,7 +335,7 @@ Duration: 103.6 seonds
 
 Import experiments from a directory. Reads the manifest file to import expirements and their runs.
 
-The experiment will be created if it does not exist in the destination tracking server. 
+The experiment will be created if it does not exist in the destination tracking server.
 If the experiment already exists, the source runs will be added to it.
 
 

@@ -83,7 +83,7 @@ export-experiment \
   --experiment sklearn-wine \
   --output-dir out \
   --run-ids 1eea5a4f49184781947d6761b7207b25 \
-  --check-nested-runs True 
+  --check-nested-runs True
 ```
 
 #### Databricks export examples
@@ -450,7 +450,7 @@ Options:
 
 ### Import Model Version
 
-Imports a registered model version and its run. 
+Imports a registered model version and its run.
 
 Optionally import the registered model and experiment metadata (description and tags) only if they are being created for the first time.
 Will not modify metadata of an existing registered model and experiment.

@@ -18,20 +18,20 @@ Last updated: _2023-12-19_.
 * Copies a model version and its run (optional).
 * Two types of model version copy:
   * _Shallow copy_ - does not copy the source version's run. The destination model version will point to the source version's run.
-  * _Deep copy_ - the destination model version will point to a new copy of the run in the destination workspace. 
+  * _Deep copy_ - the destination model version will point to a new copy of the run in the destination workspace.
     * _Recommended_ for full governance and lineage tracking.
 * Supports both the WS registry and UC registry copying including WS to UC copying.
 * For WS registry, the destination model version can be either in the same workspace or in another workspace.
 * For UC registry, the destination model version can be either in the same UC metastore or in another  UC metastore.
 * Databricks registry URIs should be [Databricks profiles](https://docs.databricks.com/en/dev-tools/cli/profiles.html).
 * Note MLflow 2.8.0 introduced [MlflowClient.copy_model_version](https://mlflow.org/docs/latest/python_api/mlflow.client.html#mlflow.client.MlflowClient.copy_model_version). However it is only a shallow copy and does not work across external workspaces or UC metastores.
-* Source: 
+* Source:
   * [Copy_Model_Version.py](mlflow_migration/copy/Copy_Model_Version.py) - Python script
   * [Copy_Model_Version](databricks_notebooks/copy/Copy_Model_Version.py) - Databricks notebook
 
 Copy model version scenarios:
 * Copy UC model version int the same UC metastore
-* Copy UC model version to another UC metastore 
+* Copy UC model version to another UC metastore
 * Copy WS model version to another workspace as a WS model version
 * Copy WS model version to another workspace as a UC model version
 * Copy local model version to Databricks as a UC model version
@@ -54,7 +54,7 @@ copy-model-version \
   --dst-model prod.models.sklearn_wine \
   --dst-experiment-name  /Users/first.last@mycompany.com/experiments/My_Experiment \
   --src-registry-uri: databricks-uc://test-env \
-  --dst-registry-uri: databricks-uc://test-env 
+  --dst-registry-uri: databricks-uc://test-env
 ```
 
 ### Copy UC model version to another UC metastore
@@ -108,7 +108,7 @@ copy-model-version \
 
 _Experimental._
 
-The option `--copy-lineage-tags` will copy source metadata version and run information to the 
+The option `--copy-lineage-tags` will copy source metadata version and run information to the
 new version and store it as tags starting with `mlflow_exim`.
 
 Lineage is only mainatained for one copying action.

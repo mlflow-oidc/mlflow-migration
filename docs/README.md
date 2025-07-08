@@ -58,7 +58,7 @@ There are two dimensions to the MLflow Migration tools:
 
 The two execution modes are:
 
-* [Single tools](single.md). Copy a single MLflow object between tracking servers. 
+* [Single tools](single.md). Copy a single MLflow object between tracking servers.
 These tools allow you to specify a different destination object name.
 For example, if you want to clone the experiment `/Mary/Experiments/Iris` under a new name, you can specify the target experiment name as `/John/Experiments/Iris`.
 
@@ -142,7 +142,7 @@ cd mlflow-export-import
 pip install -e .
 ```
 
-#### 5. Install from PyPI 
+#### 5. Install from PyPI
 
 Legacy. Due to the quick turnaround time for bug ad feature fixes, this is deprecated.
 

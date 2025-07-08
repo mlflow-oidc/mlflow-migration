@@ -57,7 +57,7 @@ Each object export file is comprised of three JSON parts:
 ```
 
 
-## Sample export JSON files 
+## Sample export JSON files
 
 ### Open source and Databricks MLflow examples
 
@@ -70,13 +70,13 @@ Column legend:
 |      |        | **Basic**  | **Src Tags** |     |
 | Single | Experiment | [link](samples/oss_mlflow/single/experiments/basic) |[link](samples/oss_mlflow/single/experiments/src_tags) | [link](samples/databricks/single/experiments/basic) |
 | Single | Model | [link](samples/oss_mlflow/single/models/basic/model.json) |[link](samples/oss_mlflow/single/models/src_tags/model.json) |  [link](samples/databricks/single/models) |
-| Bulk | Experiment | [link](samples/oss_mlflow/bulk/experiments) | | [link](samples/databricks/bulk/experiments) | 
+| Bulk | Experiment | [link](samples/oss_mlflow/bulk/experiments) | | [link](samples/databricks/bulk/experiments) |
 | Bulk | Model | [link](samples/oss_mlflow/bulk/experiments) || [link](samples/databricks/bulk/models) |
 
 
 ### Databricks MLflow experiment examples
 
-There are two types of Databricks experiments: [workspace and notebook experiments](https://docs.databricks.com/mlflow/experiments.html#organize-training-runs-with-mlflow-experiments). When qualified by the two types of notebooks (workspace and repo notebook) this leads to 
+There are two types of Databricks experiments: [workspace and notebook experiments](https://docs.databricks.com/mlflow/experiments.html#organize-training-runs-with-mlflow-experiments). When qualified by the two types of notebooks (workspace and repo notebook) this leads to
 the following four combinations:
 
 * Workspace notebook with default notebook experiment.

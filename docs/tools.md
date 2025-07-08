@@ -18,7 +18,7 @@ Model signature scripts:
 Test usage:
 * [test_model_signature.py](tests/open_source/test_model_signature.py)
 
-MLflow documentation: 
+MLflow documentation:
 * [mlflow.models.set_signature](https://mlflow.org/docs/latest/python_api/mlflow.models.html#mlflow.models.set_signature)
 * [Model Signatures And Input Examples](https://www.mlflow.org/docs/latest/models.html#model-signatures-and-input-examples)
 * [MLflow Model Signatures and Input Examples Guide](https://www.mlflow.org/docs/latest/model/signatures.html)
@@ -32,7 +32,7 @@ MLflow documentation:
 #### Run examples
 ```
 get-model-signature \
-  --model-uri models:/Sklearn_Wine/12 
+  --model-uri models:/Sklearn_Wine/12
 ```
 
 ```

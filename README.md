@@ -9,7 +9,8 @@ This is a technical fork of the original [MLflow Export Import](https://github.c
 
 # Documentation
 
-Documentation published at [https://mlflow-oidc.github.io/mlflow-migration/]
+Documentation published at [https://mlflow-oidc.github.io/mlflow-migration/](https://mlflow-oidc.github.io/mlflow-migration/)
+
 Documentation source is available in the [docs](docs) directory.
 
 # Installation

@@ -45,7 +45,7 @@ def import_model_version(
     mlflow_client=None,
 ):
     """
-    Exports a model version.
+    Import a model version.
 
     :param model_name: Registered model name.
     :param experiment_name: Destination experiment name for the version's run.
@@ -116,7 +116,9 @@ def _import_model_version(
 ):
     start_time = time.time()
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
-    if not dst_source.startswith("dbfs:") and not os.path.exists(dst_source):
+    if not (
+        dst_source.startswith("dbfs:") or dst_source.startswith("mlflow-artifacts:")
+    ) and not os.path.exists(dst_source):
         raise MlflowExportImportException(
             f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
             http_status_code=404,

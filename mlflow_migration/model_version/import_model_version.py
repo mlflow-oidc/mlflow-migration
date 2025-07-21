@@ -92,7 +92,10 @@ def import_model_version(
             )
 
     model_path = _get_model_path(src_vr)
-    dst_source = f"{dst_run.info.artifact_uri}/{model_path}"
+    # Properly join artifact_uri and model_path, handling potential trailing/leading slashes
+    artifact_uri = dst_run.info.artifact_uri.rstrip("/")
+    dst_source = f"{artifact_uri}/{model_path}"
+
     dst_vr = _import_model_version(
         mlflow_client,
         model_name=model_name,
@@ -116,8 +119,13 @@ def _import_model_version(
 ):
     start_time = time.time()
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
+    # Normalize path by removing double slashes
+    dst_source = dst_source.replace("//", "/")
     if not (
-        dst_source.startswith("dbfs:") or dst_source.startswith("mlflow-artifacts:")
+        dst_source.startswith("dbfs:")
+        or dst_source.startswith("mlflow-artifacts:")
+        or dst_source.startswith("/")
+        or dst_source.startswith("s3:")
     ) and not os.path.exists(dst_source):
         raise MlflowExportImportException(
             f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
@@ -169,15 +177,53 @@ def _get_model_path(src_vr):
 
 def _extract_model_path(source):
     """
-    Extract relative path to model artifact from version source field
+    Extract relative path to model artifact from version source field with robust parsing.
+
+    Supports various source formats:
+    - dbfs:/path/to/artifacts/model
+    - file:///path/to/artifacts/model
+    - s3://bucket/path/artifacts/model
+    - /local/path/artifacts/model
+    - mlflow-artifacts:/path/artifacts/model
+
     :param source: 'source' field of registered model version
-    :return: relative path to the model artifact
+    :return: relative path to the model artifact (without leading slash), or None if parsing fails
     """
-    pattern = "artifacts"
-    idx = source.find(pattern)
-    if idx == -1:
+    if not source or not isinstance(source, str):
+        _logger.warning(f"Invalid source field: {source}")
         return None
-    return source[1 + idx + len(pattern) :]
+
+    pattern = "/artifacts/"
+    idx = source.find(pattern)
+    if idx != -1:
+        # Extract everything after the artifacts pattern
+        artifacts_end = idx + len(pattern)
+        model_path = source[artifacts_end:]
+
+        # Clean up the path
+        model_path = model_path.strip("/\\")
+
+        if model_path:  # Only return non-empty paths
+            _logger.debug(f"Extracted model path '{model_path}' from source '{source}'")
+            return model_path
+
+    # If no artifacts pattern found, try to extract basename as fallback
+    _logger.warning(f"Could not find 'artifacts' directory in source path: {source}")
+    _logger.warning("Falling back to basename extraction")
+
+    # Remove URL schemes and get the last part of the path
+    clean_source = source
+    if "://" in clean_source:
+        clean_source = clean_source.split("://", 1)[1]
+
+    # Get the basename (last part of path)
+    basename = clean_source.split("/")[-1].split("\\")[-1]
+    if basename and basename != ".":
+        _logger.debug(f"Using basename '{basename}' as model path")
+        return basename
+
+    _logger.error(f"Failed to extract model path from source: {source}")
+    return None
 
 
 def _set_source_tags_for_field(dct, tags):

@@ -181,8 +181,7 @@ def _extract_model_path(source):
     :return: relative path to the model artifact (without leading slash), or None if parsing fails
     """
     if not source or not isinstance(source, str):
-        _logger.warning(f"Invalid source field: {source}")
-        return None
+        raise MlflowExportImportException(f"Invalid source field: {source}")
 
     pattern = "/artifacts/"
     idx = source.find(pattern)

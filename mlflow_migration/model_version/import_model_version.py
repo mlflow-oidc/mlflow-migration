@@ -6,6 +6,7 @@ Optionally import registered model and experiment metadata.
 import os
 import time
 import click
+import re
 
 from mlflow_migration.common.click_options import (
     opt_input_dir,
@@ -119,12 +120,9 @@ def _import_model_version(
 ):
     start_time = time.time()
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
-
-    if not (
-        dst_source.startswith("dbfs://")
-        or dst_source.startswith("mlflow-artifacts://")
-        or dst_source.startswith("s3://")
-    ):
+    # check for remote or local source
+    # regex to validate agains dbfs://, mlflow-artifacts://, s3://, etc.
+    if not re.match(r"^[a-zA-Z0-9-]+:\/", dst_source):
         # Normalize path by removing double slashes
         dst_source = dst_source.replace("//", "/")
         if not (dst_source.startswith("/")) and not (os.path.exists(dst_source)):

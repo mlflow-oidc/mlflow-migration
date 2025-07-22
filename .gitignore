@@ -208,7 +208,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-model-export/
+model-export*/
 mlruns/
 
 .DS_Store

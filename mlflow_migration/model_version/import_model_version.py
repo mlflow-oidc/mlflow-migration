@@ -92,7 +92,8 @@ def import_model_version(
                 mlflow_client, dbx_client, model_name, perms
             )
 
-    model_path = _get_model_path(src_vr)
+    model_path = _extract_model_path(src_vr["source"])
+
     # Properly join artifact_uri and model_path, handling potential trailing/leading slashes
     artifact_uri = dst_run.info.artifact_uri.rstrip("/")
     dst_source = f"{artifact_uri}/{model_path}"
@@ -165,14 +166,6 @@ def _import_model_version(
     return mlflow_client.get_model_version(dst_vr.name, dst_vr.version)
 
 
-def _get_model_path(src_vr):
-    source = src_vr["source"]
-    model_path = _extract_model_path(source)
-    if not model_path:
-        model_path = os.path.basename(source)
-    return model_path
-
-
 def _extract_model_path(source):
     """
     Extract relative path to model artifact from version source field with robust parsing.
@@ -220,8 +213,9 @@ def _extract_model_path(source):
         _logger.debug(f"Using basename '{basename}' as model path")
         return basename
 
-    _logger.error(f"Failed to extract model path from source: {source}")
-    return None
+    raise MlflowExportImportException(
+        f"Failed to extract model path from source: {source}"
+    )
 
 
 def _set_source_tags_for_field(dct, tags):

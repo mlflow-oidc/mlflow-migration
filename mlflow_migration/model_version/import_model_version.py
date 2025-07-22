@@ -121,7 +121,7 @@ def _import_model_version(
     start_time = time.time()
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
     # check for remote or local source
-    # regex to validate agains dbfs://, mlflow-artifacts://, s3://, etc.
+    # regex to validate against dbfs://, mlflow-artifacts://, s3://, etc.
     if not re.match(r"^[a-zA-Z0-9-]+:\/", dst_source) and not os.path.exists(
         dst_source
     ):

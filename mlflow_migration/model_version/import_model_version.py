@@ -122,14 +122,13 @@ def _import_model_version(
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
     # check for remote or local source
     # regex to validate agains dbfs://, mlflow-artifacts://, s3://, etc.
-    if not re.match(r"^[a-zA-Z0-9-]+:\/", dst_source):
-        # Normalize path by removing double slashes
-        dst_source = dst_source.replace("//", "/")
-        if not (dst_source.startswith("/")) and not (os.path.exists(dst_source)):
-            raise MlflowExportImportException(
-                f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
-                http_status_code=404,
-            )
+    if not re.match(r"^[a-zA-Z0-9-]+:\/", dst_source) and not os.path.exists(
+        dst_source
+    ):
+        raise MlflowExportImportException(
+            f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
+            http_status_code=404,
+        )
 
     tags = src_vr["tags"]
     if import_source_tags:

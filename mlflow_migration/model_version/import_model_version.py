@@ -217,8 +217,8 @@ def _extract_model_path(source):
     if "://" in clean_source:
         clean_source = clean_source.split("://", 1)[1]
 
-    # Get the basename (last part of path)
-    basename = clean_source.split("/")[-1].split("\\")[-1]
+    # Get the basename (last part of path) using os.path.basename
+    basename = os.path.basename(clean_source)
     if basename and basename != ".":
         _logger.debug(f"Using basename '{basename}' as model path")
         return basename

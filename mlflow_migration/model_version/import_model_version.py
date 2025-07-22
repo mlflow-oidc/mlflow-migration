@@ -119,18 +119,19 @@ def _import_model_version(
 ):
     start_time = time.time()
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
-    # Normalize path by removing double slashes
-    dst_source = dst_source.replace("//", "/")
+
     if not (
-        dst_source.startswith("dbfs:")
-        or dst_source.startswith("mlflow-artifacts:")
-        or dst_source.startswith("/")
-        or dst_source.startswith("s3:")
-    ) and not os.path.exists(dst_source):
-        raise MlflowExportImportException(
-            f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
-            http_status_code=404,
-        )
+        dst_source.startswith("dbfs://")
+        or dst_source.startswith("mlflow-artifacts://")
+        or dst_source.startswith("s3://")
+    ):
+        # Normalize path by removing double slashes
+        dst_source = dst_source.replace("//", "/")
+        if not (dst_source.startswith("/")) and not (os.path.exists(dst_source)):
+            raise MlflowExportImportException(
+                f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
+                http_status_code=404,
+            )
 
     tags = src_vr["tags"]
     if import_source_tags:
@@ -201,7 +202,7 @@ def _extract_model_path(source):
         model_path = source[artifacts_end:]
 
         # Clean up the path
-        model_path = model_path.strip("/\\")
+        model_path = os.path.normpath(model_path).lstrip(os.sep)
 
         if model_path:  # Only return non-empty paths
             _logger.debug(f"Extracted model path '{model_path}' from source '{source}'")

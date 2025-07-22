@@ -6,6 +6,7 @@ Optionally import registered model and experiment metadata.
 import os
 import time
 import click
+import re
 
 from mlflow_migration.common.click_options import (
     opt_input_dir,
@@ -91,8 +92,12 @@ def import_model_version(
                 mlflow_client, dbx_client, model_name, perms
             )
 
-    model_path = _get_model_path(src_vr)
-    dst_source = f"{dst_run.info.artifact_uri}/{model_path}"
+    model_path = _extract_model_path(src_vr["source"])
+
+    # Properly join artifact_uri and model_path, handling potential trailing/leading slashes
+    artifact_uri = dst_run.info.artifact_uri.rstrip("/")
+    dst_source = f"{artifact_uri}/{model_path}"
+
     dst_vr = _import_model_version(
         mlflow_client,
         model_name=model_name,
@@ -116,9 +121,11 @@ def _import_model_version(
 ):
     start_time = time.time()
     dst_source = dst_source.replace("file://", "")  # OSS MLflow
-    if not (
-        dst_source.startswith("dbfs:") or dst_source.startswith("mlflow-artifacts:")
-    ) and not os.path.exists(dst_source):
+    # check for remote or local source
+    # regex to validate against dbfs://, mlflow-artifacts://, s3://, etc.
+    if not re.match(r"^[a-zA-Z0-9-]+:\/", dst_source) and not os.path.exists(
+        dst_source
+    ):
         raise MlflowExportImportException(
             f"'source' argument for MLflowClient.create_model_version does not exist: {dst_source}",
             http_status_code=404,
@@ -159,25 +166,55 @@ def _import_model_version(
     return mlflow_client.get_model_version(dst_vr.name, dst_vr.version)
 
 
-def _get_model_path(src_vr):
-    source = src_vr["source"]
-    model_path = _extract_model_path(source)
-    if not model_path:
-        model_path = os.path.basename(source)
-    return model_path
-
-
 def _extract_model_path(source):
     """
-    Extract relative path to model artifact from version source field
+    Extract relative path to model artifact from version source field with robust parsing.
+
+    Supports various source formats:
+    - dbfs:/path/to/artifacts/model
+    - file:///path/to/artifacts/model
+    - s3://bucket/path/artifacts/model
+    - /local/path/artifacts/model
+    - mlflow-artifacts:/path/artifacts/model
+
     :param source: 'source' field of registered model version
-    :return: relative path to the model artifact
+    :return: relative path to the model artifact (without leading slash), or None if parsing fails
     """
-    pattern = "artifacts"
+    if not source or not isinstance(source, str):
+        raise MlflowExportImportException(f"Invalid source field: {source}")
+
+    pattern = "/artifacts/"
     idx = source.find(pattern)
-    if idx == -1:
-        return None
-    return source[1 + idx + len(pattern) :]
+    if idx != -1:
+        # Extract everything after the artifacts pattern
+        artifacts_end = idx + len(pattern)
+        model_path = source[artifacts_end:]
+
+        # Clean up the path
+        model_path = os.path.normpath(model_path).lstrip(os.sep)
+
+        if model_path:  # Only return non-empty paths
+            _logger.debug(f"Extracted model path '{model_path}' from source '{source}'")
+            return model_path
+
+    # If no artifacts pattern found, try to extract basename as fallback
+    _logger.warning(f"Could not find 'artifacts' directory in source path: {source}")
+    _logger.warning("Falling back to basename extraction")
+
+    # Remove URL schemes and get the last part of the path
+    clean_source = source
+    if "://" in clean_source:
+        clean_source = clean_source.split("://", 1)[1]
+
+    # Get the basename (last part of path) using os.path.basename
+    basename = os.path.basename(clean_source)
+    if basename and basename != ".":
+        _logger.debug(f"Using basename '{basename}' as model path")
+        return basename
+
+    raise MlflowExportImportException(
+        f"Failed to extract model path from source: {source}"
+    )
 
 
 def _set_source_tags_for_field(dct, tags):

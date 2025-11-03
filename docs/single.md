@@ -23,6 +23,8 @@ See sample JSON export files [here](export_format.md#sample-export-json-files).
 | Run | [export-run](#export-run) | [code](mlflow_migration/run/export_run.py) |
 |  | [import-run](#import-run) | [code](mlflow_migration/run/import_run.py) |
 |  | [copy-run](copy.md#copy-run) | [code](mlflow_migration/copy/copy_run.py) |
+| Prompt | [export-prompt](#export-prompt) | [code](mlflow_migration/prompt/export_prompt.py) |
+|  | [import-prompt](#import-prompt) | [code](mlflow_migration/prompt/import_prompt.py) |
 
 ## Experiment Tools
 
@@ -492,4 +494,67 @@ Options:
   --import-metadata BOOLEAN       Import registered model and experiment
                                   metadata (description and tags).  [default:
                                   False]
+```
+
+## Prompt Tools
+
+Export and import prompts from the MLflow Prompt Registry (MLflow 2.21.0+).
+
+**Note:** Prompt Registry support requires MLflow 2.21.0 or higher.
+
+### Export Prompt
+
+Export a single prompt version to a directory.
+
+Source: [export_prompt.py](mlflow_export_import/prompt/export_prompt.py).
+
+#### Usage
+
+```
+export-prompt --help
+
+Options:
+  --prompt-name TEXT     Name of the prompt to export.  [required]
+  --prompt-version TEXT  Version of the prompt to export.  [required]
+  --output-dir TEXT      Output directory.  [required]
+```
+
+#### Example
+
+```
+export-prompt \
+  --prompt-name my-greeting-prompt \
+  --prompt-version 1 \
+  --output-dir out
+```
+
+### Import Prompt
+
+Import a prompt from an exported directory.
+
+Source: [import_prompt.py](mlflow_export_import/prompt/import_prompt.py).
+
+#### Usage
+
+```
+import-prompt --help
+
+Options:
+  --input-dir TEXT    Input directory containing exported prompt.  [required]
+  --prompt-name TEXT  Optional new name for the imported prompt. If not
+                     specified, uses original name.
+```
+
+#### Examples
+
+##### Import with original name
+```
+import-prompt --input-dir out
+```
+
+##### Import with new name
+```
+import-prompt \
+  --input-dir out \
+  --prompt-name my-new-prompt-name
 ```

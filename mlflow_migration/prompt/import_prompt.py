@@ -9,7 +9,6 @@ import os
 import json
 import click
 import mlflow
-from mlflow.exceptions import RestException
 from packaging import version
 
 from mlflow_migration.common import utils, io_utils
@@ -64,11 +63,11 @@ def _check_import_compatibility(prompt_data):
 
 
 def import_prompt(
-        input_dir,
-        prompt_name=None,
-        delete_prompt=False,
-        mlflow_client=None
-    ):
+        input_dir: str,
+        prompt_name: Optional[str] = None,
+        delete_prompt: bool = False,
+        mlflow_client: Optional[mlflow.MlflowClient] = None
+    ) -> Optional[Tuple[str, str]]:
     """
     Import a prompt from exported directory.
     
@@ -138,7 +137,13 @@ def import_prompt(
         return None
 
 
-def _create_prompt_safe(name, template, tags=None, commit_message=None, mlflow_client=None):
+def _create_prompt_safe(
+        name: str, 
+        template: str, 
+        tags: Optional[Dict[str, str]] = None, 
+        commit_message: Optional[str] = None, 
+        mlflow_client: Optional[mlflow.MlflowClient] = None
+    ) -> object:
     """
     Create prompt with compatibility across MLflow versions (2.21+ and 3.0+).
     """

@@ -506,7 +506,7 @@ Export and import prompts from the MLflow Prompt Registry (MLflow 2.21.0+).
 
 Export a single prompt version to a directory.
 
-Source: [export_prompt.py](mlflow_export_import/prompt/export_prompt.py).
+Source: [export_prompt.py](mlflow_migration/prompt/export_prompt.py).
 
 #### Usage
 
@@ -532,7 +532,7 @@ export-prompt \
 
 Import a prompt from an exported directory.
 
-Source: [import_prompt.py](mlflow_export_import/prompt/import_prompt.py).
+Source: [import_prompt.py](mlflow_migration/prompt/import_prompt.py).
 
 #### Usage
 

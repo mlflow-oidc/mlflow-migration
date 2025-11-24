@@ -21,11 +21,11 @@ _logger = utils.getLogger(__name__)
 
 
 def import_prompts(
-        input_dir,
-        delete_prompt=False,
-        use_threads=False,
-        mlflow_client=None
-    ):
+        input_dir: str,
+        delete_prompt: bool = False,
+        use_threads: bool = False,
+        mlflow_client: Optional[mlflow.MlflowClient] = None
+    ) -> Dict[str, Any]:
     """
     Import multiple prompts from a directory.
     
@@ -77,9 +77,9 @@ def import_prompts(
         return {"error": str(e)}
 
 
-def _find_prompt_directories(input_dir):
+def _find_prompt_directories(input_dir: str) -> List[Dict[str, str]]:
     """Find all prompt directories in the input directory."""
-    prompt_dirs = []
+    prompt_dirs: List[Dict[str, str]] = []
     
     if not os.path.exists(input_dir):
         raise Exception(f"Input directory does not exist: {input_dir}")
@@ -102,12 +102,16 @@ def _find_prompt_directories(input_dir):
     return prompt_dirs
 
 
-def _import_prompts_sequential(prompt_dirs, mlflow_client, delete_prompt):
+def _import_prompts_sequential(
+    prompt_dirs: List[Dict[str, str]], 
+    mlflow_client: MlflowClient, 
+    delete_prompt: bool
+    ) -> List[Optional[Tuple[str, int]]]:
     """Import prompts sequentially."""
-    results = []
+    results: List[Optional[Tuple[str, int]]] = []
     for prompt_dir in prompt_dirs:
         _logger.info(f"Importing prompt from: {prompt_dir['name']}")
-        result = import_prompt(
+        result: Optional[Tuple[str, int]] = import_prompt(
             input_dir=prompt_dir["path"],
             prompt_name=None,  # Use original name from export
             delete_prompt=delete_prompt,
@@ -117,7 +121,11 @@ def _import_prompts_sequential(prompt_dirs, mlflow_client, delete_prompt):
     return results
 
 
-def _import_prompts_threaded(prompt_dirs, mlflow_client, delete_prompt):
+def _import_prompts_threaded(
+    prompt_dirs: List[Dict[str, str]], 
+    mlflow_client: MlflowClient, 
+    delete_prompt: bool
+    ) -> List[Optional[Tuple[str, int]]]:
     """Import prompts using multithreading."""
     def import_single(prompt_dir):
         _logger.info(f"Importing prompt from: {prompt_dir['name']}")
@@ -130,7 +138,7 @@ def _import_prompts_threaded(prompt_dirs, mlflow_client, delete_prompt):
     
     max_workers = utils.get_threads(use_threads=True)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results = list(executor.map(import_single, prompt_dirs))
+        results: List[Optional[Tuple[str, int]]] = list(executor.map(import_single, prompt_dirs))
     
     return results
 

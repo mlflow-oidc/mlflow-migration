@@ -80,10 +80,10 @@ def export_all(
     try:
         _logger.info("Exporting prompts...")
         res_prompts = export_prompts(
-            output_dir = os.path.join(output_dir, "prompts"),
-            prompt_names = None,  # Export all prompts
-            use_threads = use_threads,
-            mlflow_client = mlflow_client
+            output_dir=os.path.join(output_dir, "prompts"),
+            prompt_names=None,  # Export all prompts
+            use_threads=use_threads,
+            mlflow_client=mlflow_client
         )
         # Log if unsupported but don't fail
         if res_prompts and "unsupported" in res_prompts:
@@ -104,7 +104,12 @@ def export_all(
             "use_threads": use_threads,
             "output_dir": output_dir,
         },
-        "status": {"duration": duration, "models": res_models, "experiments": res_exps},
+        "status": {
+            "duration": duration,
+            "models": res_models,
+            "experiments": res_exps,
+            "prompts": res_prompts
+        }
     }
     io_utils.write_export_file(output_dir, "manifest.json", __file__, {}, info_attr)
     _logger.info(f"Duration for entire tracking server export: {duration} seconds")

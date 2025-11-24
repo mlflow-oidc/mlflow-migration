@@ -7,10 +7,14 @@ from mlflow.exceptions import RestException
 
 from mlflow_migration.common import utils
 
+# Default sleep time between prompt version deletions (in seconds)
+# Shorter than models since prompts don't have stage transitions
+DEFAULT_DELETE_SLEEP_TIME = 0.5
+
 _logger = utils.getLogger(__name__)
 
 
-def delete_prompt(client, prompt_name, sleep_time=0.5):
+def delete_prompt(client: mlflow.MlflowClient, prompt_name: str, sleep_time: float = DEFAULT_DELETE_SLEEP_TIME) -> None:
     """
     Delete a prompt and all its versions.
     
@@ -52,7 +56,7 @@ def delete_prompt(client, prompt_name, sleep_time=0.5):
         except Exception as e:
             _logger.warning(f"Failed to delete prompt '{prompt_name}': {e}")
             
-    except RestException:
-        pass
+    except RestExceptionas e:
+        _logger.warning(f"RestException occurred while deleting prompt '{prompt_name}': {e}")
     except Exception as e:
         _logger.warning(f"Error deleting prompt '{prompt_name}': {e}")

@@ -9,36 +9,36 @@ from mlflow_migration.common import utils
 _logger = utils.getLogger(__name__)
 
 
-def get_mlflow_version():
+def get_mlflow_version() -> version.Version:
     """Get the current MLflow version as a packaging.version.Version object."""
     return version.parse(mlflow.__version__)
 
 
 # MLflow Features (relevant for export/import)
-def has_trace_support():
+def has_trace_support() -> bool:
     """Tracing system - traces and spans data (2.14.0+)."""
     return get_mlflow_version() >= version.parse("2.14.0")
 
 
-def has_prompt_support():
+def has_prompt_support() -> bool:
     """Prompt registry - versioned prompts and templates (2.21.0+)."""
     return get_mlflow_version() >= version.parse("2.21.0")
 
 
-def has_logged_model_support():
+def has_logged_model_support() -> bool:
     """LoggedModel entity - first-class model objects (3.0.0+)."""
     return get_mlflow_version() >= version.parse("3.0.0")
 
-def has_assessments_support():
+def has_assessments_support() -> bool:
     """Assessments entity - first-class model objects (3.2.0+)."""
     return get_mlflow_version() >= version.parse("3.2.0")
 
-def has_evaluation_dataset_support():
+def has_evaluation_dataset_support() -> bool:
     """Evaluation datasets stored in experiments (3.4.0+)."""
     return get_mlflow_version() >= version.parse("3.4.0")
 
 
-def get_version_info():
+def get_version_info() -> Dict[str, Union[str, bool]]:
     """Get comprehensive version and feature support information."""
     return {
         "mlflow_version": str(get_mlflow_version()),
@@ -49,7 +49,7 @@ def get_version_info():
     }
 
 
-def log_version_info():
+def log_version_info() -> None:
     """Log version information for debugging."""
     info = get_version_info()
     _logger.info(f"MLflow version: {info['mlflow_version']}")

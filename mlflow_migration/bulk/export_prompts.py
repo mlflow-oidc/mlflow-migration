@@ -34,10 +34,10 @@ HIGH_VERSION_THRESHOLD = 1000
 
 def export_prompts(
         output_dir: str,
-        prompt_names: Optional[List[str]] = None,
+        prompt_names: Optional[list[str]] = None,
         use_threads: bool = False,
         mlflow_client: Optional[mlflow.MlflowClient] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
     """
     Export multiple prompts to a directory.
     
@@ -96,14 +96,14 @@ def export_prompts(
 
 def _search_prompts_with_pagination(
     search_func: Callable[..., PagedList]
-    ) -> List[Prompt]:
+    ) -> list[Prompt]:
     """Helper to handle pagination for any search_prompts function."""
-    all_prompts: List[Prompt] = []
+    all_prompts: list[Prompt] = []
     page_token: Optional[str] = None
     
     while True:
         response: PagedList = search_func(max_results=MAX_SEARCH_RESULTS, page_token=page_token)
-        prompts: List[Prompt] = list(response)
+        prompts: list[Prompt] = list(response)
         all_prompts.extend(prompts)
         
         # Check if there are more pages
@@ -114,7 +114,7 @@ def _search_prompts_with_pagination(
     return all_prompts
 
 
-def _get_all_prompts() -> List[Prompt]:
+def _get_all_prompts() -> list[Prompt]:
     """
     Get all available prompts from the registry with pagination support.
     Tries multiple APIs for compatibility across MLflow versions (2.21+ and 3.0+).
@@ -145,10 +145,10 @@ def _get_all_prompts() -> List[Prompt]:
     raise Exception(f"No compatible prompt search API found in MLflow {mlflow.__version__}. Ensure prompt registry is supported.")
 
 
-def _get_all_prompt_versions() -> List[Prompt]:
+def _get_all_prompt_versions() -> list[Prompt]:
     """Get all prompt versions from all prompts."""
-    all_prompts: List[Prompt] = _get_all_prompts()
-    prompt_versions: List[Prompt] = []
+    all_prompts: list[Prompt] = _get_all_prompts()
+    prompt_versions: list[Prompt] = []
     
     for prompt in all_prompts:
         versions = _get_prompt_versions(prompt.name)
@@ -157,7 +157,7 @@ def _get_all_prompt_versions() -> List[Prompt]:
     return prompt_versions
 
 
-def _get_prompt_versions(prompt_name: str) -> List[Prompt]:
+def _get_prompt_versions(prompt_name: str) -> list[Prompt]:
     """Get all versions of a specific prompt using best available API."""
     # Try search_prompt_versions API first (MLflow 3.0+, Unity Catalog)
     # This is the proper way to get all versions without iteration
@@ -167,7 +167,7 @@ def _get_prompt_versions(prompt_name: str) -> List[Prompt]:
             _logger.debug(f"Using search_prompt_versions API for '{prompt_name}'")
             
             # Handle pagination to get all versions
-            all_versions: List[Prompt] = []
+            all_versions: list[Prompt] = []
             page_token: Optional[str] = None
             
             while True:
@@ -178,7 +178,7 @@ def _get_prompt_versions(prompt_name: str) -> List[Prompt]:
                 )
                 
                 # Extract versions from response
-                versions: List[Prompt] = list(response.prompt_versions) if hasattr(response, 'prompt_versions') else list(response)
+                versions: list[Prompt] = list(response.prompt_versions) if hasattr(response, 'prompt_versions') else list(response)
                 all_versions.extend(versions)
                 
                 # Check if there are more pages
@@ -197,7 +197,7 @@ def _get_prompt_versions(prompt_name: str) -> List[Prompt]:
     # Fallback: iterative discovery for OSS MLflow or older versions without search_prompt_versions API
     # Uses dynamic expansion to handle prompts with any number of versions
     _logger.debug(f"Using iterative version discovery for '{prompt_name}' (fallback method)")
-    versions: List[Prompt] = []
+    versions: list[Prompt] = []
     
     # Dynamic approach: Start with reasonable limit and expand as needed
     # This handles prompts with 100+ versions without hardcoding a large range
@@ -234,13 +234,13 @@ def _get_prompt_versions(prompt_name: str) -> List[Prompt]:
     return versions
 
 
-def _get_specified_prompts(prompt_names: List[str]) -> List[Prompt]:
+def _get_specified_prompts(prompt_names: list[str]) -> list[Prompt]:
     """Get specified prompts with their latest versions."""
-    prompts: List[Prompt] = []
+    prompts: list[Prompt] = []
     for prompt_name in prompt_names:
         try:
             # Get the prompt and find its latest version
-            prompt_versions: List[Prompt] = _get_prompt_versions(prompt_name)
+            prompt_versions: list[Prompt] = _get_prompt_versions(prompt_name)
             if prompt_versions:
                 # Get the latest version
                 latest = max(prompt_versions, key=lambda x: int(x.version))
@@ -254,11 +254,11 @@ def _get_specified_prompts(prompt_names: List[str]) -> List[Prompt]:
 
 
 def _export_prompts_sequential(
-    prompts: List[Prompt], 
+    prompts: list[Prompt], 
     output_dir: str
-    ) -> List[Optional[Prompt]]:
+    ) -> list[Optional[Prompt]]:
     """Export prompts sequentially."""
-    results: List[Optional[Prompt]] = []
+    results: list[Optional[Prompt]] = []
     for prompt in prompts:
         prompt_dir = os.path.join(output_dir, f"{prompt.name}_v{prompt.version}")
         result: Optional[Prompt] = export_prompt(prompt.name, prompt.version, prompt_dir)
@@ -266,9 +266,9 @@ def _export_prompts_sequential(
     return results
 
 
-def _export_prompts_threaded(prompts: List[Prompt], 
+def _export_prompts_threaded(prompts: list[Prompt], 
     output_dir: str
-    ) -> List[Optional[Prompt]]:
+    ) -> list[Optional[Prompt]]:
     """Export prompts using multithreading."""
     def export_single(prompt: Prompt) -> Optional[Prompt]:
         prompt_dir = os.path.join(output_dir, f"{prompt.name}_v{prompt.version}")
@@ -276,7 +276,7 @@ def _export_prompts_threaded(prompts: List[Prompt],
     
     max_workers: int = utils.get_threads(use_threads=True)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results: List[Optional[Prompt]] = list(executor.map(export_single, prompts))
+        results: list[Optional[Prompt]] = list(executor.map(export_single, prompts))
     
     return results
 

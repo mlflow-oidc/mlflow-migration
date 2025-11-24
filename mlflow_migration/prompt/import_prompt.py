@@ -140,7 +140,7 @@ def import_prompt(
 def _create_prompt_safe(
         name: str, 
         template: str, 
-        tags: Optional[Dict[str, str]] = None, 
+        tags: Optional[dict[str, str]] = None, 
         commit_message: Optional[str] = None, 
         mlflow_client: Optional[mlflow.MlflowClient] = None
     ) -> object:

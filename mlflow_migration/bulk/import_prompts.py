@@ -25,7 +25,7 @@ def import_prompts(
         delete_prompt: bool = False,
         use_threads: bool = False,
         mlflow_client: Optional[mlflow.MlflowClient] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
     """
     Import multiple prompts from a directory.
     
@@ -77,9 +77,9 @@ def import_prompts(
         return {"error": str(e)}
 
 
-def _find_prompt_directories(input_dir: str) -> List[Dict[str, str]]:
+def _find_prompt_directories(input_dir: str) -> list[dict[str, str]]:
     """Find all prompt directories in the input directory."""
-    prompt_dirs: List[Dict[str, str]] = []
+    prompt_dirs: list[dict[str, str]] = []
     
     if not os.path.exists(input_dir):
         raise Exception(f"Input directory does not exist: {input_dir}")
@@ -103,12 +103,12 @@ def _find_prompt_directories(input_dir: str) -> List[Dict[str, str]]:
 
 
 def _import_prompts_sequential(
-    prompt_dirs: List[Dict[str, str]], 
+    prompt_dirs: list[dict[str, str]], 
     mlflow_client: MlflowClient, 
     delete_prompt: bool
-    ) -> List[Optional[Tuple[str, int]]]:
+    ) -> list[Optional[Tuple[str, int]]]:
     """Import prompts sequentially."""
-    results: List[Optional[Tuple[str, int]]] = []
+    results: list[Optional[Tuple[str, int]]] = []
     for prompt_dir in prompt_dirs:
         _logger.info(f"Importing prompt from: {prompt_dir['name']}")
         result: Optional[Tuple[str, int]] = import_prompt(
@@ -122,10 +122,10 @@ def _import_prompts_sequential(
 
 
 def _import_prompts_threaded(
-    prompt_dirs: List[Dict[str, str]], 
+    prompt_dirs: list[dict[str, str]], 
     mlflow_client: MlflowClient, 
     delete_prompt: bool
-    ) -> List[Optional[Tuple[str, int]]]:
+    ) -> list[Optional[Tuple[str, int]]]:
     """Import prompts using multithreading."""
     def import_single(prompt_dir):
         _logger.info(f"Importing prompt from: {prompt_dir['name']}")
@@ -138,7 +138,7 @@ def _import_prompts_threaded(
     
     max_workers = utils.get_threads(use_threads=True)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results: List[Optional[Tuple[str, int]]] = list(executor.map(import_single, prompt_dirs))
+        results: list[Optional[Tuple[str, int]]] = list(executor.map(import_single, prompt_dirs))
     
     return results
 

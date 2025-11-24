@@ -38,7 +38,7 @@ def has_evaluation_dataset_support() -> bool:
     return get_mlflow_version() >= version.parse("3.4.0")
 
 
-def get_version_info() -> Dict[str, Union[str, bool]]:
+def get_version_info() -> dict[str, Union[str, bool]]:
     """Get comprehensive version and feature support information."""
     return {
         "mlflow_version": str(get_mlflow_version()),

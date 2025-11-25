@@ -3,8 +3,8 @@ Prompt utilities.
 """
 
 import time
+import mlflow
 from mlflow.exceptions import RestException
-
 from mlflow_migration.common import utils
 
 # Default sleep time between prompt version deletions (in seconds)

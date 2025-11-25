@@ -64,10 +64,10 @@ def _check_import_compatibility(prompt_data):
 
 def import_prompt(
         input_dir: str,
-        prompt_name: Optional[str] = None,
+        prompt_name: str | None = None,
         delete_prompt: bool = False,
-        mlflow_client: Optional[mlflow.MlflowClient] = None
-    ) -> Optional[Tuple[str, str]]:
+        mlflow_client: mlflow.MlflowClient | None = None
+    ) -> tuple[str, str] | None:
     """
     Import a prompt from exported directory.
     
@@ -140,9 +140,9 @@ def import_prompt(
 def _create_prompt_safe(
         name: str, 
         template: str, 
-        tags: Optional[dict[str, str]] = None, 
-        commit_message: Optional[str] = None, 
-        mlflow_client: Optional[mlflow.MlflowClient] = None
+        tags: dict[str, str] | None = None, 
+        commit_message: str | None = None, 
+        mlflow_client: mlflow.MlflowClient | None = None
     ) -> object:
     """
     Create prompt with compatibility across MLflow versions (2.21+ and 3.0+).

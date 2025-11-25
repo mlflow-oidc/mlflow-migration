@@ -10,6 +10,7 @@ import sys
 import click
 import mlflow
 from concurrent.futures import ThreadPoolExecutor
+from typing import Any
 
 from mlflow_migration.common import utils, io_utils
 from mlflow_migration.common.click_options import opt_input_dir
@@ -24,7 +25,7 @@ def import_prompts(
         input_dir: str,
         delete_prompt: bool = False,
         use_threads: bool = False,
-        mlflow_client: Optional[mlflow.MlflowClient] = None
+        mlflow_client: mlflow.MlflowClient | None = None
     ) -> dict[str, Any]:
     """
     Import multiple prompts from a directory.
@@ -106,12 +107,12 @@ def _import_prompts_sequential(
     prompt_dirs: list[dict[str, str]], 
     mlflow_client: MlflowClient, 
     delete_prompt: bool
-    ) -> list[Optional[Tuple[str, int]]]:
+    ) -> list[tuple[str, int] | None]:
     """Import prompts sequentially."""
-    results: list[Optional[Tuple[str, int]]] = []
+    results: list[tuple[str, int] | None ] = []
     for prompt_dir in prompt_dirs:
         _logger.info(f"Importing prompt from: {prompt_dir['name']}")
-        result: Optional[Tuple[str, int]] = import_prompt(
+        result: tuple[str, int] | None = import_prompt(
             input_dir=prompt_dir["path"],
             prompt_name=None,  # Use original name from export
             delete_prompt=delete_prompt,
@@ -125,7 +126,7 @@ def _import_prompts_threaded(
     prompt_dirs: list[dict[str, str]], 
     mlflow_client: MlflowClient, 
     delete_prompt: bool
-    ) -> list[Optional[Tuple[str, int]]]:
+    ) -> list[tuple[str, int] | None ]:
     """Import prompts using multithreading."""
     def import_single(prompt_dir):
         _logger.info(f"Importing prompt from: {prompt_dir['name']}")
@@ -138,7 +139,7 @@ def _import_prompts_threaded(
     
     max_workers = utils.get_threads(use_threads=True)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results: list[Optional[Tuple[str, int]]] = list(executor.map(import_single, prompt_dirs))
+        results: list[tuple[str, int] | None ] = list(executor.map(import_single, prompt_dirs))
     
     return results
 

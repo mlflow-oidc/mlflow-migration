@@ -56,7 +56,7 @@ def delete_prompt(client: mlflow.MlflowClient, prompt_name: str, sleep_time: flo
         except Exception as e:
             _logger.warning(f"Failed to delete prompt '{prompt_name}': {e}")
             
-    except RestExceptionas e:
+    except RestException as e:
         _logger.warning(f"RestException occurred while deleting prompt '{prompt_name}': {e}")
     except Exception as e:
         _logger.warning(f"Error deleting prompt '{prompt_name}': {e}")

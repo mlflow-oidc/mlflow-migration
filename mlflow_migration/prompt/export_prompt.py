@@ -22,8 +22,8 @@ def export_prompt(
         prompt_name: str,
         prompt_version: str,
         output_dir: str,
-        mlflow_client: Optional[mlflow.MlflowClient] = None
-    ) -> Optional[object]:
+        mlflow_client: mlflow.MlflowClient | None = None
+    ) -> object | None:
     """
     Export a single prompt version to a directory.
     

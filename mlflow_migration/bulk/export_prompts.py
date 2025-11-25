@@ -10,7 +10,10 @@ import os
 import sys
 import click
 import mlflow
+from mlflow.entities import Prompt, Callable
+from mlflow.store.entities import PagedList
 from concurrent.futures import ThreadPoolExecutor
+from typing import Any 
 
 from mlflow_migration.common import utils, io_utils
 from mlflow_migration.common.click_options import opt_output_dir
@@ -34,9 +37,9 @@ HIGH_VERSION_THRESHOLD = 1000
 
 def export_prompts(
         output_dir: str,
-        prompt_names: Optional[list[str]] = None,
+        prompt_names: list[str] | None = None,
         use_threads: bool = False,
-        mlflow_client: Optional[mlflow.MlflowClient] = None
+        mlflow_client: mlflow.MlflowClient | None = None
     ) -> dict[str, Any]:
     """
     Export multiple prompts to a directory.
@@ -99,7 +102,7 @@ def _search_prompts_with_pagination(
     ) -> list[Prompt]:
     """Helper to handle pagination for any search_prompts function."""
     all_prompts: list[Prompt] = []
-    page_token: Optional[str] = None
+    page_token: str | None = None
     
     while True:
         response: PagedList = search_func(max_results=MAX_SEARCH_RESULTS, page_token=page_token)
@@ -124,7 +127,7 @@ def _get_all_prompts() -> list[Prompt]:
         import mlflow.genai
         if hasattr(mlflow.genai, 'search_prompts'):
             return _search_prompts_with_pagination(mlflow.genai.search_prompts)
-    except (ImportError, AttributeError, Exception):
+    except (ImportError, AttributeError, Exception) as e:
         _logger.debug(f"MLflow genai.search_prompts not available or failed: {e}")
     
     # Try MLflow client approach (works with 2.21+)
@@ -132,14 +135,14 @@ def _get_all_prompts() -> list[Prompt]:
         client = mlflow.MlflowClient()
         if hasattr(client, 'search_prompts'):
             return _search_prompts_with_pagination(client.search_prompts)
-    except (ImportError, AttributeError, Exception):
+    except (ImportError, AttributeError, Exception) as e:
         _logger.debug(f"MLflowClient.search_prompts not available or failed: {e}")
     
     # Try top-level functions (deprecated but may work)
     try:
         if hasattr(mlflow, 'search_prompts'):
             return _search_prompts_with_pagination(mlflow.search_prompts)
-    except (ImportError, AttributeError, Exception):
+    except (ImportError, AttributeError, Exception) as e:
         _logger.debug(f"mlflow.search_prompts not available or failed: {e}")
     
     raise Exception(f"No compatible prompt search API found in MLflow {mlflow.__version__}. Ensure prompt registry is supported.")
@@ -168,7 +171,7 @@ def _get_prompt_versions(prompt_name: str) -> list[Prompt]:
             
             # Handle pagination to get all versions
             all_versions: list[Prompt] = []
-            page_token: Optional[str] = None
+            page_token: str | None = None
             
             while True:
                 response: PagedList = client.search_prompt_versions(
@@ -207,7 +210,7 @@ def _get_prompt_versions(prompt_name: str) -> list[Prompt]:
     
     while True:
         try:
-            prompt_version: Optional[Prompt] = _get_prompt_safe(prompt_name, str(version_num))
+            prompt_version: Prompt | None = _get_prompt_safe(prompt_name, str(version_num))
             if prompt_version:
                 versions.append(prompt_version)
                 consecutive_missing = 0  # Reset counter on success
@@ -256,27 +259,27 @@ def _get_specified_prompts(prompt_names: list[str]) -> list[Prompt]:
 def _export_prompts_sequential(
     prompts: list[Prompt], 
     output_dir: str
-    ) -> list[Optional[Prompt]]:
+    ) -> list[Prompt | None]:
     """Export prompts sequentially."""
-    results: list[Optional[Prompt]] = []
+    results: list[Prompt | None] = []
     for prompt in prompts:
         prompt_dir = os.path.join(output_dir, f"{prompt.name}_v{prompt.version}")
-        result: Optional[Prompt] = export_prompt(prompt.name, prompt.version, prompt_dir)
+        result: Prompt | None = export_prompt(prompt.name, prompt.version, prompt_dir)
         results.append(result)
     return results
 
 
 def _export_prompts_threaded(prompts: list[Prompt], 
     output_dir: str
-    ) -> list[Optional[Prompt]]:
+    ) -> list[Prompt | None]:
     """Export prompts using multithreading."""
-    def export_single(prompt: Prompt) -> Optional[Prompt]:
+    def export_single(prompt: Prompt) -> Prompt | None:
         prompt_dir = os.path.join(output_dir, f"{prompt.name}_v{prompt.version}")
         return export_prompt(prompt.name, prompt.version, prompt_dir)
     
     max_workers: int = utils.get_threads(use_threads=True)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results: list[Optional[Prompt]] = list(executor.map(export_single, prompts))
+        results: list[Prompt | None] = list(executor.map(export_single, prompts))
     
     return results
 

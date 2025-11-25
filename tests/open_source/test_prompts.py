@@ -18,7 +18,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def _create_test_prompt(client: mlflow.MlflowClient, name: str, template: str, tags: Optional[Dict[str, str]] = None) -> object:
+def _create_test_prompt(client: mlflow.MlflowClient, name: str, template: str, tags: dict[str, str] | None = None) -> object:
     """
     Create a test prompt using version-aware API.
     

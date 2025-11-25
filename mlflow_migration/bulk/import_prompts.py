@@ -105,7 +105,7 @@ def _find_prompt_directories(input_dir: str) -> list[dict[str, str]]:
 
 def _import_prompts_sequential(
     prompt_dirs: list[dict[str, str]], 
-    mlflow_client: MlflowClient, 
+    mlflow_client: mlflow.MlflowClient, 
     delete_prompt: bool
     ) -> list[tuple[str, int] | None]:
     """Import prompts sequentially."""
@@ -124,7 +124,7 @@ def _import_prompts_sequential(
 
 def _import_prompts_threaded(
     prompt_dirs: list[dict[str, str]], 
-    mlflow_client: MlflowClient, 
+    mlflow_client: mlflow.MlflowClient, 
     delete_prompt: bool
     ) -> list[tuple[str, int] | None ]:
     """Import prompts using multithreading."""

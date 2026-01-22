@@ -3,14 +3,17 @@ Exports a registered model version and its run.
 """
 
 import os
+import re
 import time
 import click
+import mlflow
 
 from mlflow_migration.client.client_utils import (
     create_mlflow_client,
     create_http_client,
 )
 from mlflow_migration.common import utils, io_utils, model_utils
+from mlflow_migration.common import filesystem as _fs
 from mlflow_migration.common.timestamp_utils import adjust_timestamps, format_seconds
 from mlflow_migration.run.export_run import export_run
 from mlflow_migration.common.click_options import (
@@ -29,6 +32,50 @@ from .click_options import (
 _logger = utils.getLogger(__name__)
 
 VERSION_MODEL_ARTIFACT_PATH = "version_model"
+
+
+def _is_logged_model_uri(source):
+    """
+    Check if the model version source is an MLflow 3.x LoggedModel URI.
+
+    MLflow 3.x uses 'models:/m-<32 hex chars>' format for logged models.
+
+    :param source: The model version source field
+    :return: True if the source is a LoggedModel URI
+    """
+    if not source:
+        return False
+    return bool(re.match(r"^models:/m-[a-f0-9]{32}$", source))
+
+
+def _download_logged_model_artifacts(mlflow_client, vr, output_dir):
+    """
+    Download model artifacts from MLflow 3.x LoggedModel URI to run artifacts directory.
+
+    In MLflow 3.x, logged models are stored separately from run artifacts and use
+    the 'models:/m-<id>' URI scheme. This function downloads those artifacts to
+    the expected 'run/artifacts/model/' location for compatibility with the import process.
+
+    :param mlflow_client: MLflow client instance
+    :param vr: Model version object
+    :param output_dir: Base output directory for the export
+    :return: The artifact path where the model was downloaded ('model')
+    """
+    artifacts_dir = os.path.join(output_dir, "run", "artifacts", "model")
+    fs = _fs.get_filesystem(".")
+    fs.mkdirs(artifacts_dir)
+
+    _logger.info(
+        f"Downloading MLflow 3.x LoggedModel artifacts from '{vr.source}' to '{artifacts_dir}'"
+    )
+
+    mlflow.artifacts.download_artifacts(
+        artifact_uri=vr.source,
+        dst_path=_fs.mk_local_path(artifacts_dir),
+        tracking_uri=mlflow_client._tracking_client.tracking_uri,
+    )
+
+    return "model"
 
 
 def export_model_version(
@@ -81,6 +128,14 @@ def export_model_version(
         _logger.error(f"{msg}")
     else:
         _export_experiment(mlflow_client, run.info.experiment_id, output_dir)
+
+    # Handle MLflow 3.x LoggedModel artifacts
+    # In MLflow 3.x, models are stored separately using 'models:/m-<id>' URIs
+    # and are not included in the run's artifacts. Download them explicitly.
+    if not skip_download_run_artifacts and _is_logged_model_uri(vr.source):
+        run_artifacts_dir = os.path.join(output_dir, "run", "artifacts")
+        if not os.path.exists(run_artifacts_dir) or not os.listdir(run_artifacts_dir):
+            _download_logged_model_artifacts(mlflow_client, vr, output_dir)
 
     info_attr = {}
     if export_version_model:

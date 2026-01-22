@@ -4,6 +4,8 @@ Imports a registered model, its versions and the version's run.
 
 import os
 import click
+import re
+import json
 
 import mlflow
 from mlflow.exceptions import RestException
@@ -39,6 +41,71 @@ def _set_source_tags_for_field(dct, tags):
     set_source_tags_for_field(dct, tags)
     fmt_timestamps("creation_timestamp", dct, tags)
     fmt_timestamps("last_updated_timestamp", dct, tags)
+
+
+def _is_logged_model_id(path):
+    """
+    Detect MLflow 3.x LoggedModel ID (format: m-<32 hex chars>).
+
+    :param path: The path component to check
+    :return: True if the path matches the LoggedModel ID pattern
+    """
+    return bool(re.match(r"^m-[a-f0-9]{32}$", path))
+
+
+def _resolve_logged_model_path_for_run(input_dir, run_id, logged_model_id):
+    """
+    Resolve LoggedModel ID to actual artifact path using run.json metadata.
+
+    This function is adapted for the model import context where runs are stored
+    in directories named by their run_id within the input_dir.
+
+    :param input_dir: The input directory containing the exported model
+    :param run_id: The run ID containing the model version
+    :param logged_model_id: The LoggedModel ID to resolve (e.g., m-0728b41ab24e491db0bcc28f5d4d9afd)
+    :return: The resolved artifact path or None if not found
+    """
+    run_dir = os.path.join(input_dir, run_id)
+    run_json_path = os.path.join(run_dir, "run.json")
+    artifacts_dir = os.path.join(run_dir, "artifacts")
+
+    # Strategy 1: Parse mlflow.log-model.history from run.json
+    if os.path.exists(run_json_path):
+        try:
+            run_data = io_utils.read_file_mlflow(run_json_path)
+            tags = run_data.get("tags", {})
+            # Tags can be either a dict or a list of {key, value} dicts
+            if isinstance(tags, list):
+                tags = {t["key"]: t["value"] for t in tags}
+            log_model_history = tags.get("mlflow.log-model.history")
+            if log_model_history:
+                history = json.loads(log_model_history)
+                for entry in history:
+                    artifact_path = entry.get("artifact_path")
+                    if artifact_path:
+                        mlmodel_path = os.path.join(
+                            artifacts_dir, artifact_path, "MLmodel"
+                        )
+                        if os.path.exists(mlmodel_path):
+                            _logger.info(
+                                f"Resolved LoggedModel '{logged_model_id}' to '{artifact_path}' via log-model.history"
+                            )
+                            return artifact_path
+        except Exception as e:
+            _logger.warning(f"Failed to parse log-model.history: {e}")
+
+    # Strategy 2: Scan for MLmodel files in artifacts directory
+    if os.path.exists(artifacts_dir):
+        for root, _, files in os.walk(artifacts_dir):
+            if "MLmodel" in files:
+                rel_path = os.path.relpath(root, artifacts_dir)
+                if rel_path != ".":
+                    _logger.info(
+                        f"Resolved LoggedModel '{logged_model_id}' to '{rel_path}' via directory scan"
+                    )
+                    return rel_path
+
+    return None
 
 
 def import_model(
@@ -165,7 +232,7 @@ class ModelImporter(BaseModelImporter):
             try:
                 run_id = self._import_run(input_dir, experiment_name, vr)
                 if run_id:
-                    self.import_version(model_name, vr, run_id)
+                    self.import_version(model_name, vr, run_id, input_dir=input_dir)
             except RestException as e:
                 msg = {
                     "model": model_name,
@@ -204,7 +271,7 @@ class ModelImporter(BaseModelImporter):
         _logger.info(f"      run_id:           {run_id}")
         _logger.info(f"      run_artifact_uri: {run_artifact_uri}")
         _logger.info(f"      source:           {source}")
-        model_artifact = _extract_model_path(source, run_id)
+        model_artifact = _extract_model_path(source, run_id, input_dir=input_dir)
         _logger.info(f"      model_artifact:   {model_artifact}")
 
         dst_run, _ = import_run(
@@ -222,9 +289,11 @@ class ModelImporter(BaseModelImporter):
         _logger.info(f"      source:           {source}")
         return dst_run_id
 
-    def import_version(self, model_name, src_vr, dst_run_id):
+    def import_version(self, model_name, src_vr, dst_run_id, input_dir=None):
         dst_run = self.mlflow_client.get_run(dst_run_id)
-        model_path = _extract_model_path(src_vr["source"], src_vr["run_id"])
+        model_path = _extract_model_path(
+            src_vr["source"], src_vr["run_id"], input_dir=input_dir
+        )
         dst_source = f"{dst_run.info.artifact_uri}/{model_path}"
         return _import_model_version(
             mlflow_client=self.mlflow_client,
@@ -288,7 +357,7 @@ class BulkModelImporter(BaseModelImporter):
                 try:
                     with MlflowTrackingUriTweak(self.mlflow_client):
                         mlflow.set_experiment(exp_name)
-                    self.import_version(model_name, vr, dst_run_id)
+                    self.import_version(model_name, vr, dst_run_id, input_dir=input_dir)
                 except RestException as e:
                     msg = {
                         "model": model_name,
@@ -301,10 +370,10 @@ class BulkModelImporter(BaseModelImporter):
         if verbose:
             model_utils.dump_model_versions(self.mlflow_client, model_name)
 
-    def import_version(self, model_name, src_vr, dst_run_id):
+    def import_version(self, model_name, src_vr, dst_run_id, input_dir=None):
         src_run_id = src_vr["run_id"]
         model_path = _extract_model_path(
-            src_vr["source"], src_run_id
+            src_vr["source"], src_run_id, input_dir=input_dir
         )  # get path to model artifact
         dst_artifact_uri = self.run_info_map[src_run_id].artifact_uri
         dst_source = f"{dst_artifact_uri}/{model_path}"
@@ -318,11 +387,16 @@ class BulkModelImporter(BaseModelImporter):
         )
 
 
-def _extract_model_path(source, run_id):
+def _extract_model_path(source, run_id, input_dir=None):
     """
-    Extract relative path to model artifact from version source field
+    Extract relative path to model artifact from version source field.
+
+    Supports MLflow 3.x LoggedModel IDs (format: m-<32 hex chars>) which are resolved
+    to actual artifact paths using run metadata.
+
     :param source: 'source' field of registered model version
-    :param run_id: Run ID in the 'source field
+    :param run_id: Run ID in the 'source' field
+    :param input_dir: Input directory containing the exported model (optional, used for LoggedModel resolution)
     :return: relative path to the model artifact
     """
     idx = source.find(run_id)
@@ -331,14 +405,27 @@ def _extract_model_path(source, run_id):
             f"Cannot find run ID '{run_id}' in registered model version source field '{source}'",
             http_status_code=404,
         )
-    model_path = source[1 + idx + len(run_id) :]
-    pattern = "artifacts"
 
+    # Use "/artifacts/" pattern to avoid matching "artifacts" in scheme names like "mlflow-artifacts:"
+    pattern = "/artifacts/"
     idx = source.find(pattern)
-    if idx == -1:  # Bizarre - sometimes there is no 'artifacts' after run_id
+    if idx == -1:  # Sometimes there is no 'artifacts' directory in the source
         model_path = ""
     else:
-        model_path = source[1 + idx + len(pattern) :]
+        model_path = source[idx + len(pattern) :]
+
+    # Check for MLflow 3.x LoggedModel ID (format: m-<32 hex chars>)
+    if model_path and _is_logged_model_id(model_path):
+        _logger.info(f"Detected MLflow 3.x LoggedModel ID: {model_path}")
+        if input_dir:
+            resolved = _resolve_logged_model_path_for_run(input_dir, run_id, model_path)
+            if resolved:
+                return resolved
+        _logger.warning(
+            f"Could not resolve LoggedModel ID '{model_path}', falling back to 'model'"
+        )
+        return "model"
+
     return model_path
 
 

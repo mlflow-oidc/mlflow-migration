@@ -83,17 +83,19 @@ def export_all(
             output_dir=os.path.join(output_dir, "prompts"),
             prompt_names=None,  # Export all prompts
             use_threads=use_threads,
-            mlflow_client=mlflow_client
+            mlflow_client=mlflow_client,
         )
         # Log if unsupported but don't fail
         if res_prompts and "unsupported" in res_prompts:
-            _logger.warning(f"Prompts not supported in MLflow {res_prompts.get('mlflow_version')}")
+            _logger.warning(
+                f"Prompts not supported in MLflow {res_prompts.get('mlflow_version')}"
+            )
         elif res_prompts and "error" in res_prompts:
             _logger.warning(f"Failed to export prompts: {res_prompts['error']}")
     except Exception as e:
         _logger.warning(f"Failed to export prompts: {e}")
         res_prompts = {"error": str(e)}
-    
+
     duration = round(time.time() - start_time, 1)
     info_attr = {
         "options": {
@@ -108,8 +110,8 @@ def export_all(
             "duration": duration,
             "models": res_models,
             "experiments": res_exps,
-            "prompts": res_prompts
-        }
+            "prompts": res_prompts,
+        },
     }
     io_utils.write_export_file(output_dir, "manifest.json", __file__, {}, info_attr)
     _logger.info(f"Duration for entire tracking server export: {duration} seconds")

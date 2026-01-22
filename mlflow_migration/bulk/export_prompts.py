@@ -2,7 +2,7 @@
 Exports multiple MLflow prompts to a directory.
 
 Note: This implementation uses standard MLflow APIs that are available across different
-MLflow deployments. Version discovery is done by iteratively checking version numbers 
+MLflow deployments. Version discovery is done by iteratively checking version numbers
 1-10 to ensure compatibility with various MLflow configurations.
 """
 

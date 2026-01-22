@@ -1,7 +1,7 @@
 """
 Exports MLflow prompts to a directory.
 
-Note: This implementation uses standard MLflow APIs (mlflow.genai.*) with fallbacks 
+Note: This implementation uses standard MLflow APIs (mlflow.genai.*) with fallbacks
 for different MLflow versions to ensure compatibility across various deployments.
 """
 

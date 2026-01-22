@@ -388,26 +388,26 @@ cat experiment-names.csv
 /Users/me@mycompany.com,/Users/you@mycompany.com
 /Users/foo@mycompany.com,/Users/bar@mycompany.com
 ```
- 
+
 ## Prompts
- 
+
 Export/import prompts from the MLflow Prompt Registry (MLflow 2.21.0+).
- 
-**Notes:** 
+
+**Notes:**
 * Prompt Registry support requires MLflow 2.21.0 or higher. The export/import will be skipped with a warning message if the MLflow version doesn't support prompts.
 * **Version handling**: MLflow 3.0+ uses efficient pagination to export all prompt versions. MLflow 2.21-2.x uses iterative discovery with early stopping (stops after 3 consecutive missing versions).
- 
+
 ### Export prompts
- 
+
 Export prompts from the MLflow Prompt Registry to a directory.
- 
+
 Source: [export_prompts.py](mlflow_migration/bulk/export_prompts.py).
- 
+
 #### Usage
- 
+
 ```
 export-prompts --help
- 
+
 Options:
   --output-dir TEXT        Output directory.  [required]
   --prompts TEXT           Prompt names: 'all' for all prompts, comma-delimited
@@ -416,16 +416,16 @@ Options:
                           [required]
   --use-threads BOOLEAN    Use multithreading for export.  [default: False]
 ```
- 
+
 #### Examples
- 
+
 ##### Export all prompts
 ```
 export-prompts \
   --output-dir out/prompts \
   --prompts all
 ```
- 
+
 ##### Export specific prompts
 ```
 export-prompts \
@@ -445,30 +445,30 @@ where `my-prompts.txt` is:
 my-prompt-1
 my-prompt-2
 ```
- 
+
 ### Import prompts
- 
+
 Import prompts to the MLflow Prompt Registry from a directory.
- 
+
 Source: [import_prompts.py](mlflow_migration/bulk/import_prompts.py).
- 
+
 #### Usage
- 
+
 ```
 import-prompts --help
- 
+
 Options:
   --input-dir TEXT         Input directory containing exported prompts.  [required]
   --delete-prompt BOOLEAN  Delete existing prompt before importing.  [default: False]
   --use-threads BOOLEAN    Use multithreading for import.  [default: False]
 ```
- 
+
 #### Examples
- 
+
 ```
 import-prompts --input-dir out/prompts
 ```
- 
-**Notes:** 
+
+**Notes:**
 * Prompts are imported with their original names and version numbers are preserved.
 * All versions of each prompt are exported and imported to maintain complete version history.

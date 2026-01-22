@@ -36,9 +36,9 @@ class TestIsLoggedModelId:
             "m-abcdef0123456789abcdef0123456789",
         ]
         for logged_model_id in valid_ids:
-            assert _is_logged_model_id(logged_model_id) is True, (
-                f"Expected '{logged_model_id}' to be detected as LoggedModel ID"
-            )
+            assert (
+                _is_logged_model_id(logged_model_id) is True
+            ), f"Expected '{logged_model_id}' to be detected as LoggedModel ID"
 
     def test_invalid_logged_model_id_regular_paths(self):
         """Test that regular model paths are not detected as LoggedModel IDs."""
@@ -50,9 +50,9 @@ class TestIsLoggedModelId:
             "my_model/subdir",
         ]
         for path in regular_paths:
-            assert _is_logged_model_id(path) is False, (
-                f"Expected '{path}' to NOT be detected as LoggedModel ID"
-            )
+            assert (
+                _is_logged_model_id(path) is False
+            ), f"Expected '{path}' to NOT be detected as LoggedModel ID"
 
     def test_invalid_logged_model_id_wrong_format(self):
         """Test that incorrectly formatted IDs are not detected."""
@@ -67,9 +67,9 @@ class TestIsLoggedModelId:
             "",  # Empty string
         ]
         for invalid_id in invalid_ids:
-            assert _is_logged_model_id(invalid_id) is False, (
-                f"Expected '{invalid_id}' to NOT be detected as LoggedModel ID"
-            )
+            assert (
+                _is_logged_model_id(invalid_id) is False
+            ), f"Expected '{invalid_id}' to NOT be detected as LoggedModel ID"
 
     def test_both_modules_have_same_behavior(self):
         """Test that both module implementations behave identically."""
@@ -82,9 +82,9 @@ class TestIsLoggedModelId:
         for path in test_cases:
             result_version = _is_logged_model_id(path)
             result_model = is_logged_model_id_model(path)
-            assert result_version == result_model, (
-                f"Modules differ for '{path}': version={result_version}, model={result_model}"
-            )
+            assert (
+                result_version == result_model
+            ), f"Modules differ for '{path}': version={result_version}, model={result_model}"
 
 
 class TestResolveLoggedModelPath:
@@ -289,7 +289,9 @@ class TestExtractModelPathVersion:
 
     def test_extract_logged_model_id_without_input_dir_falls_back(self):
         """Test that LoggedModel ID without input_dir falls back to 'model'."""
-        source = "mlflow-artifacts:/0/abc123/artifacts/m-0728b41ab24e491db0bcc28f5d4d9afd"
+        source = (
+            "mlflow-artifacts:/0/abc123/artifacts/m-0728b41ab24e491db0bcc28f5d4d9afd"
+        )
         result = extract_model_path_version(source, input_dir=None)
         assert result == "model"
 

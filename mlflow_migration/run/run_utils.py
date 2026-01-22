@@ -10,14 +10,20 @@ def get_model_name(artifact_path):
     return artifact_path[idx:]
 
 
-def update_mlmodel_run_id(mlflow_client, run_id):
+def update_mlmodel_fields(mlflow_client, run_id):
     """
-    :param: mlflow_client
-    :param: run_id
-    Workaround to fix the run_id in the destination MLmodel file since there is no method to get all model artifacts of a run.
-    Since an MLflow run does not keep track of its models, there is no method to retrieve the artifact path to all its models.
-    This workaround recursively searches the run's root artifact directory for all MLmodel files, and assumes their directory
-    represents a path to the model.
+    Updates MLmodel files in a run to fix fields that reference source server entities.
+
+    :param mlflow_client: MLflow client for the destination server.
+    :param run_id: Run ID on the destination server.
+
+    This function performs two corrections:
+    1. Updates the run_id field to reference the new run on the destination server.
+    2. Removes the model_id field (if present) to prevent MLflow 3.x from attempting
+       to fetch a LoggedModel entity that doesn't exist on the destination server.
+
+    This is necessary because MLflow runs don't track their models directly, so we
+    recursively search the run's artifact directory for all MLmodel files.
     """
     mlmodel_paths = find_run_model_names(mlflow_client, run_id)
     for model_path in mlmodel_paths:
@@ -25,6 +31,9 @@ def update_mlmodel_run_id(mlflow_client, run_id):
         local_path = mlflow_utils.download_artifacts(mlflow_client, download_uri)
         mlmodel = io_utils.read_file(local_path, "yaml")
         mlmodel["run_id"] = run_id
+        # Remove model_id if present to prevent LoggedModel lookup on target server
+        if "model_id" in mlmodel:
+            del mlmodel["model_id"]
         with tempfile.TemporaryDirectory() as dir:
             output_path = os.path.join(dir, "MLmodel")
             io_utils.write_file(output_path, mlmodel, "yaml")

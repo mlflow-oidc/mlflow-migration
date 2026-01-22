@@ -9,7 +9,9 @@ import os
 import json
 import tempfile
 import pytest
+from unittest.mock import MagicMock, patch
 
+from mlflow_migration.run.run_utils import update_mlmodel_fields
 from mlflow_migration.model_version.import_model_version import (
     _is_logged_model_id,
     _resolve_logged_model_path,
@@ -498,3 +500,120 @@ flavors:
             source = "mlflow-artifacts:/0/run123/artifacts/m-0728b41ab24e491db0bcc28f5d4d9afd"
             result = extract_model_path_version(source, input_dir=tmpdir)
             assert result == "classifier"
+
+
+class TestUpdateMlmodelFields:
+    """Tests for update_mlmodel_fields() function in run_utils.py."""
+
+    def test_removes_model_id_from_mlmodel(self):
+        """Test that model_id is removed from MLmodel file during import."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create MLmodel file with model_id (as exported from MLflow 3.x)
+            mlmodel_content = {
+                "artifact_path": "model",
+                "run_id": "old-run-id-from-source",
+                "model_id": "m-0728b41ab24e491db0bcc28f5d4d9afd",
+                "flavors": {"python_function": {"loader_module": "mlflow.sklearn"}},
+            }
+
+            model_dir = os.path.join(tmpdir, "model")
+            os.makedirs(model_dir)
+            mlmodel_path = os.path.join(model_dir, "MLmodel")
+
+            import yaml
+
+            with open(mlmodel_path, "w") as f:
+                yaml.dump(mlmodel_content, f)
+
+            # Track what gets written
+            written_content = {}
+
+            def mock_log_artifact(run_id, local_path, artifact_path):
+                with open(local_path, "r") as f:
+                    written_content["mlmodel"] = yaml.safe_load(f)
+
+            # Create mock client
+            mock_client = MagicMock()
+            mock_client.download_artifacts.return_value = mlmodel_path
+            mock_client.log_artifact.side_effect = mock_log_artifact
+
+            new_run_id = "new-run-id-on-target"
+
+            # Patch find_run_model_names to return our model path
+            with patch(
+                "mlflow_migration.run.run_utils.find_run_model_names",
+                return_value=["model"],
+            ):
+                with patch(
+                    "mlflow_migration.run.run_utils.mlflow_utils.download_artifacts",
+                    return_value=mlmodel_path,
+                ):
+                    update_mlmodel_fields(mock_client, new_run_id)
+
+            # Verify model_id was removed and run_id was updated
+            assert "mlmodel" in written_content
+            assert written_content["mlmodel"]["run_id"] == new_run_id
+            assert "model_id" not in written_content["mlmodel"]
+            assert written_content["mlmodel"]["artifact_path"] == "model"
+
+    def test_handles_mlmodel_without_model_id(self):
+        """Test that MLmodel files without model_id are handled correctly (MLflow 2.x)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create MLmodel file without model_id (MLflow 2.x style)
+            mlmodel_content = {
+                "artifact_path": "model",
+                "run_id": "old-run-id-from-source",
+                "flavors": {"python_function": {"loader_module": "mlflow.sklearn"}},
+            }
+
+            model_dir = os.path.join(tmpdir, "model")
+            os.makedirs(model_dir)
+            mlmodel_path = os.path.join(model_dir, "MLmodel")
+
+            import yaml
+
+            with open(mlmodel_path, "w") as f:
+                yaml.dump(mlmodel_content, f)
+
+            # Track what gets written
+            written_content = {}
+
+            def mock_log_artifact(run_id, local_path, artifact_path):
+                with open(local_path, "r") as f:
+                    written_content["mlmodel"] = yaml.safe_load(f)
+
+            # Create mock client
+            mock_client = MagicMock()
+            mock_client.download_artifacts.return_value = mlmodel_path
+            mock_client.log_artifact.side_effect = mock_log_artifact
+
+            new_run_id = "new-run-id-on-target"
+
+            # Patch find_run_model_names to return our model path
+            with patch(
+                "mlflow_migration.run.run_utils.find_run_model_names",
+                return_value=["model"],
+            ):
+                with patch(
+                    "mlflow_migration.run.run_utils.mlflow_utils.download_artifacts",
+                    return_value=mlmodel_path,
+                ):
+                    update_mlmodel_fields(mock_client, new_run_id)
+
+            # Verify run_id was updated and no model_id was added
+            assert "mlmodel" in written_content
+            assert written_content["mlmodel"]["run_id"] == new_run_id
+            assert "model_id" not in written_content["mlmodel"]
+
+    def test_handles_no_models_in_run(self):
+        """Test that runs without models are handled gracefully."""
+        mock_client = MagicMock()
+
+        with patch(
+            "mlflow_migration.run.run_utils.find_run_model_names", return_value=[]
+        ):
+            # Should not raise any exceptions
+            update_mlmodel_fields(mock_client, "some-run-id")
+
+        # No artifacts should be logged
+        mock_client.log_artifact.assert_not_called()

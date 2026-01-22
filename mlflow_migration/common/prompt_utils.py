@@ -14,17 +14,21 @@ DEFAULT_DELETE_SLEEP_TIME = 0.5
 _logger = utils.getLogger(__name__)
 
 
-def delete_prompt(client: mlflow.MlflowClient, prompt_name: str, sleep_time: float = DEFAULT_DELETE_SLEEP_TIME) -> None:
+def delete_prompt(
+    client: mlflow.MlflowClient,
+    prompt_name: str,
+    sleep_time: float = DEFAULT_DELETE_SLEEP_TIME,
+) -> None:
     """
     Delete a prompt and all its versions.
-    
+
     :param client: MLflow client
     :param prompt_name: Name of the prompt to delete
     :param sleep_time: Time to sleep between version deletions (default 0.5s, shorter than models since prompts don't have stage transitions)
     """
     try:
         _logger.info(f"Deleting prompt '{prompt_name}' and its versions")
-        
+
         # Get all versions of the prompt
         try:
             versions = client.search_prompt_versions(prompt_name)
@@ -39,7 +43,7 @@ def delete_prompt(client: mlflow.MlflowClient, prompt_name: str, sleep_time: flo
                     version += 1
                 except Exception:
                     break
-        
+
         # Delete all versions
         for pv in versions:
             _logger.info(f"  Deleting prompt version: {prompt_name} v{pv.version}")
@@ -48,15 +52,17 @@ def delete_prompt(client: mlflow.MlflowClient, prompt_name: str, sleep_time: flo
                 time.sleep(sleep_time)
             except Exception as e:
                 _logger.warning(f"  Failed to delete version {pv.version}: {e}")
-        
+
         # Delete the prompt itself
         try:
             client.delete_prompt(prompt_name)
             _logger.info(f"Deleted prompt '{prompt_name}'")
         except Exception as e:
             _logger.warning(f"Failed to delete prompt '{prompt_name}': {e}")
-            
+
     except RestException as e:
-        _logger.warning(f"RestException occurred while deleting prompt '{prompt_name}': {e}")
+        _logger.warning(
+            f"RestException occurred while deleting prompt '{prompt_name}': {e}"
+        )
     except Exception as e:
         _logger.warning(f"Error deleting prompt '{prompt_name}': {e}")

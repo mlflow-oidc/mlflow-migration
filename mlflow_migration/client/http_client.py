@@ -102,7 +102,19 @@ class HttpClient(BaseHttpClient):
         rsp = requests.get(
             uri,
             headers=self._mk_headers(),
-            data=params,
+            params=params,
+            auth=self.auth,
+            timeout=_TIMEOUT,
+        )
+        return self._check_response(rsp, params)
+
+    def _get_legacy_body(self, resource, params=None):
+        uri = self._mk_uri(resource)
+        payload = params if isinstance(params, str) else self._json_dumps(params)
+        rsp = requests.get(
+            uri,
+            headers=self._mk_headers(),
+            data=payload,
             auth=self.auth,
             timeout=_TIMEOUT,
         )
@@ -113,7 +125,11 @@ class HttpClient(BaseHttpClient):
         :param resource: Relative path name of resource such as experiments/search
         :param params: Dict of query parameters
         """
-        rsp = self._get(resource, self._json_dumps(params))
+        try:
+            rsp = self._get(resource, params)
+        except MlflowExportImportException:
+            # Backward compatibility for MLFlow APIs that still expect a GET request body.
+            rsp = self._get_legacy_body(resource, params)
         return self._json_loads(rsp, params)
 
     def _post(self, resource, data=None):

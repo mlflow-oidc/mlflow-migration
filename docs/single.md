@@ -25,6 +25,8 @@ See sample JSON export files [here](export_format.md#sample-export-json-files).
 |  | [copy-run](copy.md#copy-run) | [code](mlflow_migration/copy/copy_run.py) |
 | Prompt | [export-prompt](#export-prompt) | [code](mlflow_migration/prompt/export_prompt.py) |
 |  | [import-prompt](#import-prompt) | [code](mlflow_migration/prompt/import_prompt.py) |
+| Skill | [export-skill](#export-skill) | [code](mlflow_migration/skill/export_skill.py) |
+|  | [import-skill](#import-skill) | [code](mlflow_migration/skill/import_skill.py) |
 
 ## Experiment Tools
 
@@ -557,4 +559,124 @@ import-prompt --input-dir out
 import-prompt \
   --input-dir out \
   --prompt-name my-new-prompt-name
+```
+
+## Skill Tools
+
+Export and import skills from the MLflow Skill Registry (MLflow 3.18.0+).
+
+**Note:** Skill Registry support requires MLflow 3.18.0 or higher.
+
+A skill is exported with its description, icons, tags and aliases, and either all its versions or only the version an alias points to (`--alias`).
+
+#### Promoting a version to another environment
+
+The typical workflow is to mark a version with an alias such as `champion`, export that version and import it into another environment:
+
+```
+# In the source environment
+export-skill --skill-name code-review --alias champion --output-dir out
+
+# In the destination environment
+import-skill --input-dir out
+```
+
+The import registers the version in the destination skill (creating the skill if needed) and sets the `champion` alias on it, moving the alias from the previous champion if there is one.
+A version that already exists in the destination (same source and content digest) is reused instead of being registered again, so repeating an import or rolling back to an earlier champion does not create duplicate versions.
+
+#### Version content
+
+How the content of a version is handled depends on where it lives:
+* **MLflow-hosted content** (a version registered from a local directory) is downloaded into the export directory and uploaded to the destination server on import. The destination tracking server must serve artifacts.
+* **External sources** (Git, OCI or ZIP) are exported by reference. The registry only stores a pointer to them, so the import registers the same source and digest in the destination. No content is copied.
+
+Limitations:
+* Version numbers are assigned by the destination server and can differ from the source version numbers, for instance version 5 exported with `--alias champion` becomes version 1 of a new destination skill. Aliases always follow their version.
+* Deleted versions are not returned by MLflow and are not exported.
+* `created_by` and timestamps are exported for reference but cannot be set on import.
+
+### Export Skill
+
+Export a skill to a directory: all its versions or only the version an alias points to.
+
+Source: [export_skill.py](mlflow_migration/skill/export_skill.py).
+
+#### Usage
+
+```
+export-skill --help
+
+Options:
+  --skill-name TEXT    Name of the skill to export.  [required]
+  --organization TEXT  Organization the skill is scoped to. Default is no
+                       organization.
+  --alias TEXT         Export only the version this alias points to (e.g.
+                       'champion'). Default is to export all versions.
+  --output-dir TEXT    Output directory.  [required]
+```
+
+#### Examples
+
+##### Export the champion version
+```
+export-skill \
+  --skill-name code-review \
+  --alias champion \
+  --output-dir out
+```
+
+##### Export all versions
+```
+export-skill \
+  --skill-name code-review \
+  --output-dir out
+```
+
+#### Output
+
+```
++-skill.json
++-versions/
+  +-1/
+    +-content/
+      +-SKILL.md
+      +-scripts/
+        +-check.py
+```
+
+`skill.json` contains the skill and its versions. Only versions with MLflow-hosted content have a `content` directory.
+
+### Import Skill
+
+Import a skill and its versions from an exported directory.
+
+Source: [import_skill.py](mlflow_migration/skill/import_skill.py).
+
+#### Usage
+
+```
+import-skill --help
+
+Options:
+  --input-dir TEXT        Input directory.  [required]
+  --skill-name TEXT       Optional new name for the imported skill. If not
+                          specified, uses original name.
+  --organization TEXT     Optional new organization for the imported skill. If
+                          not specified, uses original organization.
+  --delete-skill BOOLEAN  Delete existing skill before importing.
+```
+
+#### Examples
+
+##### Import with original name
+```
+import-skill --input-dir out
+```
+
+##### Import with new name, replacing an existing skill
+```
+import-skill \
+  --input-dir out \
+  --skill-name my-new-skill-name \
+  --delete-skill true
 ```

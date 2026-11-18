@@ -26,6 +26,8 @@ Notes:
 | | [import-experiments](#Import-experiments) | [code](mlflow_migration/bulk/import_experiments.py) | Imports experiments from a directory. |
 | Prompt        | [export-prompts](#Export-prompts)             | [code](mlflow_migration/bulk/export_prompts.py)              | Export prompts from the MLflow Prompt Registry (MLflow 2.21.0+).                                                           |
 |               | [import-prompts](#Import-prompts)             | [code](mlflow_migration/bulk/import_prompts.py)              | Imports prompts to the MLflow Prompt Registry. |
+| Skill         | [export-skills](#Export-skills)               | [code](mlflow_migration/bulk/export_skills.py)               | Export skills and all their versions from the MLflow Skill Registry (MLflow 3.18.0+). |
+|               | [import-skills](#Import-skills)               | [code](mlflow_migration/bulk/import_skills.py)               | Imports skills to the MLflow Skill Registry. |
 
 ## All MLflow Objects Tools
 
@@ -472,3 +474,102 @@ import-prompts --input-dir out/prompts
 **Notes:**
 * Prompts are imported with their original names and version numbers are preserved.
 * All versions of each prompt are exported and imported to maintain complete version history.
+
+## Skills
+
+Export/import skills from the MLflow Skill Registry (MLflow 3.18.0+).
+
+**Notes:**
+* Skill Registry support requires MLflow 3.18.0 or higher. The export/import will be skipped with a warning message if the MLflow version doesn't support skills.
+* `export-all` also exports all skills to the `skills` subdirectory of its output directory. Import them with `import-skills --input-dir out/skills`.
+* With `--alias` (e.g. `--alias champion`) only the version the alias points to is exported for each skill, and skills without the alias are skipped. Importing sets the alias on the imported version. See [promoting a version](single.md#promoting-a-version-to-another-environment).
+* Without `--alias`, all versions of each skill are exported together with the skill's description, icons, tags and aliases. See [Skill Tools](single.md#skill-tools) for the export format and how version content is handled.
+* A skill scoped to an organization is written as `@organization/name` and is exported to the directory `organization__name`.
+
+### Export skills
+
+Export skills from the MLflow Skill Registry to a directory.
+
+Source: [export_skills.py](mlflow_migration/bulk/export_skills.py).
+
+#### Usage
+
+```
+export-skills --help
+
+Options:
+  --output-dir TEXT  Output directory.  [required]
+  --skills TEXT      Skill names: 'all' for all skills, comma-delimited list
+                     (e.g., 'skill1,@my-org/skill2'), or file path ending with
+                     '.txt' containing skill names (one per line). A skill
+                     scoped to an organization is written as
+                     '@organization/name'.  [required]
+  --alias TEXT       Export only the version this alias points to (e.g.
+                     'champion'). Skills without this alias are skipped.
+                     Default is to export all versions.
+  --use-threads      Use multithreading for export.
+```
+
+#### Examples
+
+##### Export the champion version of all skills
+```
+export-skills \
+  --output-dir out/skills \
+  --skills all \
+  --alias champion
+```
+
+##### Export all skills
+```
+export-skills \
+  --output-dir out/skills \
+  --skills all
+```
+
+##### Export specific skills
+```
+export-skills \
+  --output-dir out/skills \
+  --skills code-review,@my-org/test-coverage
+```
+
+##### Export skills from filename
+```
+export-skills \
+  --output-dir out/skills \
+  --skills my-skills.txt
+```
+
+where `my-skills.txt` is:
+```
+code-review
+@my-org/test-coverage
+```
+
+### Import skills
+
+Import skills to the MLflow Skill Registry from a directory.
+
+Source: [import_skills.py](mlflow_migration/bulk/import_skills.py).
+
+#### Usage
+
+```
+import-skills --help
+
+Options:
+  --input-dir TEXT        Input directory.  [required]
+  --delete-skill BOOLEAN  Delete existing skill before importing.
+  --use-threads           Use multithreading for import.
+```
+
+#### Examples
+
+```
+import-skills --input-dir out/skills
+```
+
+**Notes:**
+* Skills are imported with their original names and organizations.
+* If a skill already exists in the destination, new versions are added after its existing versions and versions it already has (same source and content digest) are reused. Use `--delete-skill true` to replace the skill.

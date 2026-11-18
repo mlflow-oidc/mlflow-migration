@@ -40,6 +40,11 @@ def has_evaluation_dataset_support() -> bool:
     return get_mlflow_version() >= version.parse("3.4.0")
 
 
+def has_skill_support() -> bool:
+    """Skill registry - versioned agent skills (3.18.0+)."""
+    return get_mlflow_version() >= version.parse("3.18.0")
+
+
 def get_version_info() -> dict[str, str | bool]:
     """Get comprehensive version and feature support information."""
     return {
@@ -48,6 +53,7 @@ def get_version_info() -> dict[str, str | bool]:
         "supports_prompts": has_prompt_support(),
         "supports_logged_models": has_logged_model_support(),
         "supports_evaluation_datasets": has_evaluation_dataset_support(),
+        "supports_skills": has_skill_support(),
     }
 
 
@@ -57,5 +63,6 @@ def log_version_info() -> None:
     _logger.info(f"MLflow version: {info['mlflow_version']}")
     _logger.info(
         f"Feature support: traces={info['supports_traces']}, prompts={info['supports_prompts']}, "
-        f"logged_models={info['supports_logged_models']}, evaluation_datasets={info['supports_evaluation_datasets']}"
+        f"logged_models={info['supports_logged_models']}, evaluation_datasets={info['supports_evaluation_datasets']}, "
+        f"skills={info['supports_skills']}"
     )

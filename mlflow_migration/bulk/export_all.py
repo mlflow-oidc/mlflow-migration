@@ -24,6 +24,7 @@ from mlflow_migration.client.client_utils import create_mlflow_client
 from mlflow_migration.bulk.export_models import export_models
 from mlflow_migration.bulk.export_experiments import export_experiments
 from mlflow_migration.bulk.export_prompts import export_prompts
+from mlflow_migration.bulk.export_skills import export_skills
 
 ALL_STAGES = "Production,Staging,Archived,None"
 
@@ -96,6 +97,27 @@ def export_all(
         _logger.warning(f"Failed to export prompts: {e}")
         res_prompts = {"error": str(e)}
 
+    # Export skills (returns dict with status)
+    res_skills = None
+    try:
+        _logger.info("Exporting skills...")
+        res_skills = export_skills(
+            output_dir=os.path.join(output_dir, "skills"),
+            skill_names=None,  # Export all skills
+            use_threads=use_threads,
+            mlflow_client=mlflow_client,
+        )
+        # Log if unsupported but don't fail
+        if res_skills and "unsupported" in res_skills:
+            _logger.warning(
+                f"Skills not supported in MLflow {res_skills.get('mlflow_version')}"
+            )
+        elif res_skills and "error" in res_skills:
+            _logger.warning(f"Failed to export skills: {res_skills['error']}")
+    except Exception as e:
+        _logger.warning(f"Failed to export skills: {e}")
+        res_skills = {"error": str(e)}
+
     duration = round(time.time() - start_time, 1)
     info_attr = {
         "options": {
@@ -111,6 +133,7 @@ def export_all(
             "models": res_models,
             "experiments": res_exps,
             "prompts": res_prompts,
+            "skills": res_skills,
         },
     }
     io_utils.write_export_file(output_dir, "manifest.json", __file__, {}, info_attr)
